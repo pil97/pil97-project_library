@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
+
+<th:block layout:fragment="title">
+	<title>로그인</title>
+</th:block>
+
+<th:block layout:fragment="css">
+	<link href="/css//usr/sign.css" rel="stylesheet">
+	<style>
+.sns-login img {
+	height: 50px;
+	width: auto;	
+	max-width: 100%;	
+	display: block;	
+	margin: 0 auto;	
+}
+
+.sns-login {
+	text-align: center;	
+}
+</style>
+</th:block>
+
+<body class="text-center">
+	<th:block layout:fragment="content">
+		<main role="main" class="flex-shrink-0">
+			<div class="container" id="wrapper">
+				<div class="row">
+					<div class="col">
+						<div class="card card-info">
+							<div class="card-header">
+								<h3 class="card-title">로그인</h3>
+							</div>
+							<form class="form-signin" id="loginForm"
+								th:action="@{/user/login}" method="post">
+								<h1 class="h3 mb-3 font-weight-normal">Login</h1>
+								<label for="usr_id" class="sr-only">Enter ID</label> <input
+									type="text" id="usr_id" name="usr_id" class="form-control"
+									placeholder="ID" required autofocus> <label
+									for="usr_password" class="sr-only">Enter Password</label> <input
+									type="password" id="usr_password" name="usr_password"
+									class="form-control" placeholder="Password" required>
+								<div class="checkbox mb-3">
+									<label> <input type="checkbox" value="remember-me">
+										Remember me
+									</label>
+								</div>
+								<button class="btn btn-lg btn-primary btn-block" id="btnJoin"
+									type="submit">Login</button>
+
+								<div class="form-group row">
+									<div class="col-sm-6 sns-login">
+										<a th:href="@{/oauth2/kakaologin}"> <img
+											th:src="@{/image/sns/kakao_login_large_narrow.png}">
+										</a>
+									</div>
+									<div class="col-sm-6 sns-login">
+										<a th:href="@{/oauth2/naverlogin}"> <img
+											th:src="@{/image/sns/naver_login_large.png}">
+										</a>
+									</div>
+								</div>
+								<p class="mt-5 mb-3 text-muted">&copy; 2017-2024</p>
+
+							</form>
+
+
+
+							<div class="card-footer text-center">
+								<a th:href="@{/user/idfind}">아이디 찾기</a> <a
+									th:href="@{/user/pwfind}">비밀번호 찾기</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</th:block>
+	<th:block layout:fragment="script">
+		<!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
+		<!-- 로그인 유효성 검사 -->
+		<script th:inline="javascript">		
+			// "failPW" or "failID"
+			let msg = [[${msg}]]; 
+			let email = [[${usr_email}]]; 
+			
+			if (msg == "successID") {
+				alert(`아이디를 ${email} 메일로 발송했습니다.`);
+				document.getElementById("usr_id").focus();
+			}
+			
+			if (msg == "successTempPw") {
+				alert(`임시비밀번호를 ${email} 메일로 발송했습니다.`);
+				document.getElementById("usr_id").focus();
+			}
+			
+			if (msg == "failID") {
+				alert("아이디가 존재하지 않습니다.");
+				document.getElementById("usr_id").focus();
+			} else if (msg == "failPW") {
+				alert("비밀번호가 일치하지 않습니다.");
+				document.getElementById("usr_password").focus();
+			}
+			$(document).ready(function() {
+				// ready event end
+			});
+		</script>
+
+	</th:block>
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.basic.admin.book.AdminBookMapper">
+
+	<!-- 도서 등록 -->
+	<insert id="bookRegister" parameterType="BookVO">
+
+		INSERT INTO
+		book_table(
+		book_bno,
+		c_code,
+		book_name,
+		book_author,
+		book_publishing_date,
+		book_deposit,
+		book_deposit_discount,
+		book_publisher,
+		book_content,
+		book_up_folder,
+		book_img,
+		book_amount,
+		book_loan
+		)
+		VALUES(
+		seq_book_bno.NEXTVAL,
+		#{c_code},
+		#{book_name},
+		#{book_author},
+		#{book_publishing_date},
+		#{book_deposit},
+		#{book_deposit_discount},
+		#{book_publisher},
+		#{book_content},
+		#{book_up_folder},
+		#{book_img},
+		#{book_amount},
+		#{book_loan}
+		)
+
+	</insert>
+
+	<!-- 검색종류가 (상품명 또는 제조사 또는 내용) 선택. "T" "W" "C" -->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'N'.toString()">
+							book_name like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'A'.toString()">
+							book_author like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C'.toString()">
+							book_publisher like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 도서 리스트 -->
+	<select id="bookList" resultType="BookVO"
+		parameterType="Criteria">
+
+		SELECT
+		book_bno,
+		c_code,
+		book_name,
+		book_author,
+		book_publishing_date,
+		book_deposit,
+		book_deposit_discount,
+		book_publisher,
+		book_content,
+		book_up_folder,
+		book_img,
+		book_amount,
+		book_loan,
+		book_date,
+		book_updatedate
+		FROM
+		(
+		SELECT /*+
+		INDEX_DESC(product_tbl PK_BOOK_BNO) */
+		ROWNUM AS
+		RN,
+		book_bno,
+		c_code,
+		book_name,
+		book_author,
+		book_publishing_date,
+		book_deposit,
+		book_deposit_discount,
+		book_publisher,
+		book_content,
+		book_up_folder,
+		book_img,
+		book_amount,
+		book_loan,
+		book_date,
+		book_updatedate
+		FROM
+		book_table
+		WHERE
+
+		<include refid="criteria"></include>
+		 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>
+		ORDER BY book_bno DESC
+		)
+		WHERE
+		RN > (#{pageNum} - 1 ) * #{amount}
+
+
+	</select>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 도서 리스트 개수 -->
+	<select id="getTotalCount" resultType="int">
+
+		SELECT
+		COUNT(*)
+		FROM
+		book_table
+
+		WHERE
+		<include refid="criteria"></include>
+		book_bno > 0
+	</select>
+
+	<!-- 도서 수정 페이지 정보 -->
+	<select id="bookEditPage" resultType="BookVO"
+		parameterType="Integer">
+		SELECT
+		book_bno,
+		c_code,
+		book_name,
+		book_author,
+		book_publishing_date,
+		book_deposit,
+		book_deposit_discount,
+		book_publisher,
+		book_content,
+		book_up_folder,
+		book_img,
+		book_amount,
+		book_loan,
+		book_date,
+		book_updatedate
+		FROM
+		book_table
+		WHERE
+		book_bno =
+		#{book_bno}
+
+	</select>
+
+	<!-- 도서 수정 -->
+	<update id="bookEdit" parameterType="BookVO">
+
+		UPDATE
+		book_table
+		SET
+		c_code = #{c_code},
+		book_name = #{book_name},
+		book_author =
+		#{book_author},
+		book_publishing_date = #{book_publishing_date},
+		book_deposit = #{book_deposit},
+		book_deposit_discount =
+		#{book_deposit_discount},
+		book_publisher = #{book_publisher},
+		book_content = #{book_content},
+		book_up_folder = #{book_up_folder},
+		book_img = #{book_img},
+		book_amount = #{book_amount},
+		book_loan =
+		#{book_loan},
+		book_updatedate = sysdate
+		WHERE
+		book_bno = #{book_bno}
+
+	</update>
+
+	<!-- 도서 삭제 -->
+	<delete id="bookDelete" parameterType="Integer">
+	DELETE FROM
+	book_table
+	WHERE 
+	book_bno = #{book_bno}
+	</delete>
+
+	<!-- 체크상품 수정작업 -->
+	<update id="checkedModify" parameterType="List">
+
+		<foreach collection="list" item="item" open="declare begin"
+			separator=";" close="; end;">
+			
+			UPDATE
+			book_table
+			SET
+			book_author = #{item.book_author},
+			book_deposit = #{item.book_deposit},
+			book_publisher = #{item.book_publisher},			
+			book_loan =	#{item.book_loan}
+			WHERE	
+			book_bno = #{item.book_bno}
+			
+		</foreach>
+
+	</update>
+
+</mapper>

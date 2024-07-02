@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div style="margin:100px;">
+    <h1> 안녕하세요.</h1>
+    <h1> 도서대출 사이트 필 도서관 입니다.</h1>
+    <br>
+    <p> 임시 비밀번호 이용하여 로그인을 하세요.</p>
+    <br>
+
+    <div align="center" style="border:1px solid black; font-family:verdana;">
+        <h3 style="color:blue"> 임시 비밀번호는 다음과 같습니다. </h3>
+        <div style="font-size:130%" th:text="${code}"> </div>
+    </div>
+    <br/>
+</div>
+
+</body>
+</html>

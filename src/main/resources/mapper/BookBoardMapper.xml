@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.basic.bookboard.BookBoardMapper">
+
+	<insert id="write"
+		parameterType="com.library.basic.bookboard.BookBoardVO">
+
+		INSERT INTO
+		bookboard_table(b_bno, b_title, b_author,
+		b_content, b_publishing_house, b_publication_date, b_bookquantity)
+		VALUES
+		(seq_bookboard.NEXTVAL, #{b_title}, #{b_author}, #{b_content},
+		#{b_publishing_house}, #{b_publication_date}, #{b_bookquantity})
+
+	</insert>
+
+	<select id="listWithPaging"
+		resultType="com.library.basic.bookboard.BookBoardVO"
+		parameterType="com.library.basic.bookboard.Criteria">
+
+		SELECT
+		b_bno, b_title, b_author, b_content, b_publishing_house,
+		b_publication_date, b_regdate, b_updatedate, b_viewcount,
+		b_bookquantity
+		FROM
+		(
+		SELECT /*+ INDEX_DESC(board pk_b_bno) */
+		ROWNUM AS
+		RN, b_bno, b_title, b_author, b_content, b_publishing_house,
+		b_publication_date, b_regdate, b_updatedate, b_viewcount,
+		b_bookquantity
+		FROM
+		bookboard_table
+		WHERE
+			 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>
+		)
+		WHERE
+		RN > (#{pageNum} - 1 ) * #{amount}
+
+
+	</select>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<select id="getTotalCount" resultType="int">
+
+		SELECT
+		COUNT(*)
+		FROM
+		bookboard_table
+
+		WHERE
+		b_bno > 0
+	</select>
+
+	<!-- 도서 상세페이지 -->
+	<select id="get"
+		resultType="com.library.basic.bookboard.BookBoardVO"
+		parameterType="Long">
+
+		SELECT
+		b_bno, b_title, 
+		b_author, b_content,
+		b_publishing_house,
+		b_publication_date,
+		b_regdate,b_updatedate,
+		b_bookquantity
+		FROM
+		bookboard_table
+		WHERE
+		b_bno =
+		#{b_bno}
+
+	</select>
+
+	<!-- 도서 수정하기 -->
+	<update id="modify"
+		parameterType="com.library.basic.bookboard.BookBoardVO">
+
+
+		UPDATE
+		bookboard_table
+		SET
+		b_title = #{b_title}, 
+		b_author = # {b_author},
+		b_content = #{b_content},
+		b_publishing_house = # {b_publishing_house},
+		b_publication_date = # {b_publication_date},
+		b_updatedate = sysdate,
+		b_bookquantity = #{b_bookquantity}		
+		WHERE
+		b_bno = #{b_bno}
+
+
+	</update>
+
+
+
+</mapper>

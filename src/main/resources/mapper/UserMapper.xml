@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.basic.usr.UserMapper">
+
+	<!-- 회원가입 -->
+	<insert id="sign" parameterType="UserVO">
+		INSERT INTO usr_table (
+			usr_id,
+			usr_name,
+			usr_email,
+			usr_password,
+			usr_zipcode,
+			usr_addr,
+			usr_deaddr,
+			usr_phone,
+			usr_nick,
+			usr_receive
+		) 
+		VALUES (
+			#{usr_id},
+			#{usr_name},
+			#{usr_email},
+			#{usr_password},
+			#{usr_zipcode},
+			#{usr_addr},
+			#{usr_deaddr},
+			#{usr_phone},
+			#{usr_nick},
+			#{usr_receive}
+		)
+	</insert>
+
+
+	<!-- 아이디 중복체크 -->
+	<select id="idCheck" resultType="String" parameterType="String">
+
+		SELECT
+			usr_id
+		FROM
+			usr_table
+		WHERE
+			usr_id = #{usr_id}
+
+	</select>
+
+	<!-- 로그인 -->
+	<select id="login" resultType="UserVO" parameterType="String">
+	
+		SELECT
+			usr_id,
+			usr_name,
+			usr_email,
+			usr_password,
+			usr_zipcode,
+			usr_addr,
+			usr_deaddr,
+			usr_phone,
+			usr_nick,
+			usr_receive,
+			usr_point,
+			usr_lastlogin,
+			usr_datesub,
+			usr_updatedate
+		FROM
+			usr_table
+		WHERE
+			usr_id = #{usr_id}
+
+	</select>
+
+	<!-- 아이디 찾기 -->
+	<select id="idFind" resultType="String">
+
+		SELECT
+			usr_id
+		FROM
+			usr_table
+		WHERE
+			usr_name = #{usr_name}
+		AND
+			usr_email = #{usr_email}
+
+	</select>
+
+	<!-- 비밀번호 재발급 확인 작업 -->
+	<select id="pwFind" resultType="String" parameterType="map">
+
+		SELECT
+			usr_email
+		FROM
+		usr_table
+		WHERE
+			usr_id = #{usr_id}
+		AND
+			usr_name = #{usr_name}
+		AND
+			usr_email = #{usr_email}
+
+	</select>
+
+	<!-- 임시 비밀번호 생성 후 DB 수정 -->
+	<update id="tempPwUpdate" parameterType="map">
+	
+		UPDATE
+			usr_table
+		SET
+			usr_password = #{temp_enc_pw}
+		WHERE
+			usr_id = #{usr_id}
+		
+	</update>
+
+	<!-- 회원정보 수정 -->
+	<update id="modify" parameterType="UserVO">
+	
+		UPDATE
+			usr_table
+		SET
+			usr_email = #{usr_email},
+			usr_zipcode = #{usr_zipcode},
+			usr_addr = #{usr_addr},
+			usr_deaddr = #{usr_deaddr},
+			usr_phone = #{usr_phone}
+		WHERE
+			usr_id = #{usr_id}
+
+	</update>
+
+	<!-- 비밀번호 변경 -->
+	<update id="changePw" parameterType="map">
+
+		UPDATE
+			usr_table
+		SET
+			usr_password = #{new_pwd}
+		WHERE
+			usr_id = #{usr_id}
+
+	</update>
+	
+	<!-- 회원 탈퇴 -->
+	<delete id="delete" parameterType="String">
+
+		DELETE FROM
+			usr_table
+		WHERE
+			usr_id = #{usr_id}
+
+	</delete>
+	
+	<!-- SNS 유저 회원가입 확인 -->
+	<select id="existUserInfo" resultType="String">
+	
+		SELECT
+			sns_login_type
+		FROM
+			usr_table
+		WHERE 
+			usr_email = #{sns_email}
+	
+	</select>
+	
+	<!-- SNS 카카오, 네이버 사용자 중복체크 --> 
+	<select id="snsUserCheck" resultType="String">
+	
+		SELECT
+			email
+		FROM
+			sns_user_tbl
+		WHERE
+			email = #{sns_email}
+			
+	</select>
+	
+	<!-- SNS 유저 정보 DB 저장 -->
+	<insert id="snsUserInsert" parameterType="com.library.basic.usr.SNSUserDto">
+	
+		INSERT INTO
+			sns_user_tbl(
+				id, 
+				nickname, 
+				email, 
+				sns_type
+			)
+		VALUES (
+			#{id}, 
+			#{nickname}, 
+			#{email}, 
+			#{sns_type}
+		)	
+	</insert>
+
+
+
+</mapper>
