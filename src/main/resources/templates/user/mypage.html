@@ -1,151 +1,174 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/baselayout}">
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/baselayout}"
+>
+  <th:block layout:fragment="title">
+    <title>Mypage</title>
+  </th:block>
 
-<th:block layout:fragment="title">
-	<title>Mypage</title>
-</th:block>
+  <th:block layout:fragment="css">
+    <link href="/css/usr/sign.css" rel="stylesheet" />
+  </th:block>
 
-<th:block layout:fragment="css">
-	<link href="/css/usr/sign.css" rel="stylesheet">
-</th:block>
+  <body class="text-center">
+    <th:block layout:fragment="content">
+      <!-- Begin page content -->
+      <main role="main" class="flex-shrink-0">
+        <div class="container">
+          <h1 class="mt-3 mb-4 text-center">내정보</h1>
+          <div class="row">
+            <div class="col-4">
+              <section th:replace="~{user/comm/mypage_menu}"></section>
+            </div>
+            <div class="col-8">
+              <form class="form-horizontal" id="modifyForm" action="/user/modify" method="post">
+                <div class="card-body">
+                  <!--  -->
 
-<body class="text-center">
+                  <div class="form-group row">
+                    <label for="usr_datesub" class="col-sm-2 col-form-label">가입일</label>
+                    <div class="col-sm-6">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="usr_datesub"
+                        readonly
+                        th:value="${#dates.format(user.usr_datesub, 'yyyy-MM-dd HH:mm:ss')}"
+                      />
+                    </div>
+                  </div>
 
-	<th:block layout:fragment="content">
-		<!-- Begin page content -->
-		<main role="main" class="flex-shrink-0">
-			<div class="container">
-				<h1 class="mt-3 mb-4 text-center">내정보</h1>
-				<div class="row">
-					<div class="col-4">
-						<section th:replace="~{user/comm/mypage_menu}"></section>
-					</div>
-					<div class="col-8">
-						<form class="form-horizontal" id="modifyForm"
-							action="/user/modify" method="post">
-							<div class="card-body">
-								<!--  -->
+                  <div class="form-group row">
+                    <label for="usr_id" class="col-sm-2 col-form-label">아이디</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" id="usr_id" name="usr_id" readonly th:value="${user.usr_id}" />
+                    </div>
+                  </div>
 
-								<div class="form-group row">
-									<label for="usr_datesub" class="col-sm-2 col-form-label">가입일</label>
-									<div class="col-sm-6">
-										<input type="text" class="form-control" id="usr_datesub"
-											readonly
-											th:value="${#dates.format(user.usr_datesub, 'yyyy-MM-dd HH:mm:ss')}">
-									</div>
-								</div>
+                  <div class="form-group row">
+                    <label for="usr_name" class="col-sm-2 col-form-label">이름</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" id="usr_name" name="u_name" readonly th:value="${user.usr_name}" />
+                    </div>
+                  </div>
 
-								<div class="form-group row">
-									<label for="usr_id" class="col-sm-2 col-form-label">아이디</label>
-									<div class="col-sm-6">
-										<input type="text" class="form-control" id="usr_id"
-											name="usr_id" readonly th:value="${user.usr_id}" />
-									</div>
-								</div>
+                  <div class="form-group row">
+                    <label for="usr_email" class="col-sm-2 col-form-label">이메일</label>
+                    <div class="col-sm-6">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="usr_email"
+                        name="usr_email"
+                        placeholder="이메일 입력"
+                        th:value="${user.usr_email}"
+                      />
+                    </div>
+                  </div>
 
-								<div class="form-group row">
-									<label for="usr_name" class="col-sm-2 col-form-label">이름</label>
-									<div class="col-sm-6">
-										<input type="text" class="form-control" id="usr_name"
-											name="u_name" readonly th:value="${user.usr_name}" />
-									</div>
-								</div>
+                  <div class="form-group row">
+                    <label for="sample2_postcode" class="col-sm-2 col-form-label">우편번호</label>
+                    <div class="col-sm-6">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="sample2_postcode"
+                        name="usr_zipcode"
+                        placeholder="우편번호 입력"
+                        th:value="${user.usr_zipcode}"
+                      />
+                    </div>
+                    <div class="col-sm-4">
+                      <button type="button" class="btn btn-outline-primary" onclick="sample2_execDaumPostcode()">우편번호</button>
+                    </div>
+                  </div>
 
-								<div class="form-group row">
-									<label for="usr_email" class="col-sm-2 col-form-label">이메일</label>
-									<div class="col-sm-6">
-										<input type="text" class="form-control" id="usr_email"
-											name="usr_email" placeholder="이메일 입력"
-											th:value="${user.usr_email}" />
-									</div>
-								</div>
+                  <div class="form-group row">
+                    <label for="sample2_address" class="col-sm-2 col-form-label">주소</label>
+                    <div class="col-sm-10">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="sample2_address"
+                        name="usr_addr"
+                        placeholder="주소 입력"
+                        th:value="${user.usr_addr}"
+                      />
+                    </div>
+                  </div>
 
-								<div class="form-group row">
-									<label for="sample2_postcode" class="col-sm-2 col-form-label">우편번호</label>
-									<div class="col-sm-6">
-										<input type="text" class="form-control" id="sample2_postcode"
-											name="usr_zipcode" placeholder="우편번호 입력"
-											th:value="${user.usr_zipcode}" />
-									</div>
-									<div class="col-sm-4">
-										<button type="button" class="btn btn-outline-primary"
-											onclick="sample2_execDaumPostcode()">우편번호</button>
-									</div>
-								</div>
+                  <div class="form-group row">
+                    <label for="sample2_detailAddress" class="col-sm-2 col-form-label">상세주소</label>
+                    <div class="col-sm-10">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="sample2_detailAddress"
+                        name="usr_deaddr"
+                        placeholder="상세주소 입력"
+                        th:value="${user.usr_deaddr}"
+                      />
+                    </div>
+                    <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" />
+                  </div>
 
-								<div class="form-group row">
-									<label for="sample2_address" class="col-sm-2 col-form-label">주소</label>
-									<div class="col-sm-10">
-										<input type="text" class="form-control" id="sample2_address"
-											name="usr_addr" placeholder="주소 입력"
-											th:value="${user.usr_addr}" />
-									</div>
-								</div>
+                  <div class="form-group row">
+                    <label for="usr_phone" class="col-sm-2 col-form-label">핸드폰번호</label>
+                    <div class="col-sm-10">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="usr_phone"
+                        name="usr_phone"
+                        placeholder="핸드폰번호 입력"
+                        th:value="${user.usr_phone}"
+                      />
+                    </div>
+                  </div>
+                  <!--  -->
+                </div>
 
-								<div class="form-group row">
-									<label for="sample2_detailAddress"
-										class="col-sm-2 col-form-label">상세주소</label>
-									<div class="col-sm-10">
-										<input type="text" class="form-control"
-											id="sample2_detailAddress" name="usr_deaddr"
-											placeholder="상세주소 입력" th:value="${user.usr_deaddr}" />
-									</div>
-									<input type="hidden" id="sample2_extraAddress"
-										placeholder="참고항목" />
-								</div>
+                <div class="card-footer">
+                  <!-- <button type="submit" class="btn btn-info" id="btnJoin">Sign</button> -->
+                  <button type="button" class="btn btn-info" id="btnModify">Modify</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+      <div th:replace="~{layout/comm/addr :: addrFragment}"></div>
+    </th:block>
 
-								<div class="form-group row">
-									<label for="usr_phone" class="col-sm-2 col-form-label">핸드폰번호</label>
-									<div class="col-sm-10">
-										<input type="text" class="form-control" id="usr_phone"
-											name="usr_phone" placeholder="핸드폰번호 입력"
-											th:value="${user.usr_phone}" />
-									</div>
-								</div>
-								<!--  -->
-							</div>
+    <th:block layout:fragment="script">
+      <!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
+      <!-- 우편번호 함수 -->
+      <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+      <script src="/js/comm/addr.js"></script>
+      <script th:inline="javascript">
+         let msg = [[${msg}]];
 
-							<div class="card-footer">
-								<!-- <button type="submit" class="btn btn-info" id="btnJoin">Sign</button> -->
-								<button type="button" class="btn btn-info" id="btnModify">Modify</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</main>
-		<div th:replace="~{layout/comm/addr :: addrFragment}"></div>
-	</th:block>
+              if (msg == "successModify") {
+              	alert("회원정보가 수정되었습니다.");
+              }
 
-	<th:block layout:fragment="script">
-		<!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
-		<!-- 우편번호 함수 -->
-		<script
-			src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-		<script src="/js/comm/addr.js"></script>
-		<script th:inline="javascript">
-		  let msg = [[${msg}]]; 	      
+        $(document).ready(function() {
+        	// 수정버튼 클릭
+        	$("#btnModify").on("click", function() {
 
-	        if (msg == "successModify") {
-	        	alert("회원정보가 수정되었습니다.");	        	
-	        }
-	        
-			$(document).ready(function() {
-				// 수정버튼 클릭
-				$("#btnModify").on("click", function() {
-					
-					if((msg == "kakaoLogin") || (msg == "naverLogin")) {
-				  		alert("SNS 로그인 사용자는 회원정보를 수정할 수 없습니다.");	
-				  		return;
-					}			
-					
-					$("#modifyForm").submit();
-				});
+        		if((msg == "kakaoLogin") || (msg == "naverLogin")) {
+        	  		alert("SNS 로그인 사용자는 회원정보를 수정할 수 없습니다.");
+        	  		return;
+        		}
 
-			}); // ready event end
-		</script>
-	</th:block>
-</body>
+        		$("#modifyForm").submit();
+        	});
+
+        }); // ready event end
+      </script>
+    </th:block>
+  </body>
 </html>

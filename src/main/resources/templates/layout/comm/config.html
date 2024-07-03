@@ -1,36 +1,38 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head th:fragment="configFragment">
-<meta charset="UTF-8">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <head th:fragment="configFragment">
+    <meta charset="UTF-8" />
 
-<!-- 각 페이지마다 title 태그의 내용 각각 다르기 때문에 재정의 목적 -->
-<th:block layout:fragment="title">
-	<!-- 각 페이지의 title -->
-</th:block>
+    <!-- 각 페이지마다 title 태그의 내용 각각 다르기 때문에 재정의 목적 -->
+    <th:block layout:fragment="title">
+      <!-- 각 페이지의 title -->
+    </th:block>
 
-<!-- 모든 페이지가 상속 -->
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="">
-<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-<meta name="generator" content="Hugo 0.101.0">
+    <!-- 모든 페이지가 상속 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
+    <meta name="generator" content="Hugo 0.101.0" />
 
-<!-- Custom styles for this template -->
-<link href="https://getbootstrap.com/docs/4.6/dist/css/bootstrap.min.css" rel="stylesheet" 
-	integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-<link href="/css/comm/display.css" rel="stylesheet">
-<link href="/css/comm/index.css" rel="stylesheet">
-<link href="/css/comm/footer.css" rel="stylesheet">	
+    <!-- Custom styles for this template -->
+    <link
+      href="https://getbootstrap.com/docs/4.6/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous"
+    />
+    <link href="/css/comm/display.css" rel="stylesheet" />
+    <link href="/css/comm/index.css" rel="stylesheet" />
+    <link href="/css/comm/footer.css" rel="stylesheet" />
 
-<!-- 각 페이지마다 css 내용 각각 다르기 때문에 재정의 목적 -->
-<th:block layout:fragment="css">
-	<!-- 각 페이지의 css -->
-</th:block>
+    <!-- 각 페이지마다 css 내용 각각 다르기 때문에 재정의 목적 -->
+    <th:block layout:fragment="css">
+      <!-- 각 페이지의 css -->
+    </th:block>
 
-<!-- 각 페이지마다 javascript 내용 각각 다르기 때문에 재정의 목적 -->
-<th:block layout:fragment="javascript">
-	<!-- 각 페이지의 javascript -->
-</th:block>
-
-</head>
+    <!-- 각 페이지마다 javascript 내용 각각 다르기 때문에 재정의 목적 -->
+    <th:block layout:fragment="javascript">
+      <!-- 각 페이지의 javascript -->
+    </th:block>
+  </head>
 </html>

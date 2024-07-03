@@ -1,175 +1,153 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/baselayout}">
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/baselayout}"
+>
+  <th:block layout:fragment="title">
+    <title>회원가입</title>
+  </th:block>
 
-<th:block layout:fragment="title">
-	<title>회원가입</title>
-</th:block>
+  <th:block layout:fragment="css">
+    <link href="/css//usr/sign.css" rel="stylesheet" />
+  </th:block>
 
-<th:block layout:fragment="css">
-	<link href="/css//usr/sign.css" rel="stylesheet">
-</th:block>
+  <body class="text-center">
+    <th:block layout:fragment="content">
+      <!-- Begin page content -->
+      <main role="main" class="flex-shrink-0">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title">회원가입</h3>
+                </div>
 
-<body class="text-center">
+                <form class="form-horizontal" id="joinForm" action="/user/sign" method="post" ]>
+                  <div class="card-body">
+                    <!--  -->
+                    <div class="form-group row">
+                      <!-- col-sm-12 로 나눠서 *sm 생략가능 -->
+                      <label for="usr_id" class="col-sm-2 col-form-label">아이디</label>
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" id="usr_id" name="usr_id" placeholder="아이디 입력" />
+                      </div>
+                      <div class="col-sm-2">
+                        <button type="button" class="btn btn-outline-primary custom-btn" id="btnIDCheck">아이디 확인</button>
+                      </div>
+                      <label class="col-sm-2 col-form-label" id="idCheckMsg" style="color: red; text-align: center"></label>
+                    </div>
 
-	<th:block layout:fragment="content">
-		<!-- Begin page content -->
-		<main role="main" class="flex-shrink-0">
-			<div class="container">
-				<div class="row">
-					<div class="col">
-						<div class="card card-info">
-							<div class="card-header">
-								<h3 class="card-title">회원가입</h3>
-							</div>
+                    <div class="form-group row">
+                      <label for="usr_password" class="col-sm-2 col-form-label">비밀번호</label>
+                      <div class="col-sm-4">
+                        <input type="password" class="form-control" id="usr_password" name="usr_password" placeholder="비밀번호 입력" />
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="u_confirm_pwd" class="col-sm-2 col-form-label">비밀번호 확인</label>
+                      <div class="col-sm-4">
+                        <input type="password" class="form-control" id="u_confirm_pwd" placeholder="비밀번호 재입력" />
+                      </div>
+                    </div>
 
-							<form class="form-horizontal" id="joinForm" action="/user/sign"
-								method="post" ]>
-								<div class="card-body">
-									<!--  -->
-									<div class="form-group row">
-										<!-- col-sm-12 로 나눠서 *sm 생략가능 -->
-										<label for="usr_id" class="col-sm-2 col-form-label">아이디</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="usr_id"
-												name="usr_id" placeholder="아이디 입력" />
-										</div>
-										<div class="col-sm-2">
-											<button type="button" class="btn btn-outline-primary custom-btn"
-												id="btnIDCheck">아이디 확인</button>
-										</div>
-										<label class="col-sm-2 col-form-label" id="idCheckMsg"
-											style="color: red; text-align: center"></label>
-									</div>
+                    <div class="form-group row">
+                      <label for="usr_name" class="col-sm-2 col-form-label">이름</label>
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" id="usr_name" name="usr_name" placeholder="이름 입력" />
+                      </div>
+                    </div>
 
-									<div class="form-group row">
-										<label for="usr_password" class="col-sm-2 col-form-label">비밀번호</label>
-										<div class="col-sm-4">
-											<input type="password" class="form-control" id="usr_password"
-												name="usr_password" placeholder="비밀번호 입력" />
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="u_confirm_pwd" class="col-sm-2 col-form-label">비밀번호
-											확인</label>
-										<div class="col-sm-4">
-											<input type="password" class="form-control"
-												id="u_confirm_pwd" placeholder="비밀번호 재입력" />
-										</div>
-									</div>
+                    <div class="form-group row">
+                      <label for="usr_nick" class="col-sm-2 col-form-label">닉네임</label>
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" id="usr_nick" name="usr_nick" placeholder="닉네임 입력" />
+                      </div>
+                    </div>
 
-									<div class="form-group row">
-										<label for="usr_name" class="col-sm-2 col-form-label">이름</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="usr_name"
-												name="usr_name" placeholder="이름 입력" />
-										</div>
-									</div>
+                    <div class="form-group row">
+                      <label for="usr_email" class="col-sm-2 col-form-label">이메일</label>
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" id="usr_email" name="usr_email" placeholder="이메일 입력" />
+                      </div>
+                      <div class="col-sm-2">
+                        <button type="button" class="btn btn-outline-primary custom-btn" id="btnMailAuthCode">메일인증요청</button>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="u_authcode" class="col-sm-2 col-form-label">인증코드</label>
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" id="u_authcode" placeholder="인증코드 입력" />
+                      </div>
+                      <div class="col-sm-2">
+                        <button type="button" class="btn btn-outline-primary custom-btn" id="btnConfirmAuth">인증확인</button>
+                      </div>
+                    </div>
 
-									<div class="form-group row">
-										<label for="usr_nick" class="col-sm-2 col-form-label">닉네임</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="usr_nick"
-												name="usr_nick" placeholder="닉네임 입력" />
-										</div>
-									</div>
+                    <div class="form-group row">
+                      <label for="sample2_postcode" class="col-sm-2 col-form-label">우편번호</label>
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" id="sample2_postcode" name="usr_zipcode" placeholder="우편번호 입력" />
+                      </div>
+                      <div class="col-sm-2">
+                        <button type="button" class="btn btn-outline-primary custom-btn" onclick="sample2_execDaumPostcode()">
+                          우편번호
+                        </button>
+                      </div>
+                    </div>
 
-									<div class="form-group row">
-										<label for="usr_email" class="col-sm-2 col-form-label">이메일</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="usr_email"
-												name="usr_email" placeholder="이메일 입력" />
-										</div>
-										<div class="col-sm-2">
-											<button type="button" class="btn btn-outline-primary custom-btn"
-												id="btnMailAuthCode">메일인증요청</button>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="u_authcode" class="col-sm-2 col-form-label">인증코드</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="u_authcode"
-												placeholder="인증코드 입력" />
-										</div>
-										<div class="col-sm-2">
-											<button type="button" class="btn btn-outline-primary custom-btn"
-												id="btnConfirmAuth">인증확인</button>
-										</div>
-									</div>
+                    <div class="form-group row">
+                      <label for="sample2_address" class="col-sm-2 col-form-label">주소</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="sample2_address" name="usr_addr" placeholder="주소 입력" />
+                      </div>
+                    </div>
 
-									<div class="form-group row">
-										<label for="sample2_postcode" class="col-sm-2 col-form-label">우편번호</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="sample2_postcode"
-												name="usr_zipcode" placeholder="우편번호 입력" />
-										</div>
-										<div class="col-sm-2">
-											<button type="button" class="btn btn-outline-primary custom-btn"
-												onclick="sample2_execDaumPostcode()">우편번호</button>
-										</div>
-									</div>
+                    <div class="form-group row">
+                      <label for="sample2_detailAddress" class="col-sm-2 col-form-label">상세주소</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="sample2_detailAddress" name="usr_deaddr" placeholder="상세주소 입력" />
+                      </div>
+                      <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" />
+                    </div>
 
-									<div class="form-group row">
-										<label for="sample2_address" class="col-sm-2 col-form-label">주소</label>
-										<div class="col-sm-10">
-											<input type="text" class="form-control" id="sample2_address"
-												name="usr_addr" placeholder="주소 입력" />
-										</div>
-									</div>
+                    <div class="form-group row">
+                      <label for="usr_phone" class="col-sm-2 col-form-label">휴대폰번호</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="usr_phone" name="usr_phone" placeholder="휴대폰번호 입력" />
+                      </div>
+                    </div>
 
-									<div class="form-group row">
-										<label for="sample2_detailAddress"
-											class="col-sm-2 col-form-label">상세주소</label>
-										<div class="col-sm-10">
-											<input type="text" class="form-control"
-												id="sample2_detailAddress" name="usr_deaddr"
-												placeholder="상세주소 입력" />
-										</div>
-										<input type="hidden" id="sample2_extraAddress"
-											placeholder="참고항목" />
-									</div>
+                    <div class="form-group form-check">
+                      <input type="checkbox" class="form-check-input" id="usr_receive" />
+                      <label class="form-check-label" for="usr_receive">이메일 수신 동의</label>
+                    </div>
+                    <input type="hidden" id="usr_receive_value" name="usr_receive" value="N" />
+                    <!--  -->
+                  </div>
 
-									<div class="form-group row">
-										<label for="usr_phone" class="col-sm-2 col-form-label">휴대폰번호</label>
-										<div class="col-sm-10">
-											<input type="text" class="form-control" id="usr_phone"
-												name="usr_phone" placeholder="휴대폰번호 입력" />
-										</div>
-									</div>
+                  <div class="card-footer">
+                    <!-- <button type="submit" class="btn btn-info" id="btnJoin">Sign</button> -->
+                    <button type="button" class="btn btn-info custom-btn" id="btnJoin">Sign</button>
+                    <a class="btn btn-info custom-btn" th:href="@{/}">Cancle</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <div th:replace="~{layout/comm/addr :: addrFragment}"></div>
+    </th:block>
 
-									<div class="form-group form-check">
-										<input type="checkbox" class="form-check-input"
-											id="usr_receive"> <label class="form-check-label"
-											for="usr_receive">이메일 수신 동의</label>
-									</div>
-									<input type="hidden" id="usr_receive_value" name="usr_receive"
-										value="N">
-									<!--  -->
-								</div>
-
-								<div class="card-footer">
-									<!-- <button type="submit" class="btn btn-info" id="btnJoin">Sign</button> -->
-									<button type="button" class="btn btn-info custom-btn" id="btnJoin">Sign</button>
-									<a class="btn btn-info custom-btn" th:href="@{/}">Cancle</a>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
-		<div th:replace="~{layout/comm/addr :: addrFragment}"></div>
-	</th:block>
-
-	<th:block layout:fragment="script">
-		<!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
-		<!-- 우편번호 함수 -->
-		<script
-			src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-		<script src="/js/comm/addr.js"></script>
-		<script src="/js/usr/sign.js"></script>
-	</th:block>
-
-</body>
+    <th:block layout:fragment="script">
+      <!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
+      <!-- 우편번호 함수 -->
+      <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+      <script src="/js/comm/addr.js"></script>
+      <script src="/js/usr/sign.js"></script>
+    </th:block>
+  </body>
 </html>

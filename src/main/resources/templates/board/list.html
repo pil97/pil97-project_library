@@ -1,114 +1,114 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/baselayout}">
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/baselayout}"
+>
+  <th:block layout:fragment="title">
+    <title>도서 등록</title>
+  </th:block>
 
-<th:block layout:fragment="title">
-	<title>도서 등록</title>
-</th:block>
+  <th:block layout:fragment="css">
+    <link href="/css//usr/sign.css" rel="stylesheet" />
+  </th:block>
 
-<th:block layout:fragment="css">
-	<link href="/css//usr/sign.css" rel="stylesheet">
-</th:block>
+  <body class="text-center">
+    <th:block layout:fragment="content">
+      <!-- Begin page content -->
+      <main role="main" class="flex-shrink-0">
+        <div class="row">
+          <div class="col">
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">도서 목록</h3>
+              </div>
 
-<body class="text-center">
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%">bno</th>
+                      <th style="width: 30%">title</th>
+                      <th style="width: 25%">writer</th>
+                      <th style="width: 25%">regdate</th>
+                      <th style="width: 10%">viewcount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="boardVO : ${list}">
+                      <td th:text="${boardVO.b_bno}"></td>
+                      <td><a class="move" th:text="${boardVO.b_title}" th:href="@{|${boardVO.b_bno}|}"></a></td>
+                      <td th:text="${boardVO.b_author}"></td>
+                      <td th:text="${#dates.format(boardVO.b_regdate, 'yyyy-MM-dd')}"></td>
+                      <td th:text="${boardVO.b_viewcount}"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <form id="actionForm" th:action="@{/board/list}" method="get">
+                  <input type="hidden" name="b_bno" value="" />
+                  <input type="hidden" name="type" th:value="${pageMaker.cri.type}" />
+                  <input type="hidden" name="keyword" th:value="${pageMaker.cri.keyword}" />
+                  <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                  <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+                </form>
+              </div>
 
-	<th:block layout:fragment="content">
-		<!-- Begin page content -->
-		<main role="main" class="flex-shrink-0">
-			<div class="row">
-				<div class="col">
-					<div class="card card-info">
-						<div class="card-header">
-							<h3 class="card-title">도서 목록</h3>
-						</div>
+              <ul class="pagination pagination-sm m-0 float-right">
+                <!-- Previous Button -->
+                <li th:if="${pageMaker.prev}" class="page-item">
+                  <a class="page-link" th:href="@{|${pageMaker.startPage - 1}|}">[이전]</a>
+                </li>
 
-						<div class="card-body">
-							<table class="table table-bordered">
-								<thead>
-									<tr>
-										<th style="width: 10%">bno</th>
-										<th style="width: 30%">title</th>
-										<th style="width: 25%">writer</th>
-										<th style="width: 25%">regdate</th>
-										<th style="width: 10%">viewcount</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="boardVO : ${list}">
-										<td th:text="${boardVO.b_bno}"></td>
-										<td><a class="move" th:text="${boardVO.b_title}" th:href="@{|${boardVO.b_bno}|}"></a></td>
-										<td th:text="${boardVO.b_author}"></td>
-										<td th:text="${#dates.format(boardVO.b_regdate, 'yyyy-MM-dd')}"></td>
-										<td th:text="${boardVO.b_viewcount}"></td>
-									</tr>
-								</tbody>
-							</table>
-							<form id="actionForm" th:action="@{/board/list}" method="get">
-								<input type="hidden" name="b_bno" value="">
-								<input type="hidden" name="type" th:value="${pageMaker.cri.type}">
-								<input type="hidden" name="keyword" th:value="${pageMaker.cri.keyword}">
-								<input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}">
-								<input type="hidden" name="amount" th:value="${pageMaker.cri.amount}">
-							</form>
-						</div>
-						
-						<ul class="pagination pagination-sm m-0 float-right">
-							<!-- Previous Button -->
-							<li th:if="${pageMaker.prev}" class="page-item">
-								<a class="page-link" th:href="@{|${pageMaker.startPage - 1}|}">[이전]</a>
-							</li>
+                <!-- Page Numbers -->
+                <li
+                  th:each="page : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}"
+                  th:classappend="${pageMaker.cri.pageNum == page} ? ' active' : ''"
+                  class="page-item"
+                >
+                  <a class="page-link" th:href="@{|${page}|}" th:text="${page}"></a>
+                </li>
 
-							<!-- Page Numbers -->
-							<li th:each="page : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}"
-								th:classappend="${pageMaker.cri.pageNum == page} ? ' active' : ''" class="page-item">
-								<a class="page-link" th:href="@{|${page}|}" th:text="${page}"></a>
-							</li>
+                <!-- Next Button -->
+                <li th:if="${pageMaker.next}" class="page-item">
+                  <a class="page-link" th:href="@{|${pageMaker.endPage + 1}|}">다음</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </th:block>
 
-							<!-- Next Button -->
-							<li th:if="${pageMaker.next}" class="page-item">
-								<a class="page-link" th:href="@{|${pageMaker.endPage + 1}|}">다음</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</main>
-	</th:block>
+    <th:block layout:fragment="script">
+      <!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
+      <script th:inline="javascript">
+        $(document).ready(function () {
+          let actionForm = $("#actionForm");
 
-	<th:block layout:fragment="script">
-		<!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
-		<script th:inline="javascript">
-			$(document).ready(function() {
+          // 게시물 목록 제목 클릭시
+          $("a.move").on("click", function (e) {
+            e.preventDefault(); // <a>태그의 href 속성에 의한 링크 기능을 제거
 
-				let actionForm = $("#actionForm");
+            let bno = $(this).attr("href");
+            $("input[name='b_bno']").val(bno);
 
-				// 게시물 목록 제목 클릭시 
-				$("a.move").on("click", function(e) {
-					e.preventDefault(); // <a>태그의 href 속성에 의한 링크 기능을 제거 
+            actionForm.attr("action", "/board/get");
+            actionForm.submit();
+          });
 
-					let bno = $(this).attr("href");
-					$("input[name='b_bno']").val(bno);
+          // 페이지 번호 클릭시
+          $("ul.pagination a.page-link").on("click", function (e) {
+            e.preventDefault();
 
-					actionForm.attr("action", "/board/get");
-					actionForm.submit();
+            // 페이지 작업
+            $("input[name='pageNum']").val($(this).attr("href"));
 
-				});
-
-				// 페이지 번호 클릭시 
-				$("ul.pagination a.page-link").on("click", function(e) {
-					e.preventDefault();
-
-					// 페이지 작업 
-					$("input[name='pageNum']").val($(this).attr("href"));
-
-					actionForm.attr("action", "/board/list");
-					actionForm.submit();
-
-				});
-			});
-		</script>
-	</th:block>
-
-</body>
+            actionForm.attr("action", "/board/list");
+            actionForm.submit();
+          });
+        });
+      </script>
+    </th:block>
+  </body>
 </html>

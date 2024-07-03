@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/baselayout}"
+>
+  <body>
+    <th:block layout:fragment="content">
+      <div class="jumbotron p-4 p-md-5 text-white rounded">
+        
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-md-6">
+          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              <strong class="d-inline-block mb-2 text-primary">World</strong>
+              <h3 class="mb-0">Featured post</h3>
+              <div class="mb-1 text-muted">Nov 12</div>
+              <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+              <a href="#" class="stretched-link">Continue reading</a>
+            </div>
+            <div class="col-auto d-none d-lg-block">
+              <img
+                class="bd-placeholder-img"
+                width="200"
+                height="250"                
+                role="img"
+                aria-label="Placeholder: Thumbnail"                
+              />
+              
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </th:block>
+    <!-- /.container -->
+  </body>
+</html>
