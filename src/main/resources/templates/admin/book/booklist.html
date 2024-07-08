@@ -55,7 +55,7 @@
                         <th style="width: 8%">도서코드</th>
                         <th style="width: 10%">도서명</th>
                         <th style="width: 10%">도서이미지</th>
-                        <th style="width: 15%">저자</th>                        
+                        <th style="width: 15%">저자</th>
                         <th style="width: 10%">도서보증금</th>
                         <th style="width: 15%">출판사</th>
                         <th style="width: 15%">등록일</th>
@@ -70,9 +70,10 @@
                         <td>
                           <img
                             th:src="${'/admin/book/imagedisplay?dateFolderName=' + BookVO.book_up_folder + '&fileName=s_' + BookVO.book_img}"
+                            style="width: 100%; height: 255px; object-fit: contain"
                           />
                         </td>
-                        <td><input type="text" name="book_author" th:value="${BookVO.book_author}" /></td>                        
+                        <td><input type="text" name="book_author" th:value="${BookVO.book_author}" /></td>
                         <td><input type="text" name="book_deposit" th:value="${BookVO.book_deposit}" /></td>
                         <td><input type="text" name="book_publisher" th:value="${BookVO.book_publisher}" /></td>
                         <td th:text="${#dates.format(BookVO.book_date, 'yyyy-MM-dd')}"></td>
@@ -88,7 +89,9 @@
                           </button>
                         </td>
                         <td>
-                          <button type="button" class="btn btn-danger" name = "btn_book_del" th:data-book_bno="${BookVO.book_bno}">삭제</button>
+                          <button type="button" class="btn btn-danger" name="btn_book_del" th:data-book_bno="${BookVO.book_bno}">
+                            삭제
+                          </button>
                         </td>
                       </tr>
                     </tbody>
@@ -177,7 +180,7 @@
         	});
 
         	// 수정버튼 클릭시, name="btn_book_edit"
-        	$("button[name='btn_book_edit']").on("click", function() {        		         	        		
+        	$("button[name='btn_book_edit']").on("click", function() {
         		let book_bno = $(this).data("book_bno");
 
         		// 뒤로버튼 클릭시, 사용되어 문제 발생
@@ -200,15 +203,15 @@
 
         		actionForm.submit();
         	});
-        	
+
         	// 삭제버튼 클릭시, name="btn_book_del"
         	$("button[name='btn_book_del']").on("click", function() {
         		if (!confirm("상품을 삭제하겠습니까?")) {
                     return;
                  }
-        		
+
         		let book_bno = $(this).data("book_bno");
-				
+
         		console.log(book_bno);
         		// 뒤로버튼 클릭시, 사용되어 문제 발생
         		actionForm.find("input[name='book_bno']").remove();
@@ -270,25 +273,25 @@
           let book_bno_arr = []; // 체크된 도서코드가 저장될 배열
           let book_author_arr = []; // 체크된 도서저자가 저장될 배열
           let book_deposit_arr = []; // 체크된 도서보증금이 저장될 배열
-          let book_publisher_arr = []; // 체크된 출판사이 저장될 배열          
+          let book_publisher_arr = []; // 체크된 출판사가 저장될 배열
           let book_loan_arr = []; // 체크된 대출여부가 저장될 배열
 
           // 체크된 상태를 접근
           $("input[name='check']:checked").each(function () {
         	  book_bno_arr.push($(this).val());
-        	  book_author_arr.push($(this).parent().parent().find("input[name='book_author']").val());        	  
+        	  book_author_arr.push($(this).parent().parent().find("input[name='book_author']").val());
         	  book_deposit_arr.push($(this).parent().parent().find("input[name='book_deposit']").val());
         	  book_publisher_arr.push($(this).parent().parent().find("input[name='book_publisher']").val());
         	  book_loan_arr.push($(this).parent().parent().find("select[name='book_loan']").val());
           });
 
           console.log("도서코드", book_bno_arr);
-          console.log("저자", book_author_arr);          
+          console.log("저자", book_author_arr);
           console.log("도서보증금", book_deposit_arr);
           console.log("출판사", book_publisher_arr);
           console.log("대출여부", book_loan_arr);
 
-          
+
           $.ajax({
               url: "/admin/book/checkedmodify",
               type: "post",

@@ -2,6 +2,96 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.library.basic.usr.book.BookMapper">
 
+	<!-- 도서 리스트 -->
+	<select id="bookList" resultType="BookVO" parameterType="map">
+
+		SELECT
+		book_bno,
+		c_code,
+		book_name,
+		book_author,
+		book_publishing_date,
+		book_deposit,
+		book_deposit_discount,
+		book_publisher,
+		book_content,
+		book_up_folder,
+		book_img,
+		book_amount,
+		book_loan,
+		book_date,
+		book_updatedate
+		FROM
+		(
+		SELECT /*+
+		INDEX_DESC(product_tbl PK_BOOK_BNO) */
+		ROWNUM AS
+		RN,
+		book_bno,
+		c_code,
+		book_name,
+		book_author,
+		book_publishing_date,
+		book_deposit,
+		book_deposit_discount,
+		book_publisher,
+		book_content,
+		book_up_folder,
+		book_img,
+		book_amount,
+		book_loan,
+		book_date,
+		book_updatedate
+		FROM
+		book_table
+		WHERE
+		c_code =
+		#{c_code}
+		AND		 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>
+		ORDER BY book_bno DESC
+		)
+		WHERE
+		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+
+
+	</select>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 도서 리스트 개수 -->
+	<select id="getCountBookByCategory" resultType="int"
+		parameterType="int">
+
+		SELECT
+		COUNT(*)
+		FROM
+		book_table
+		WHERE
+		c_code = #{c_code}
+	</select>
+
+		<!-- 도서정보 - 모달창 및 도서 상세페이지 -->
+	<select id="bookInfo" resultType="BookVO" parameterType="int">
+		SELECT
+		book_bno,		
+		book_name,
+		book_author,
+		book_deposit,
+		book_publisher,
+		book_content,
+		book_up_folder,
+		book_img,
+		book_loan,
+		book_isbn,
+		book_page
+		FROM
+		book_table
+		WHERE
+		book_bno = #{book_bno}
+
+	</select>
 
 
 

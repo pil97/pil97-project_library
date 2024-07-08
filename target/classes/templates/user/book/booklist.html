@@ -1,41 +1,348 @@
 <!DOCTYPE html>
-<html
-  lang="ko"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/baselayout}"
->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
+  <th:block layout:fragment="css">
+    <link href="/css//usr/book/booklist.css" rel="stylesheet" />
+  </th:block>
   <body>
     <th:block layout:fragment="content">
-      <div class="jumbotron p-4 p-md-5 text-white rounded">
-        
+      <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-8" th:utext="${c_name}"></h1>
       </div>
 
-      <div class="row mb-2">
-        <div class="col-md-6">
-          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-            <div class="col p-4 d-flex flex-column position-static">
-              <strong class="d-inline-block mb-2 text-primary">World</strong>
-              <h3 class="mb-0">Featured post</h3>
-              <div class="mb-1 text-muted">Nov 12</div>
-              <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" class="stretched-link">Continue reading</a>
-            </div>
-            <div class="col-auto d-none d-lg-block">
-              <img
-                class="bd-placeholder-img"
-                width="200"
-                height="250"                
-                role="img"
-                aria-label="Placeholder: Thumbnail"                
-              />
-              
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4" th:each="bookVO : ${userBookList}">
+            <div class="card mb-4 shadow-sm">
+              <a th:href="@{/user/book/bookdetail(book_bno = ${bookVO.book_bno})}">
+                <img
+                  th:src="${'/user/book/imagedisplay?dateFolderName=' + bookVO.book_up_folder + '&fileName=s_' + bookVO.book_img}"
+                  style="width: 100%; height: 255px; object-fit: contain; background-color: #f0f0f0"
+                />
+              </a>
+              <div class="card-body">
+                <p class="card-text" style="font-size: 14px">
+                <a th:href="@{/user/book/bookdetail(book_bno = ${bookVO.book_bno})}">
+                <span th:text="${bookVO.book_name}" style="font-size: 16px; font-weight: 600; color: black;"></span><br /></a>
+                  
+                  <span th:text="${bookVO.book_author}"></span><span> 지음 | </span> <span th:text="${bookVO.book_publisher}"></span><span> | </span>
+                  <span th:text="${bookVO.book_publishing_date}"></span><br />
+                  <span> 대출상태 : </span>
+                  <span
+                    th:text="${bookVO.book_loan == 'Y' ? '대출가능' : '대출불가'}"
+                    th:style="${bookVO.book_loan == 'Y' ? 'color: green; font-weight: 700;' : 'color: red; font-weight: 700;'}"
+                  ></span>
+                  <span> | 보증금 : </span>
+                  <span th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"></span>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnDirectOrder" th:data-book_bno="${bookVO.book_bno}">
+                      바로구매
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnCartAdd" th:data-book_bno="${bookVO.book_bno}">
+                      장바구니
+                    </button>
+                  </div>
+                  <small class="text-muted">(review : 0)</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        
+        <div class="box-footer clearfix">
+          <div class="row">
+            <div class="col-md-4">
+              <!--1)페이지번호 클릭할 때 사용  [이전]  1	2	3	4	5 [다음]  -->
+              <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
+              <form id="actionForm" action="" method="get">
+                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
+                <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+                <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                <!-- c_code, c_name 정보 -->
+                <input type="hidden" name="c_code" id="c_code" th:value="${c_code}" />
+                <input type="hidden" name="c_name" id="c_name" th:value="${c_name}" />
+              </form>
+            </div>
+            <div class="col-md-6 text-center">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  <!-- 이전 표시여부 -->
+                  <th:block th:if="${pageMaker.prev}">
+                    <li class="page-item">
+                      <a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a>
+                    </li>
+                  </th:block>
+                  <!-- 페이지번호 출력 -->
+                  <!-- 1 2 3 4 5 6 7 8 9 10 [다음] -->
+                  <!-- [이전] 11 12 13 14 15 16 17 18 19 20 -->
+                  <th:block th:with="pageMaker = ${pageMaker}">
+                    <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+                      <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
+                        <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
+                      </li>
+                    </th:block>
+                  </th:block>
+                  <!-- 다음 표시여부 -->
+                  <th:block th:if="${pageMaker.next}">
+                    <li class="page-item">
+                      <a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a>
+                    </li>
+                  </th:block>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
       </div>
+      <!-- Modal Start -->
+      <!--   <div
+        class="modal fade custom-modal"
+        id="orderProcessPopUp"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">도서 정보</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-5">
+                  <img id="info_book_img" class="img-fluid" />
+                </div>
+                <div class="col-7">
+                  <form>
+                    <div class="form-group">
+                      <label for="exampleFormControlInput1" class="modalFontStyle1">도서명</label>
+                      <div class="modalFontStyle2" id="info_book_name"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-6">
+                          <label for="exampleFormControlInput1" class="modalFontStyle1">저자</label>
+                          <div class="modalFontStyle2" id="info_book_author"></div>
+                        </div>
+                        <div class="col-6">
+                          <label for="exampleFormControlInput1" class="modalFontStyle1">출판사</label>
+                          <div class="modalFontStyle2" id="info_book_publisher"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-6">
+                          <label for="exampleFormControlInput1" class="modalFontStyle1">보증금</label>
+                          <div class="modalFontStyle2" id="info_book_deposit"></div>
+                        </div>
+                        <div class="col-6">
+                          <label for="exampleFormControlInput1" class="modalFontStyle1">대출상태</label>
+                          <div class="modalFontStyle2" id="info_book_loan"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleFormControlSelect1" class="modalFontStyle1">수량</label>
+                      <input type="text" class="form-control modalFontStyle2" />
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-6">
+                          <button type="button" class="btn btn-secondary btn-custom">BUY IT NOW</button>
+                        </div>
+                        <div class="col-6">
+                          <button type="button" class="btn btn-light btn-custom">ADD TO CART</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <!-- Modal end -->
+      <!-- Modal1 Start -->
+
+      <!-- 장바구니 Modal Start -->
+      <div
+        class="modal fade custom-modal"
+        id="orderProcessPopUp2"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">도서 정보</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="popupInfo"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 바로구매 Modal Start -->
+      <div
+        class="modal fade custom-modal"
+        id="orderProcessPopUp2"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">도서 정보</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="popupInfo"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal end -->
     </th:block>
-    <!-- /.container -->
+    <th:block layout:fragment="script">
+      <script>
+        let actionForm = $("#actionForm");
+
+        $(document).ready(function () {
+          // 페이지 번호 클릭시, (이전 1 2 3 4 5 다음) -> actionForm을 사용한다.
+          $(".movepage").on("click", function (e) {
+            e.preventDefault(); // a 태그의 href 기능을 제거
+
+            // 주소변경
+            actionForm.attr("action", "/user/book/booklist");
+
+            // 1. 클릭한 페이지 번호 작업
+            actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+
+            // 변경된 pageNum 값을 서버로 전송 (Criteria 클래스)
+            actionForm.submit();
+          });
+          /*
+          // name="btnCartAdd" 버튼 클릭시, 모달창 활성화
+          $("button[name='btnCartAdd']").on("click", function () {
+            $("#orderProcessPopUp").modal("show");
+
+            let book_bno = $(this).data("book_bno");
+
+            console.log("도서코드 : " + book_bno);
+
+            $.ajax({
+              url: "/user/book/bookinfo",
+              type: "get",
+              data: { book_bno: book_bno }, // 자바스크립트 object문법 : 1번쨰 : 스프링 파라미터명 일치시켜야함, 2번째 브라우저 값
+              dataType: "json", // success 만 받아오면 text, but 상품정보를 받아야해서 json으로 받아야함
+              success: function (result) {
+                // result : 선택한 도서정보
+                console.log("도서정보 : ", result);
+
+                // modal창 요소를 접근해서 값을 대입
+                // 도서명 : id="info_book_name"
+                $("div#info_book_name").html(result.book_name);
+
+                // 저자 : id="info_book_author"
+                $("div#info_book_author").html(result.book_author);
+
+                // 출판사 : id="info_book_publisher"
+                $("div#info_book_publisher").html(result.book_publisher);
+
+                // 보증금 : id="info_book_deposit"
+                // 숫자 값을 통화 형식으로 변환
+                let formattedPrice = Number(result.book_deposit).toLocaleString("ko-KR", {
+                  style: "currency",
+                  currency: "KRW",
+                });
+                $("div#info_book_deposit").html(formattedPrice);
+
+                // 대출여부 : id="info_book_loan"
+                if (result.book_loan == "Y") {
+                  $("div#info_book_loan").html("대출가능").css({
+                    color: "green",
+                    "font-weight": "700",
+                  });
+                } else if (result.book_loan == "N") {
+                  $("div#info_book_loan").html("대출불가").css({
+                    color: "red",
+                    "font-weight": "700",
+                  });
+                }
+
+                // 도서 이미지 : id="info_book_img"
+                let url = `/user/book/imagedisplay?dateFolderName=${result.book_up_folder}&fileName=${result.book_img}`;
+                $("img#info_book_img").attr("src", url);
+              },
+            });
+          });
+		*/
+
+          // name="btnCartAdd" - 모달
+          $("button[name='btnCartAdd']").on("click", function () {
+            $("#orderProcessPopUp2").modal("show");
+
+            let book_bno = $(this).data("book_bno");
+
+            console.log("도서코드", book_bno);
+
+            $("#popupInfo").load("/user/book/bookinfo2?book_bno=" + book_bno);
+          });
+
+          // name="btnDirectOrder" - 모달
+          $("button[name='btnDirectOrder']").on("click", function () {
+            $("#orderProcessPopUp2").modal("show");
+
+            let book_bno = $(this).data("book_bno");
+
+            console.log("도서코드", book_bno);
+
+            $("#popupInfo").load("/user/book/bookinfo2?book_bno=" + book_bno);
+          });
+          
+          // 장바구니 추가 작업
+          // id="btnCartAdd" -> 이게 동적으로 생성되기 때문에
+          $("#orderProcessPopUp2").on("click", "#btnCartAdd", function () {
+            let book_bno = $(this).data("book_bno");
+            let cart_amount = $("#btnCartAmount").val();
+            
+            console.log("도서코드 : ", book_bno);
+            console.log("수량 : ", cart_amount);
+
+            $.ajax({
+              url: "/user/cart/cartadd",
+              type: "get",
+              data: { book_bno: book_bno, cart_amount: cart_amount },
+              dataType: "text",
+              success: function (result) {
+                if (result == "success") {
+                  alert("장바구니에 등록되었습니다.");
+                  if (confirm("장바구니로 이동하시겠습니까?")) {
+                    location.href = "/user/cart/cartlist";
+                  }
+                  $("#orderProcessPopUp2").modal("hide");
+                }
+              },
+            });
+          });
+        }); // read event end
+      </script>
+    </th:block>
   </body>
 </html>

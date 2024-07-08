@@ -19,7 +19,9 @@
 		book_up_folder,
 		book_img,
 		book_amount,
-		book_loan
+		book_loan,
+		book_isbn,
+		book_page
 		)
 		VALUES(
 		seq_book_bno.NEXTVAL,
@@ -34,7 +36,9 @@
 		#{book_up_folder},
 		#{book_img},
 		#{book_amount},
-		#{book_loan}
+		#{book_loan},
+		#{book_isbn},
+		#{book_page}
 		)
 
 	</insert>
@@ -80,7 +84,9 @@
 		book_amount,
 		book_loan,
 		book_date,
-		book_updatedate
+		book_updatedate,
+		book_isbn,
+		book_page
 		FROM
 		(
 		SELECT /*+
@@ -101,7 +107,9 @@
 		book_amount,
 		book_loan,
 		book_date,
-		book_updatedate
+		book_updatedate,
+		book_isbn,
+		book_page
 		FROM
 		book_table
 		WHERE
@@ -151,7 +159,9 @@
 		book_amount,
 		book_loan,
 		book_date,
-		book_updatedate
+		book_updatedate,
+		book_isbn,
+		book_page
 		FROM
 		book_table
 		WHERE
@@ -179,9 +189,10 @@
 		book_up_folder = #{book_up_folder},
 		book_img = #{book_img},
 		book_amount = #{book_amount},
-		book_loan =
-		#{book_loan},
-		book_updatedate = sysdate
+		book_loan = #{book_loan},
+		book_updatedate = sysdate,
+		book_isbn = #{book_isbn},
+		book_page = #{book_page}
 		WHERE
 		book_bno = #{book_bno}
 

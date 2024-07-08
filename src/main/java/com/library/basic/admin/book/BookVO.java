@@ -25,5 +25,7 @@ public class BookVO {
 	private String book_loan;
 	private Date book_date;
 	private Date book_updatedate;
+	private String book_isbn;
+	private int book_page;
 
 }

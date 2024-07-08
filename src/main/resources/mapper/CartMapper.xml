@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.basic.usr.cart.CartMapper">
+
+	<!-- 장바구니 추가 -->
+	<insert id="cartAdd" parameterType="CartVO">
+
+		MERGE INTO
+		cart_table
+		USING
+		dual
+		ON (
+		usr_id = #{usr_id}
+		AND
+		book_bno = #{book_bno}
+		)
+		WHEN MATCHED THEN
+		UPDATE
+		SET cart_amount = cart_amount + #{cart_amount}
+		WHEN NOT MATCHED THEN
+		INSERT
+		(cart_code, book_bno, usr_id, cart_amount)
+		VALUES
+		(seq_cart_code.NEXTVAL, #{book_bno}, #{usr_id}, #{cart_amount})
+
+	</insert>
+
+	<!-- 장바구니 목록 -->
+	<select id="cartList" resultType="CartProductVO"
+		parameterType="String">
+
+		SELECT
+		c.usr_id,
+		b.book_up_folder,
+		b.book_img,
+		b.book_deposit,
+		b.book_name,
+		c.cart_code,
+		c.book_bno,
+		c.cart_amount
+		FROM
+		cart_table c
+		INNER JOIN
+		book_table b ON c.book_bno = b.book_bno
+		WHERE
+		c.usr_id = #{usr_id}
+
+	</select>
+
+	<!-- 장바구니 삭제 -->
+	<delete id="cartDelete" parameterType="Long">
+
+		DELETE FROM
+		cart_table
+		WHERE
+		cart_code = #{cart_code}
+
+	</delete>
+	<!-- 장바구니 도서 수량 변경 -->
+	<update id="cartAmountChange" parameterType="map">
+
+		UPDATE
+		cart_table
+		SET
+		cart_amount = #{cart_amount}
+		WHERE
+		cart_code = #{cart_code}
+
+	</update>
+	
+	<!-- 장바구니 비우기 -->
+	<delete id="cartEmpty" parameterType="String">
+	
+		DELETE FROM
+		cart_table
+		WHERE
+		usr_id = #{usr_id}
+	
+	</delete>
+	
+	<!-- 선택된 체크 도서 삭제 -->
+		<delete id="checkedDelete" parameterType="List">
+
+		<foreach collection="cart_code_arr" item="item" open="declare begin"
+			separator=";" close="; end;">
+			
+			DELETE FROM
+			cart_table			
+			WHERE	
+			cart_code = #{item}
+			
+		</foreach>
+
+	</delete>
+	
+	
+
+
+</mapper>

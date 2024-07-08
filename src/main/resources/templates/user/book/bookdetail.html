@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
+  <th:block layout:fragment="css">
+    <link href="/css//usr/book/booklist.css" rel="stylesheet" />
+    <!-- tab css -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css" />
+  </th:block>
+  <body>
+    <th:block layout:fragment="content">
+      <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-8" th:utext="${c_name}"></h1>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-4 shadow-sm">
+              <a href="#">
+                <img
+                  th:src="${'/user/book/imagedisplay?dateFolderName=' + bookVO.book_up_folder + '&fileName=s_' + bookVO.book_img}"
+                  style="width: 100%; height: 550px; object-fit: contain; background-color: #f0f0f0"
+                />
+              </a>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card-body">
+              <form>
+                <div class="form-group">
+                  <label for="exampleFormControlInput1" class="modalFontStyle1">도서명</label>
+                  <div class="modalFontStyle2" id="info_book_name" th:text="${bookVO.book_name}"></div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-6">
+                      <label for="exampleFormControlInput1" class="modalFontStyle1">저자</label>
+                      <div class="modalFontStyle2" id="info_book_author" th:text="${bookVO.book_author}"></div>
+                    </div>
+                    <div class="col-6">
+                      <label for="exampleFormControlInput1" class="modalFontStyle1">출판사</label>
+                      <div class="modalFontStyle2" id="info_book_publisher" th:text="${bookVO.book_publisher}"></div>
+                    </div>
+                  </div>
+                </div>
+                    <div class="form-group">
+                  <div class="row">
+                    <div class="col-6">
+                      <label for="exampleFormControlInput1" class="modalFontStyle1">ISBN</label>
+                      <div class="modalFontStyle2" id="info_book_isbn" th:text="${bookVO.book_isbn}"></div>
+                    </div>
+                    <div class="col-6">
+                      <label for="exampleFormControlInput1" class="modalFontStyle1">페이지</label>
+                      <div class="modalFontStyle2" id="info_book_page" th:text="${bookVO.book_page}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-6">
+                      <label for="exampleFormControlInput1" class="modalFontStyle1">보증금</label>
+                      <div
+                        class="modalFontStyle2"
+                        id="info_book_deposit"
+                        th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"
+                      ></div>
+                    </div>
+                    <div class="col-6">
+                      <label for="exampleFormControlInput1" class="modalFontStyle1">대출상태</label>
+                      <div
+                        class="modalFontStyle2"
+                        id="info_book_loan"
+                        th:text="${bookVO.book_loan == 'Y' ? '대출가능' : '대출불가'}"
+                        th:style="${bookVO.book_loan == 'Y' ? 'color: green;' : 'color: red;'}"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="exampleFormControlSelect1" class="modalFontStyle1">수량</label>
+                  <input
+                    type="number"
+                    style="width: 50%"
+                    class="form-control modalFontStyle2"
+                    id="btnCartAmount"
+                    value="1"
+                    min="1"
+                    max="99"
+                    oninput="updateTotalPrice()"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="exampleFormControlInput1" class="modalFontStyle1">총 보증금</label>
+                  <div
+                    class="modalFontStyle2"
+                    id="total_book_deposit"
+                    th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"
+                  ></div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-6">
+                      <button type="button" class="btn btn-secondary btn-custom" th:data-book_bno="${bookVO.book_bno}" id="btnDirectOrder">
+                        바로구매
+                      </button>
+                    </div>
+                    <div class="col-6">
+                      <button type="button" class="btn btn-light btn-custom" th:data-book_bno="${bookVO.book_bno}" id="btnCartAdd">장바구니</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div id="bookInfo">
+              <ul>
+                <li><a href="#bookContent">도서정보</a></li>
+                <li><a href="#bookReview">도서리뷰(0)</a></li>
+                <li><a href="#bookQnA">Q&A</a></li>
+              </ul>                       
+              <div id="bookContent">
+                <p th:utext="${bookVO.book_content}">                  
+                </p>                                
+              </div>
+              <div id="bookReview">
+                <p>
+                  review
+                </p>
+              </div>
+              <div id="bookQnA">
+                <p>
+                  qna
+                </p>                                
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </th:block>
+    <th:block layout:fragment="script">
+      <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+      <script>
+        // 수량 제한
+        document.getElementById("btnCartAmount").addEventListener("input", function (e) {
+          var value = parseInt(e.target.value);
+          if (value > 99) {
+            e.target.value = 99;
+            alert("최대수량은 99개입니다.");
+          }
+          if (value < 1) {
+            e.target.value = 1;
+            alert("최소수량은 1개입니다.");
+          }
+          updateTotalPrice(); // 수량 변경 시 총 보증금 업데이트
+        });
+
+        // 총 보증금
+        function updateTotalPrice() {
+          const priceText = document.getElementById("info_book_deposit").textContent;
+          const price = parseInt(priceText.replace(/,/g, "").replace("원", ""), 10);
+
+          let quantity = document.getElementById("btnCartAmount").value;
+          quantity = parseInt(quantity); // 문자열을 정수로 변환
+
+          // 유효한 수량 범위 확인
+          if (quantity < 1 || quantity > 99) {
+            quantity = 1; // 기본값으로 설정
+            document.getElementById("btnCartAmount").value = 1;
+            alert("수량은 1개 이상 99개 이하로 설정해주세요.");
+          }
+
+          const totalPrice = price * quantity;
+          const formattedTotalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+          document.getElementById("total_book_deposit").textContent = formattedTotalPrice + "원";
+        }
+
+        let actionForm = $("#actionForm");
+
+        $(document).ready(function () {
+          // tab 기능
+          $("#bookInfo").tabs();
+
+          // 장바구니 추가
+          $("button#btnCartAdd").on("click", function () {
+            let book_bno = $(this).data("book_bno");
+            let cart_amount = $("#btnCartAmount").val();
+
+            $.ajax({
+              url: "/user/cart/cartadd",
+              type: "get",
+              data: { book_bno: book_bno, cart_amount: cart_amount },
+              dataType: "text",
+              success: function (result) {
+                if (result == "success") {
+                  alert("장바구니에 등록되었습니다.");
+                  if (confirm("장바구니로 이동하시겠습니까?")) {
+                    location.href = "/user/cart/cartlist";
+                  }
+                }
+              },
+            });
+          });
+
+          // 바로구매
+          $("button#btnDirectOrder").on("click", function () {
+            let book_bno = $(this).data("book_bno");
+
+            console.log("도서코드", book_bno);
+          });
+        }); // read event end
+      </script>
+    </th:block>
+  </body>
+</html>

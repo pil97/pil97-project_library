@@ -257,7 +257,7 @@ public class AdminBookController {
 		adminBookService.checkedModify(book_bno_arr, book_author_arr, book_deposit_arr, book_publisher_arr, book_loan_arr);
 		
 		
-		entity = new ResponseEntity<>("success", HttpStatus.OK);
+		entity = new ResponseEntity<String>("success", HttpStatus.OK);
 		
 		return entity;
 	}

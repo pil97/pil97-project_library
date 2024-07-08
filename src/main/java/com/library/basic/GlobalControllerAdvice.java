@@ -1,4 +1,4 @@
-package com.library.basic.usr.book;
+package com.library.basic;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@ControllerAdvice(basePackages = {"com.library.basic.usr.book"})	// 카테고리 사용되는 컨트롤러의 패키지를 설정
+@ControllerAdvice(basePackages = {"com.library.basic.usr"})	// 카테고리 사용되는 컨트롤러의 패키지를 설정
 public class GlobalControllerAdvice {
 	
 	private final AdminCategoryService adminCategoryService;

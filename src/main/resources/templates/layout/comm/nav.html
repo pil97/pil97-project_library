@@ -15,9 +15,8 @@
   </style>
   <th:block th:fragment="navFragment">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="collapse navbar-collapse " id="navbarNavDropdown">
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav w-100 d-flex justify-content-between">
-          
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
@@ -29,14 +28,19 @@
             >
               책종류
             </a>
-            
-            <ul class="dropdown-menu" id="category_menu" aria-labelledby="navbarDropdownMenuLink">              
+
+            <ul class="dropdown-menu" id="category_menu" aria-labelledby="navbarDropdownMenuLink">
               <li class="dropdown-submenu dropright" th:each="category : ${userCateList}">
-                <a class="dropdown-item dropdown-toggle" id="firstCategory" href="#" th:data-c_code="${category.c_code }" th:text="${category.c_name }"></a>
+                <a
+                  class="dropdown-item dropdown-toggle"
+                  id="firstCategory"
+                  href="#"
+                  th:data-c_code="${category.c_code }"
+                  th:text="${category.c_name }"
+                ></a>
                 
-                  
-              </li>              
-            </ul>            
+              </li>
+            </ul>
           </li>
           <li class="nav-item active">
             <a class="nav-link" href="#">도서관 안내</a>
@@ -45,8 +49,8 @@
             <a class="nav-link" href="#">도서 대출 안내</a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="#">자료검색</a>
-          </li>              
+            <a class="nav-link" th:href="@{/user/search/searchlist}">자료검색</a>
+          </li>
         </ul>
       </div>
     </nav>
