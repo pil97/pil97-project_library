@@ -126,7 +126,7 @@ public class QnaController {
 		} else {
 			entity = new ResponseEntity<String>("fail", HttpStatus.OK);
 		}
-		
+		log.info(usr_id);
 		return entity;
 	}
 	
