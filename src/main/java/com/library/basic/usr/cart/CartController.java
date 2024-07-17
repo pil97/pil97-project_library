@@ -39,8 +39,15 @@ public class CartController {
 
 		ResponseEntity<String> entity = null;
 
-		// 로그인 세션 아이디 확인
-		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
+		// 로그인 세션 확인
+		UserVO loggedInUser = (UserVO) session.getAttribute("loginStatus");
+		if (loggedInUser == null || loggedInUser.getUsr_id() == null) {
+			entity = new ResponseEntity<String>("fail", HttpStatus.OK);
+			return entity;
+		}
+		
+		// 로그인 확인 후,
+		String usr_id = loggedInUser.getUsr_id();
 		vo.setUsr_id(usr_id);
 
 		// db연동

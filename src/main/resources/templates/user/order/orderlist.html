@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
+  <th:block layout:fragment="css">
+    <link href="/css//user/sign.css" rel="stylesheet" />
+    <style>
+      .container {
+        max-width: 1200px;
+        margin: auto; /* Center align the container */
+      }
+
+      .pricing-header {
+        margin-bottom: 30px;
+      }
+
+      .row-divider {
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 20px; /* Reduced bottom margin */
+        padding-bottom: 20px; /* Add padding for space below the line */
+      }
+
+      .row.text-center > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .row.mb-3 > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .col-md-3 img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+      }
+
+      .col-md-2 input[type="number"] {
+        max-width: 80px;
+      }
+
+      .btn {
+        min-width: 100px;
+        margin: 5px;
+      }
+
+      .col-md-2 span,
+      .col-md-1 span {
+        display: block;
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+  </th:block>
+  <body>
+    <th:block layout:fragment="content">
+      <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-8">주문내역</h1>
+      </div>
+
+      <div class="container" id="cartInfo">
+        <div class="row mb-3 text-center">
+          <div class="col-md-3">제품</div>
+          <div class="col-md-2">수량</div>
+          <div class="col-md-2">적립</div>
+          <div class="col-md-2">배송비</div>
+          <div class="col-md-3">보증금</div>
+        </div>
+        <div class="row-divider"></div>
+        <div class="row mb-3 d-flex justify-content-center" th:if="${#lists.isEmpty(cartList)}">
+          <h3 class="text-center">주문정보가 비어있습니다.</h3>
+        </div>
+        <div class="row mb-3 row-divider" th:if="${!#lists.isEmpty(cartList)}" th:each="cartList : ${cartList}">
+          <div class="col-md-3" style="display: flex; flex-direction: column; align-items: center">
+            <a th:href="@{/user/book/bookdetail(book_bno = ${cartList.book_bno})}">
+              <img
+                th:src="${'/user/cart/imagedisplay?dateFolderName=' + cartList.book_up_folder + '&fileName=s_' + cartList.book_img}"
+                style="width: 100px; height: 100px; object-fit: contain"
+              />
+            </a>
+            <a th:href="@{/user/book/bookdetail(book_bno = ${cartList.book_bno})}">
+              <span th:text="${cartList.book_name}" style="margin-top: 10px; color: black"></span>
+            </a>
+          </div>
+          <div class="col-md-2">
+            <div class="w-50 text-center" th:text="${cartList.cart_amount}"></div>
+          </div>
+          <div class="col-md-2">0</div>
+          <div class="col-md-2">[기본배송] 조건</div>
+          <div class="col-md-3">
+            <span th:text="${#numbers.formatInteger(cartList.book_deposit * cartList.cart_amount, 3, 'COMMA') + '원'}"></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="col">총주문금액 : <span th:text="${#numbers.formatInteger(totalPrice, 3, 'COMMA') + '원'}"></span></div>
+      </div>
+
+      <div class="card card-info mt-3">
+        <div class="card-header">
+          <h3 class="card-title">주문내역</h3>
+        </div>
+
+        <form class="form-horizontal" id="orderForm" action="/user/order/ordernobank" method="post">
+          <div class="card-body">
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="orderSame" />
+              <label class="form-check-label" for="orderSame">주문자정보와 동일</label>
+            </div>
+            <div class="form-group row">
+              <label for="ord_name" class="col-sm-2 col-form-label">이름</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="ord_name" name="ord_name" placeholder="이름 입력" />                
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="ord_tel" class="col-sm-2 col-form-label">휴대폰번호</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="ord_tel" name="ord_tel" placeholder="휴대폰번호 입력" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="sample2_postcode" class="col-sm-2 col-form-label">우편번호</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="sample2_postcode" name="ord_addr_zipcode" placeholder="우편번호 입력" />
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-outline-primary custom-btn" onclick="sample2_execDaumPostcode()">우편번호</button>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="sample2_address" class="col-sm-2 col-form-label">주소</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="sample2_address" name="ord_addr_basic" placeholder="주소 입력" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="sample2_detailAddress" class="col-sm-2 col-form-label">상세주소</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="sample2_detailAddress" name="ord_addr_detail" placeholder="상세주소 입력" />
+              </div>
+              <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" />
+              <input type="hidden" th:value="${totalPrice}" name="ord_price" id="ord_price" />
+            </div>
+            <div class="form-group">
+              <label for="ord_desc">요청사항</label>
+              <textarea class="form-control" id="ord_desc" name="ord_desc" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col">
+              <fieldset class="form-group border p-3">
+                <legend class="w-auto px-2">결제방법 선택</legend>
+                <div class="form-group row">
+                  <label for="usr_phone" class="col-sm-2 col-form-label">결제방법</label>
+                  <div class="col-sm-10">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="payMethod" id="paymethod1" value="nobank" />
+                      <label class="form-check-label" for="paymethod1">무통장 입금</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="payMethod" id="paymethod2" value="kakaopay" />
+                      <label class="form-check-label" for="paymethod2"><img src="/image/user/order/payment.png" alt="KakaoPay" /></label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row" id="nobank_info" style="display: none">
+                  <label for="pay_nobank" class="col-sm-2 col-form-label">무통장 입금정보</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <label for="pay_bankinfo">은행명</label>
+                      <select class="form-control" name="pay_bankinfo" id="pay_bankinfo">
+                        <option value="">입금은행을 선택하세요.</option>
+                        <option value="KEB하나은행">KEB하나은행</option>
+                        <option value="국민은행">국민은행</option>
+                        <option value="신한은행">신한은행</option>
+                        <option value="SC제일은행">SC제일은행</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="pay_account">계좌번호</label>
+                      <input type="text" class="form-control" name="pay_account" id="pay_account" />
+                    </div>
+                    <div class="form-group">
+                      <label for="pay_name">예금주</label>
+                      <input type="text" class="form-control" name="pay_name" id="pay_name" />
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button type="button" class="btn btn-info custom-btn" id="btnOrderPayment">결제하기</button>
+            <a class="btn btn-secondary custom-btn" th:href="@{/}">취소</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- end : 주문내역 -->
+
+      <div th:replace="~{layout/comm/addr :: addrFragment}"></div>
+    </th:block>
+
+    <th:block layout:fragment="script">
+      <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+      <script src="/js/comm/addr.js"></script>
+      <script>
+        $(document).ready(function () {
+          // 결제방법선택
+          $("input[name='payMethod']").on("click", function () {
+            let payMethod = $("input[name='payMethod']:checked").val();
+
+            console.log(payMethod);
+
+            if (payMethod == "nobank") {
+              $("#nobank_info").show();
+            } else if (payMethod == "kakaopay") {
+              $("#nobank_info").hide();
+            }
+          });
+
+          // 주문자 정보와 동일
+          $("input#orderSame").on("click", function () {
+            if ($("input#orderSame").is(":checked")) {
+              // console.log("체크 상태");
+
+              $.ajax({
+                url: "/user/order/ordersame",
+                type: "get",
+                dataType: "json",
+                success: function (result) {
+                  $("input#ord_name").val(result.usr_name);
+                  $("input#ord_tel").val(result.usr_phone);
+                  $("input#sample2_postcode").val(result.usr_zipcode);
+                  $("input#sample2_address").val(result.usr_addr);
+                  $("input#sample2_detailAddress").val(result.usr_deaddr);
+                },
+              });
+            } else {
+              // console.log("체크 안한 상태");
+              $("input#ord_name").val("");
+              $("input#ord_tel").val("");
+              $("input#sample2_postcode").val("");
+              $("input#sample2_address").val("");
+              $("input#sample2_detailAddress").val("");
+            }
+          });
+
+          // 주문결제 btnOrderPayment
+          $("button#btnOrderPayment").on("click", function () {
+            let payMethod = $("input[name='payMethod']:checked").val();
+
+            // 무통장 입금 또는 카카오페이 결제
+            if (payMethod == "nobank") {
+              let orderForm = $("#orderForm");
+              orderForm.submit();
+            } else if (payMethod == "kakaopay") {
+              $.ajax({
+                url: "/user/kakao/kakaopay",
+                type: "get",
+                data: {
+                  ord_name: $("#ord_name").val(),
+                  ord_addr_zipcode: $("#sample2_postcode").val(),
+                  ord_addr_basic: $("#sample2_address").val(),
+                  ord_addr_detail: $("#sample2_detailAddress").val(),
+                  ord_tel: $("#ord_tel").val(),
+                  ord_price: $("#ord_price").val(),
+                  ord_desc: $("#ord_desc").val(),
+                },
+                dataType: "json",
+                success: function (response) {
+                  console.log("응답 : " + response);
+
+                  // alert(response.next_redirect_pc_url);
+                  location.href = response.next_redirect_pc_url; // 결제 QR코드 주소 이동
+                },
+              });
+            }
+          });
+        }); // read event end
+      </script>
+    </th:block>
+  </body>
+</html>

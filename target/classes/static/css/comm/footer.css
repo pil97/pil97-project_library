@@ -1,13 +1,9 @@
 @charset "UTF-8";
 
-/* #wrapper{
-  height: auto;
-  min-height: 100%;
-  padding-bottom: 200px;
-} */
-
-footer {
+footer {	
 	margin-top: 30px; 
 	height : 200px;
 	position: relative;
 }
+
+

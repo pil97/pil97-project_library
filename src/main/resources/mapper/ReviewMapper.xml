@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.library.basic.usr.review.ReviewMapper">
-	
+
 	<!-- 리뷰 목록 -->
-	<select id="reviewList" resultType="ReviewVO" parameterType="map">
-	
+	<select id="reviewList" resultType="ReviewVO"
+		parameterType="map">
+
 		SELECT
 		rev_code,
 		usr_id,
@@ -16,8 +17,7 @@
 		FROM
 		(
 		SELECT /*+ INDEX_DESC(review_table PK_REVIEW_CODE) */
-		ROWNUM AS
-		RN,
+		ROWNUM AS RN,
 		rev_code,
 		usr_id,
 		book_bno,
@@ -29,23 +29,80 @@
 		review_table
 		WHERE
 		book_bno = ${book_bno}
+		AND
+		 <![CDATA[  		
+		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>
+		)
 		WHERE
 		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
-	
-	
+
+
 	</select>
-	
-	<!-- 리뷰 개수  -->
-	<select id="getCountReviewByBookBno" resultType="int" parameterType="int">
-	
+
+	<!-- 리뷰 개수 -->
+	<select id="getCountReviewByBookBno" resultType="int"
+		parameterType="int">
+
 		SELECT
 		COUNT(*)
 		FROM
 		review_table
 		WHERE
-		book_bno = #{book_bno}
-	
+		book_bno =
+		#{book_bno}
+
+	</select>
+
+	<!-- 도서리뷰 저장 -->
+	<insert id="reviewSave" parameterType="ReviewVO">
+
+		INSERT INTO
+		review_table(rev_code, usr_id, book_bno, rev_title, rev_content,
+		rev_rate )
+		VALUES(
+		seq_review_code.nextval,
+		#{usr_id},
+		#{book_bno},
+		#{rev_title},
+		#{rev_content},
+		#{rev_rate}
+		)
+	</insert>
+
+	<!-- 도서리뷰 삭제 -->
+	<delete id="reviewDelete" parameterType="Long">
+		DELETE FROM
+		review_table
+		WHERE
+		rev_code = #{rev_code}
+
+	</delete>
+
+	<!-- 도서리뷰 수정폼 -->
+	<select id="reviewModifyForm" resultType="ReviewVO"
+		parameterType="Long">
+		SELECT
+		rev_code, usr_id, book_bno, rev_title, rev_content, rev_rate
+		FROM
+		review_table
+		WHERE
+		rev_code = #{rev_code}
+
+
 	</select>
 	
+	<!-- 도서리뷰 수정 -->
+	<update id="reviewModify" parameterType="ReviewVO">
+	UPDATE
+		review_table
+	SET
+		rev_title = #{rev_title}, rev_content = #{rev_content}, rev_rate = #{rev_rate}, rev_date = SYSDATE
+	WHERE
+		rev_code = #{rev_code}
+	
+	</update>
+
+
 
 </mapper>

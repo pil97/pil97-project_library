@@ -12,7 +12,7 @@ import lombok.ToString;
 public class ReviewVO {
 
 	private Long rev_code;
-	private int usr_id;
+	private String usr_id;
 	private int book_bno;
 	private String rev_title;
 	private String rev_content;

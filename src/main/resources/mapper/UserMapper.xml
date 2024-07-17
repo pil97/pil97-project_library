@@ -4,6 +4,7 @@
 
 	<!-- 회원가입 -->
 	<insert id="sign" parameterType="UserVO">
+	
 		INSERT INTO usr_table (
 			usr_id,
 			usr_name,
@@ -28,6 +29,7 @@
 			#{usr_nick},
 			#{usr_receive}
 		)
+		
 	</insert>
 
 

@@ -4,81 +4,38 @@
 
 
 	<!-- 자료검색 페이지 -->
-	<select id="searchPage" resultType="BookVO"
-		parameterType="Criteria">
+	<select id="searchList" resultType="BookVO"
+		parameterType="map">
 
-		SELECT
-		book_bno,
-		c_code,
-		book_name,
-		book_author,
-		book_publishing_date,
-		book_deposit,
-		book_deposit_discount,
-		book_publisher,
-		book_content,
-		book_up_folder,
-		book_img,
-		book_amount,
-		book_loan,
-		book_date,
-		book_updatedate
-		FROM
-		(
-		SELECT /*+
-		INDEX_DESC(product_tbl PK_BOOK_BNO) */
-		ROWNUM AS
-		RN,
-		book_bno,
-		c_code,
-		book_name,
-		book_author,
-		book_publishing_date,
-		book_deposit,
-		book_deposit_discount,
-		book_publisher,
-		book_content,
-		book_up_folder,
-		book_img,
-		book_amount,
-		book_loan,
-		book_date,
-		book_updatedate
-		FROM
-		book_table
-		WHERE
-		<include refid="criteria"></include>						 
-		 <![CDATA[  		
-		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
-		 ]]>
-		ORDER BY book_bno DESC
-		)
-		WHERE
-		RN > (#{pageNum} - 1 ) * #{amount}
+	<![CDATA[
+    SELECT
+        book_bno,
+        c_code,
+        book_name,
+        book_author,
+        book_publishing_date,
+        book_deposit,
+        book_deposit_discount,
+        book_publisher,
+        book_content,
+        book_up_folder,
+        book_img,
+        book_amount,
+        book_loan,        
+        book_date,
+        book_updatedate
+    FROM
+        book_table
+    WHERE
+        (book_name LIKE '%' || #{keyword} || '%'
+        OR book_author LIKE '%' || #{keyword} || '%'
+        OR book_publisher LIKE '%' || #{keyword} || '%')
+    ]]>
 
 
 	</select>
 
-	<!-- 검색종류가 (도셔명 또는 저자 또는 출판사) 선택. "N" "A" "P" -->
-	<sql id="criteria">
-		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
-			<foreach collection="typeArr" item="type">
-				<trim prefix="OR">
-					<choose>
-						<when test="type == 'N'.toString()">
-							book_name like '%' || #{keyword} || '%'
-						</when>
-						<when test="type == 'A'.toString()">
-							book_author like '%' || #{keyword} || '%'
-						</when>
-						<when test="type == 'P'.toString()">
-							book_publisher like '%' || #{keyword} || '%'
-						</when>
-					</choose>
-				</trim>
-			</foreach>
-		</trim>
-	</sql>
+	
 
 	<!-- 도서 개수 -->
 	<select id="getTotalCount" resultType="int">
@@ -86,13 +43,31 @@
 		COUNT(*)
 		FROM
 		book_table
-
-		WHERE
-		<include refid="criteria"></include>
+		WHERE		
 		book_bno > 0
 
 	</select>
-
+	
+	<!-- 메인페이지 최신 이미지 업로드 -->
+	<select id="imageList" resultType="BookVO">
+	<![CDATA[ 
+	SELECT
+        book_up_folder,
+        book_img
+    FROM (
+        SELECT
+            book_up_folder,
+            book_img,
+            ROW_NUMBER() OVER (ORDER BY book_up_folder DESC) AS rn
+        FROM book_table
+    )
+    
+    WHERE rn <= 5
+    ]]>
+    </select>
+    
+        
+   
 
 
 

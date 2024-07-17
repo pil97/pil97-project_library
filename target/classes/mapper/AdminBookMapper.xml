@@ -89,8 +89,7 @@
 		book_page
 		FROM
 		(
-		SELECT /*+
-		INDEX_DESC(product_tbl PK_BOOK_BNO) */
+		SELECT /*+ INDEX_DESC(book_table PK_BOOK_BNO) */
 		ROWNUM AS
 		RN,
 		book_bno,
@@ -118,8 +117,7 @@
 		 
 		 <![CDATA[  		
 		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
-		 ]]>
-		ORDER BY book_bno DESC
+		 ]]>		
 		)
 		WHERE
 		RN > (#{pageNum} - 1 ) * #{amount}

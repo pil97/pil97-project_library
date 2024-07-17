@@ -1,183 +1,355 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
-  <th:block layout:fragment="css">
-    <link href="/css//usr/book/booklist.css" rel="stylesheet" />
-    <!-- tab css -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css" />
-  </th:block>
-  <body>
-    <th:block layout:fragment="content">
-      <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-        <h1 class="display-8" th:utext="${c_name}"></h1>
-      </div>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
+<th:block layout:fragment="css">
+	<link href="/css//user/book/booklist.css" rel="stylesheet" />
+	<!-- tab css -->
+	<link rel="stylesheet"
+		href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css" />
 
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="card mb-4 shadow-sm">
-              <a href="#">
-                <img
-                  th:src="${'/user/book/imagedisplay?dateFolderName=' + bookVO.book_up_folder + '&fileName=s_' + bookVO.book_img}"
-                  style="width: 100%; height: 550px; object-fit: contain; background-color: #f0f0f0"
-                />
-              </a>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card-body">
-              <form>
-                <div class="form-group">
-                  <label for="exampleFormControlInput1" class="modalFontStyle1">도서명</label>
-                  <div class="modalFontStyle2" id="info_book_name" th:text="${bookVO.book_name}"></div>
-                </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-6">
-                      <label for="exampleFormControlInput1" class="modalFontStyle1">저자</label>
-                      <div class="modalFontStyle2" id="info_book_author" th:text="${bookVO.book_author}"></div>
-                    </div>
-                    <div class="col-6">
-                      <label for="exampleFormControlInput1" class="modalFontStyle1">출판사</label>
-                      <div class="modalFontStyle2" id="info_book_publisher" th:text="${bookVO.book_publisher}"></div>
-                    </div>
-                  </div>
-                </div>
-                    <div class="form-group">
-                  <div class="row">
-                    <div class="col-6">
-                      <label for="exampleFormControlInput1" class="modalFontStyle1">ISBN</label>
-                      <div class="modalFontStyle2" id="info_book_isbn" th:text="${bookVO.book_isbn}"></div>
-                    </div>
-                    <div class="col-6">
-                      <label for="exampleFormControlInput1" class="modalFontStyle1">페이지</label>
-                      <div class="modalFontStyle2" id="info_book_page" th:text="${bookVO.book_page}"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-6">
-                      <label for="exampleFormControlInput1" class="modalFontStyle1">보증금</label>
-                      <div
-                        class="modalFontStyle2"
-                        id="info_book_deposit"
-                        th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"
-                      ></div>
-                    </div>
-                    <div class="col-6">
-                      <label for="exampleFormControlInput1" class="modalFontStyle1">대출상태</label>
-                      <div
-                        class="modalFontStyle2"
-                        id="info_book_loan"
-                        th:text="${bookVO.book_loan == 'Y' ? '대출가능' : '대출불가'}"
-                        th:style="${bookVO.book_loan == 'Y' ? 'color: green;' : 'color: red;'}"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="exampleFormControlSelect1" class="modalFontStyle1">수량</label>
-                  <input
-                    type="number"
-                    style="width: 50%"
-                    class="form-control modalFontStyle2"
-                    id="btnCartAmount"
-                    value="1"
-                    min="1"
-                    max="99"
-                    oninput="updateTotalPrice()"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="exampleFormControlInput1" class="modalFontStyle1">총 보증금</label>
-                  <div
-                    class="modalFontStyle2"
-                    id="total_book_deposit"
-                    th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"
-                  ></div>
-                </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-6">
-                      <button type="button" class="btn btn-secondary btn-custom" th:data-book_bno="${bookVO.book_bno}" id="btnDirectOrder">
-                        바로구매
-                      </button>
-                    </div>
-                    <div class="col-6">
-                      <button type="button" class="btn btn-light btn-custom" th:data-book_bno="${bookVO.book_bno}" id="btnCartAdd">장바구니</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+	<!-- 평점 css -->
+	<style>
+/* 별점 기본선택지 */
+p#star_rev_rate a.rev_rate {
+	font-size: 22px;
+	text-decoration: none;
+	color: lightgray;
+}
 
-        <div class="row">
-          <div class="col">
-            <div id="bookInfo">
-              <ul>
-                <li><a href="#bookContent">도서정보</a></li>
-                <li><a href="#bookReview">도서리뷰(0)</a></li>
-                <li><a href="#bookQnA">Q&A</a></li>
-              </ul>                       
-              <div id="bookContent">
-                <p th:utext="${bookVO.book_content}">                  
-                </p>                                
-              </div>
-              <div id="bookReview">
-                <p>
-                  review
-                </p>
-              </div>
-              <div id="bookQnA">
-                <p>
-                  qna
-                </p>                                
-              </div>
-            </div>
-          </div>
-        </div>
-        
-      </div>
-    </th:block>
-    <th:block layout:fragment="script">
-      <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
-      <script>
+/* 별점에 마우스 오버했을 경우 선택지 */
+p#star_rev_rate a.rev_rate.on {
+	color: red;
+}
+</style>
+
+	<!-- Handlebars template -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+	<!-- template 양식 -->
+	<script id="review-template" type="text/x-handlebars-template">
+      <table class="table" id="reivewTable">
+      	<thead>
+      		<tr>
+      			<th scope="col">번호</th>
+      			<th scope="col">제목</th>
+      			<th scope="col">내용</th>
+      			<th scope="col">평점</th>
+      			<th scope="col">작성자</th>
+      			<th scope="col">등록일</th>
+      			<th scope="col">비고</th>
+      		</tr>
+      	</thead>
+      	<tbody>
+      		{{#each .}}
+      		<tr>
+            <th scope="row">{{rev_code}}</th>
+      			<td>{{rev_title}}</td>
+      			<td>{{rev_content}}</td>
+      			<td>{{displayStar rev_rate}}</td>
+      			<td>{{usr_id}}</td>
+      			<td>{{convertDate rev_date}}</td>
+      			<td>{{authControlView usr_id rev_code}}</td>
+      		</tr>
+      		{{/each}}
+      	</tbody>
+      </table>
+    </script>
+	<script id="qna-template" type="text/x-handlebars-template">
+      <table class="table" id="qnaTable">
+      	<thead>
+      		<tr>
+      			<th scope="col">번호</th>
+				<th scope="col">문의종류</th>
+      			<th scope="col">제목</th>      			     			
+      			<th scope="col">작성자</th>
+      			<th scope="col">등록일</th>
+      			<th scope="col">비밀번호</th>
+				<th scope="col">비고</th>
+      		</tr>
+      	</thead>
+      	<tbody>
+      		{{#each .}}
+      		<tr>
+            <th scope="row">{{qna_code}}</th>
+      			<td>{{qna_type}}</td>
+      			<td>{{qna_title}}</td>
+      			<td>{{usr_id}}</td>
+				<td>{{convertDate qna_date}}</td>
+      			<th scope="col"><input type="password"/></th>
+      			<td><button type="button" class="btn btn-secondary btn-custom" data-qna_code="{{qna_code}}" id="btnQnaPwd">비밀번호 확인</button></td>
+      		</tr>
+      		{{/each}}
+      	</tbody>
+      </table>
+    </script>
+</th:block>
+<body>
+	<th:block layout:fragment="content">
+		<div
+			class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+			<h1 class="display-8" th:utext="${c_name}"></h1>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card mb-4 shadow-sm">
+						<a href="#"> <img
+							th:src="${'/user/book/imagedisplay?dateFolderName=' + bookVO.book_up_folder + '&fileName=s_' + bookVO.book_img}"
+							style="width: 100%; height: 550px; object-fit: contain; background-color: #f0f0f0" />
+						</a>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card-body">
+						<form>
+							<div class="form-group">
+								<label for="exampleFormControlInput1" class="modalFontStyle1">도서명</label>
+								<div class="modalFontStyle2" id="info_book_name"
+									th:text="${bookVO.book_name}"></div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-6">
+										<label for="exampleFormControlInput1" class="modalFontStyle1">저자</label>
+										<div class="modalFontStyle2" id="info_book_author"
+											th:text="${bookVO.book_author}"></div>
+									</div>
+									<div class="col-6">
+										<label for="exampleFormControlInput1" class="modalFontStyle1">출판사</label>
+										<div class="modalFontStyle2" id="info_book_publisher"
+											th:text="${bookVO.book_publisher}"></div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-6">
+										<label for="exampleFormControlInput1" class="modalFontStyle1">ISBN</label>
+										<div class="modalFontStyle2" id="info_book_isbn"
+											th:text="${bookVO.book_isbn}"></div>
+									</div>
+									<div class="col-6">
+										<label for="exampleFormControlInput1" class="modalFontStyle1">페이지</label>
+										<div class="modalFontStyle2" id="info_book_page"
+											th:text="${bookVO.book_page}"></div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-6">
+										<label for="exampleFormControlInput1" class="modalFontStyle1">보증금</label>
+										<div class="modalFontStyle2" id="info_book_deposit"
+											th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"></div>
+									</div>
+									<div class="col-6">
+										<label for="exampleFormControlInput1" class="modalFontStyle1">대출상태</label>
+										<div class="modalFontStyle2" id="info_book_loan"
+											th:text="${bookVO.book_loan == 'Y' ? '대출가능' : '대출불가'}"
+											th:style="${bookVO.book_loan == 'Y' ? 'color: green;' : 'color: red;'}"></div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlSelect1" class="modalFontStyle1">수량</label>
+								<input type="number" style="width: 50%"
+									class="form-control modalFontStyle2" id="btnCartAmount"
+									value="1" min="1" max="99" oninput="updateTotalPrice()" />
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlInput1" class="modalFontStyle1">총
+									보증금</label>
+								<div class="modalFontStyle2" id="total_book_deposit"
+									th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"></div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-6">
+										<button type="button" class="btn btn-secondary btn-custom"
+											th:data-book_bno="${bookVO.book_bno}" id="btnDirectOrder">
+											바로구매</button>
+									</div>
+									<div class="col-6">
+										<button type="button" class="btn btn-light btn-custom"
+											th:data-book_bno="${bookVO.book_bno}" id="btnCartAdd">장바구니</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div id="bookInfo">
+						<ul>
+							<li><a href="#bookContent">도서정보</a></li>
+							<li><a href="#bookReview">도서리뷰(0)</a></li>
+							<li><a href="#bookQnA">Q&A</a></li>
+						</ul>
+						<div id="bookContent">
+							<p th:utext="${bookVO.book_content}"></p>
+						</div>
+						<div id="bookReview">
+							<p>
+								<button type="button" class="btn btn-link" id="btnReviewModal">도서리뷰작성</button>
+							</p>
+							<!-- 도서 리뷰 출력될 위치 -->
+							<div id="bookReviewList"></div>
+							<!-- 페이징 출력될 위치 -->
+							<div id="bookReviewPaging"></div>
+						</div>
+						<div id="bookQnA">
+							<p>
+								<button type="button" class="btn btn-link" id="btnQnaModal">도서QnA작성</button>
+							</p>
+							<!-- 도서 QnA 출력될 위치 -->
+							<div id="bookQnaList"></div>
+							<!-- 페이징 출력될 위치 -->
+							<div id="bookQnaPaging"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Button trigger modal -->
+			<button type="button" class="btn btn-primary" data-toggle="modal"
+				data-target="#exampleModal">Launch demo modal</button>
+
+			<!-- 도서리뷰 Modal -->
+			<div class="modal fade" id="reviewModal" tabindex="-1"
+				aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">도서리뷰</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form>
+								<div class="form-group">
+									<label for="message-text" class="col-form-label">제목</label> <input
+										type="text" class="form-control" id="rev_title" /> <input
+										type="hidden" class="form-control" id="rev_code" />
+								</div>
+								<div class="form-group">
+									<label for="message-text" class="col-form-label">내용</label>
+									<textarea class="form-control" id="rev_content"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="recipient-name" class="col-form-label">별점</label>
+									<p id="star_rev_rate">
+										<a class="rev_rate" href="#">☆</a> <a class="rev_rate"
+											href="#">☆</a> <a class="rev_rate" href="#">☆</a> <a
+											class="rev_rate" href="#">☆</a> <a class="rev_rate" href="#">☆</a>
+									</p>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Close</button>
+							<button type="button" id="btnReviewSave" class="btn btn-primary"
+								th:data-book_bno="${bookVO.book_bno }">도서리뷰저장</button>
+							<button type="button" id="btnReviewModify"
+								class="btn btn-primary" th:data-book_bno="${bookVO.book_bno }">도서리뷰수정</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- modal end -->
+
+			<!-- 도서 QnA Modal -->
+			<div class="modal fade" id="qnaModal" tabindex="-1"
+				aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">도서 QnA</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form>
+								<div class="form-group">
+									<label for="qna_type" class="col-form-label">문의종류</label>
+									 <select
+										class="form-control" id="qna_type">
+										<option value="질문">문의종류를 선택하세요.</option>
+										<option value="도서문의">도서문의</option>
+										<option value="배송문의">배송문의</option>
+										<option value="기타문의">기타문의</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="qna_title" class="col-form-label">제목</label> <input
+										type="text" class="form-control" id="qna_title" /> <input
+										type="hidden" class="form-control" id="qna_code" />
+								</div>
+								<div class="form-group">
+									<label for="qna_content" class="col-form-label">내용</label>
+									<textarea class="form-control" id="qna_content"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="qna_password" class="col-form-label">비밀번호</label> <input
+										type="password" class="form-control" id="qna_password" />
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Close</button>
+							<button type="button" id="btnQnaSave" class="btn btn-primary"
+								th:data-book_bno="${bookVO.book_bno }">도서QnA저장</button>
+							<button type="button" id="btnQnaModify" class="btn btn-primary"
+								th:data-book_bno="${bookVO.book_bno }">도서QnA수정</button>
+							<button type="button" id="btnQnaDelete" class="btn btn-primary"
+								th:data-book_bno="${bookVO.book_bno }">도서QnA삭제</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- modal end -->
+		</div>
+	</th:block>
+	<th:block layout:fragment="script">
+		<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+		<script th:inline="javascript">
         // 수량 제한
-        document.getElementById("btnCartAmount").addEventListener("input", function (e) {
-          var value = parseInt(e.target.value);
+        document.getElementById("btnCartAmount").addEventListener("input", (e) => {
+          const value = parseInt(e.target.value);
+
           if (value > 99) {
             e.target.value = 99;
             alert("최대수량은 99개입니다.");
-          }
-          if (value < 1) {
+          } else if (value < 1) {
             e.target.value = 1;
             alert("최소수량은 1개입니다.");
           }
+
           updateTotalPrice(); // 수량 변경 시 총 보증금 업데이트
         });
 
         // 총 보증금
-        function updateTotalPrice() {
+        const updateTotalPrice = () => {
           const priceText = document.getElementById("info_book_deposit").textContent;
           const price = parseInt(priceText.replace(/,/g, "").replace("원", ""), 10);
 
-          let quantity = document.getElementById("btnCartAmount").value;
-          quantity = parseInt(quantity); // 문자열을 정수로 변환
-
-          // 유효한 수량 범위 확인
-          if (quantity < 1 || quantity > 99) {
-            quantity = 1; // 기본값으로 설정
-            document.getElementById("btnCartAmount").value = 1;
-            alert("수량은 1개 이상 99개 이하로 설정해주세요.");
-          }
+          const quantity = parseInt(document.getElementById("btnCartAmount").value); // 문자열을 정수로 변환
 
           const totalPrice = price * quantity;
           const formattedTotalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
           document.getElementById("total_book_deposit").textContent = formattedTotalPrice + "원";
-        }
+        };
 
         let actionForm = $("#actionForm");
 
@@ -205,15 +377,566 @@
               },
             });
           });
+    
 
-          // 바로구매
-          $("button#btnDirectOrder").on("click", function () {
-            let book_bno = $(this).data("book_bno");
+          // 도서 리뷰 및 페이징 정보 호출하는 작업
+          let reviewPage = 1;
+          let url = "/user/review/reviewlist/" + [[${bookVO.book_bno}]] +"/" + reviewPage;
 
-            console.log("도서코드", book_bno);
+          console.log("상품후기주소 : ", url);
+
+          // ajax 문법을 통한 주소요청 작업
+          const getReviewList = (url) => {
+            $.getJSON(url, (reviewList) => {
+              console.log("reviewList", reviewList.reviewList);
+              console.log("pageMaker", reviewList.pageMaker);
+
+              printReviewList(reviewList.reviewList, $("#bookReviewList"), $("#review-template"));
+              printReviewPaging(reviewList.pageMaker, $("#bookReviewPaging"));
+            });
+          };
+
+          // 도서리뷰 UI작업
+          const printReviewList = (reviewData, target, template) => {
+            console.log(reviewData);
+            const templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
+            const reviewHtml = templateObj(reviewData);
+            target.children().remove();
+            target.append(reviewHtml);
+          };
+
+          const printReviewPaging = (pageData, target) => {
+            let str = `<nav aria-label="Page navigation example">`;
+            str += ` <ul class="pagination">`;
+
+            // 이전 표시 여부
+            if (pageData.prev) {
+              str += `<li class="page-item">`;
+              str += `<a class="page-link" href="${pageData.startPage - 1}" aria-label="Previous">`;
+              str += `<span aria-hidden="true">&laquo;</span>`;
+              str += `</a>`;
+            }
+
+            // 페이지 번호 표시
+            for (let i = pageData.startPage; i <= pageData.endPage; i++) {
+              let className = pageData.cri.pageNum == i ? "active" : "";
+              str += `<li class="page-item ${className}"><a class="page-link" href="${i}">${i}</a></li>`;
+            }
+
+            // 다음 표시 여부
+            if (pageData.next) {
+              str += `<li class="page-item">`;
+              str += `<a class="page-link" href="${pageData.endPage + 1}" aria-label="Next">`;
+              str += `<span aria-hidden="true">&raquo;</span>`;
+              str += `</a>`;
+              str += `</li>`;
+            }
+
+            str += `</ul>`;
+            str += `</nav>`;
+
+            target.html(str);
+          };
+
+          // 호출
+          getReviewList(url);
+
+          // 페이징 클릭 이벤트
+          $("#bookReviewPaging").on("click", "nav ul.pagination a", function (e) {
+            e.preventDefault();
+
+            reviewPage = $(this).attr("href"); // 선택한 페이지 번호 값
+
+            // console.log("reviePage");
+
+            url = "/user/review/reviewlist/" + [[${bookVO.book_bno}]] +"/" + reviewPage;
+
+            getReviewList(url);
           });
+
+          <!-- Handlebar Template 함수-->
+          <!-- 리뷰 별점 함수 작업  -->
+          Handlebars.registerHelper("displayStar", function (rev_rate) {
+            let star = "";
+            switch (rev_rate) {
+              case 1:
+                star = "★☆☆☆☆";
+                break;
+              case 2:
+                star = "★★☆☆☆";
+                break;
+              case 3:
+                star = "★★★☆☆";
+                break;
+              case 4:
+                star = "★★★★☆";
+                break;
+              case 5:
+                star = "★★★★★";
+                break;
+              default:
+                star = "☆☆☆☆☆"; // 기본 값 (rating이 1~5 사이가 아닐 때)
+            }
+            return star;
+          });
+
+          <!-- 날짜 포맷 함수 작업  -->
+          Handlebars.registerHelper("convertDate", function (rev_date) {
+            const date = new Date(rev_date);
+
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth();
+            let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+
+            return year + "/" + month + "/" + day;
+          });
+
+          <!-- 작성자와 로그인 사용자가 일치되는 경우 수정, 삭제 버튼 표시 함수 작업  -->
+          Handlebars.registerHelper("authControlView", function (usr_id, rev_code) {
+            let loginVO = /*[[session.loginStatus]]*/;
+
+            let loginID = "";
+
+            if (loginVO !== null) {
+              loginID = /*[[${session.loginStatus == null ? '' : session.loginStatus.usr_id}]]*/;
+            }
+
+            let str = "";
+            if (loginVO !== null && loginID == usr_id) {
+              str += `<button type="button" name='btnReviewEdit' class="btn btn-secondary" data-rev_code="${rev_code}">edit</button>`;
+              str += `<button type="button" name='btnReviewDelete' class="btn btn-secondary" data-rev_code="${rev_code}">delete</button>`;
+              return new Handlebars.SafeString(str);
+            } else {
+              return "";
+            }
+          });
+
+          // 도서리뷰 modal
+          $("#btnReviewModal").on("click", function () {
+        	$("#btnReviewSave").show();
+        	$("#btnReviewModify").hide();
+            $("#reviewModal").modal("show");
+          });
+
+          // 도서리뷰 modal 리셋
+          $("#reviewModal").on("hidden.bs.modal", function () {
+            $("#rev_title").val(""); // Clear review title input
+            $("#rev_content").val("");
+            $("p#star_rev_rate a.rev_rate").removeClass("on");
+          });
+
+          // 별점 클릭
+          $("p#star_rev_rate a.rev_rate").on("click", function (e) {
+            e.preventDefault();
+            $(this).parent().children().removeClass("on"); // on 선택자 제거
+            $(this).addClass("on").prevAll("a").addClass("on"); // 현재 선택한 별과 이전별까지 on 선택자 추가
+          });
+
+          // 도서리뷰 저장
+          $("#btnReviewSave").on("click", function () {
+            let book_bno = $(this).data("book_bno");
+            let rev_title = $("#rev_title").val();
+            let rev_content = $("#rev_content").val();
+            let rev_rate = 0;
+            // console.log(book_bno);
+            // console.log(rev_title);
+            // console.log(rev_content);
+
+            // 별점 개수 확인
+            $("p#star_rev_rate a.rev_rate").each(function () {
+              if ($(this).attr("class") == "rev_rate on") {
+                rev_rate += 1;
+              }
+            });
+
+            // console.log(rev_rate);
+
+            if (rev_title == "") {
+              alert("제목을 입력하세요.");
+              $("#rev_title").focus();
+              return;
+            }
+
+            if (rev_content == "") {
+              alert("내용을 입력하세요.");
+              $("#rev_content").focus();
+              return;
+            }
+
+            if (rev_rate == 0) {
+              alert("평점을 선택하세요.");
+              $("#rev_rate").focus();
+              return;
+            }
+
+            // return;
+
+            // 자바스크립 object 문법 사용
+            let reviewData = { book_bno: book_bno, rev_title: rev_title, rev_content: rev_content, rev_rate: rev_rate };
+
+            console.log(reviewData);
+
+            $.ajax({
+              url: "/user/review/reviewsave",
+              headers: {
+                "Content-Type": "application/json",
+                "X-HTTP-Method-Override": "POST",
+              },
+              type: "post",
+              // .stringify() : 자바스크립트 object문법 -> JSON으로 변환
+              data: JSON.stringify(reviewData),
+              dataType: "text",
+              success: function (result) {
+                console.log(result);
+                if (result == "success") {
+                  alert("도서리뷰가 등록되었습니다.");
+                  $("#reviewModal").modal("hide");
+                  getReviewList(url); // 도서리뷰 목록 페이징 정보를 갱신
+                } else if (result == "fail") {
+                  alert("로그인을 해주세요.");
+                }
+              },
+            });
+          });
+
+          // 리뷰 삭제 버튼
+          $("div#bookReviewList").on("click", "button[name='btnReviewDelete']", function () {
+            if (confirm("도서리뷰를 삭제하시겠습니까?")) {
+              let rev_code = $(this).data("rev_code");
+
+              $.ajax({
+                url: "/user/review/reviewdelete/" + rev_code,
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-HTTP-Method-Override": "DELETE",
+                },
+                type: "delete",
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    alert("도서리뷰가 삭제되었습니다.");
+                    getReviewList(url); // 도서리뷰 목록 페이징 정보를 갱신
+                  }
+                },
+              });
+            }
+          });
+
+          // 리뷰 수정 폼
+          $("div#bookReviewList").on("click", "button[name='btnReviewEdit']", function () {
+            let rev_code = $(this).data("rev_code");
+            
+            console.log(rev_code);
+
+            $.ajax({
+              url: "/user/review/reviewmodifyform/" + rev_code,
+              headers: {
+                "Content-Type": "application/json",
+                "X-HTTP-Method-Override": "GET",
+              },
+              type: "get",
+              // data: 스프링으로 보내는 데이터 작업 -> 경로안에 이미 데이터가 있기 떄문에
+              dataType: "json", // 스프링에서 넘어오는 데이터 타입
+              success: function (result) {
+                console.log(result);
+
+                // modal 내용에 리뷰 출력작업
+                $("#rev_title").val(result.rev_title);
+                $("#rev_content").val(result.rev_content);
+                $("#rev_code").val(result.rev_code); // <input type="hidden">
+
+                let rev_rate = result.rev_rate;
+
+                $("p#star_rev_rate a.rev_rate").each(function (index, item) {
+                  if (index < rev_rate) {
+                    $(this).addClass("on");
+                  }
+                });
+
+                // modal 화면에 표시
+                $("#btnReviewSave").hide();
+                $("#btnReviewModify").show();
+                $("#reviewModal").modal("show");
+              },
+            });
+          });
+          
+          // 도서리뷰 수정
+          $("button#btnReviewModify").on("click", function () {
+        	  let pro_num = $(this).data("pro_num");
+          	  let rev_code = $("#rev_code").val();
+              let rev_title = $("#rev_title").val();
+              let rev_content = $("#rev_content").val();
+              let rev_rate = 0;
+              
+              console.log(rev_code);
+              
+              // 별점 수정
+              $("p#star_rev_rate a.rev_rate").each(function () {
+                  if ($(this).attr("class") == "rev_rate on") {
+                    rev_rate += 1;
+                  }
+                });
+              
+              if (rev_title == "") {
+                  alert("제목을 입력하세요.");
+                  $("#rev_title").focus();
+                  return;
+                }
+
+                if (rev_content == "") {
+                  alert("내용을 입력하세요.");
+                  $("#rev_content").focus();
+                  return;
+                }
+
+                if (rev_rate == 0) {
+                  alert("평점을 선택하세요.");
+                  $("#rev_rate").focus();
+                  return;
+                }
+                
+                // 자바스크립 object 문법 사용
+                let reviewData = { pro_num: pro_num, rev_title: rev_title, rev_content: rev_content, rev_rate: rev_rate, rev_code: rev_code };
+                
+                $.ajax({
+                    url: "/user/review/reviewmodify",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-HTTP-Method-Override": "PUT",
+                      },
+                    type: "put",
+                    data: JSON.stringify(reviewData),
+                    success: function (result) {
+                    	if (result == "success") {
+                            alert("상품후기가 수정되었습니다.");
+                            $("#reviewModal").modal("hide");
+                            getReviewList(url); // 상품후기 목록 페이징 정보를 갱신
+                    	}
+                    },                    
+                });        	          	  
+          });
+          
+          // 바로구매 -> 주문내역 페이지 이동
+          $("button#btnDirectOrder").on("click", function() {
+        	  
+        	  let book_bno = $(this).data("book_bno");
+        	  let cart_amount = $("#btnCartAmount").val();
+        	  
+        	  let url = `/user/order/orderlist?book_bno=${book_bno}&cart_amount=${cart_amount}`;
+        	  console.log(url);
+        	  location.href = url;
+        	  
+        	  
+          });
+          
+       /* 도서 QnA */
+                       
+       // 도서 QnA 및 페이징 정보 호출하는 작업
+          let qnaPage = 1;
+          let qnaUrl = "/user/qna/qnalist/" + [[${bookVO.book_bno}]] +"/" + qnaPage;
+
+          console.log("도서QnA 주소 : ", qnaUrl);
+
+          // ajax 문법을 통한 주소요청 작업
+          const getQnaList = (qnaUrl) => {
+            $.getJSON(qnaUrl, (qnaList) => {
+              console.log("qnaList", qnaList.qnaList);
+              console.log("qnaPageMaker", qnaList.qnaPageMaker);
+
+              printQnaList(qnaList.qnaList, $("#bookQnaList"), $("#qna-template"));
+              printQnaPaging(qnaList.qnaPageMaker, $("#bookQnaPaging"));
+            });
+          };
+
+          // 도서QnA UI작업
+          const printQnaList = (qnaData, target, template) => {
+            console.log(qnaData);
+            const templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
+            const qnaHtml = templateObj(qnaData);
+            target.children().remove();
+            target.append(qnaHtml);
+          };
+
+          const printQnaPaging = (pageData, target) => {
+            let str = `<nav aria-label="Page navigation example">`;
+            str += ` <ul class="pagination">`;
+
+            // 이전 표시 여부
+            if (pageData.prev) {
+              str += `<li class="page-item">`;
+              str += `<a class="page-link" href="${pageData.startPage - 1}" aria-label="Previous">`;
+              str += `<span aria-hidden="true">&laquo;</span>`;
+              str += `</a>`;
+            }
+
+            // 페이지 번호 표시
+            for (let i = pageData.startPage; i <= pageData.endPage; i++) {
+              let className = pageData.cri.pageNum == i ? "active" : "";
+              str += `<li class="page-item ${className}"><a class="page-link" href="${i}">${i}</a></li>`;
+            }
+
+            // 다음 표시 여부
+            if (pageData.next) {
+              str += `<li class="page-item">`;
+              str += `<a class="page-link" href="${pageData.endPage + 1}" aria-label="Next">`;
+              str += `<span aria-hidden="true">&raquo;</span>`;
+              str += `</a>`;
+              str += `</li>`;
+            }
+
+            str += `</ul>`;
+            str += `</nav>`;
+
+            target.html(str);
+          };
+
+          // 호출
+          getQnaList(qnaUrl);
+
+          // 페이징 클릭 이벤트
+          $("#bookQnaPaging").on("click", "nav ul.pagination a", function (e) {
+            e.preventDefault();
+
+            qnaPage = $(this).attr("href"); // 선택한 페이지 번호 값
+
+            // console.log("qnaPage");
+
+            url = "/user/qna/qnalist/" + [[${bookVO.book_bno}]] +"/" + qnaPage;
+
+            getQnaList(qnaUrl);
+          });
+          
+          // 도서QnA modal
+          $("#btnQnaModal").on("click", function () {
+        	$("#btnQnaSave").show();
+        	$("#btnQnaModify").hide();
+        	$("#btnQnaDelete").hide();
+            $("#qnaModal").modal("show");
+          });
+                
+          // 도서QnA modal 리셋
+          $("#qnaModal").on("hidden.bs.modal", function () { 
+            $("#qna_title").val(""); 
+            $("#qna_content").val("");
+            $("#qna_password").val("");
+          });          
+
+          // 도서QnA 저장
+          $("#btnQnaSave").on("click", function () {
+            let book_bno = $(this).data("book_bno");
+            let qna_type = $("#qna_type").val();
+            let qna_title = $("#qna_title").val();
+            let qna_content = $("#qna_content").val();  
+            let qna_password = $("#qna_password").val();  
+            
+/*             console.log(book_bno);
+            console.log(qna_type);
+            console.log(qna_title);
+            console.log(qna_content);
+            console.log(qna_password); */
+
+            if (qna_type == "질문") {
+                alert("질문을 선택하세요.");
+                $("#qna_type").focus();
+                return;
+              }
+            
+            if (qna_title == "") {
+              alert("제목을 입력하세요.");
+              $("#qna_title").focus();
+              return;
+            }
+
+            if (qna_content == "") {
+              alert("내용을 입력하세요.");
+              $("#qna_content").focus();
+              return;
+            }
+            
+            if (qna_password == "") {
+                alert("비밀번호를 입력하세요.");
+                $("#qna_password").focus();
+                return;
+              }
+            
+       
+            // return;            
+  			
+
+            // 자바스크립 object 문법 사용
+            let qnaData = { 
+            		book_bno: book_bno,  
+            		qna_type: qna_type,
+            		qna_password: qna_password,
+            		qna_title: qna_title, 
+            		qna_content: qna_content, 
+            };
+
+            console.log(qnaData);
+
+            // return;
+            
+            $.ajax({
+              url: "/user/qna/qnawrite",
+              headers: {
+                "Content-Type": "application/json",
+                "X-HTTP-Method-Override": "POST",
+              },
+              type: "post",
+              // .stringify() : 자바스크립트 object문법 -> JSON으로 변환
+              data: JSON.stringify(qnaData),
+              dataType: "text",
+              success: function (result) {
+                console.log(result);
+                if (result == "success") {
+                  alert("도서QnA가 등록되었습니다.");
+                  $("#qnaModal").modal("hide");
+                  getQnaList(qnaUrl); // 도서리뷰 목록 페이징 정보를 갱신
+                } else if (result == "fail") {
+                  alert("로그인을 해주세요.");
+                }
+              },
+            });
+          });
+          
+          // QnA 폼
+          $("div#bookQnaList").on("click", "button#btnQnaPwd", function () {
+            let qna_code = $(this).data("qna_code");
+            
+            console.log(qna_code);
+            
+            // return;
+
+            $.ajax({
+              url: "/user/qna/qnaform/" + qna_code,
+              headers: {
+                "Content-Type": "application/json",
+                "X-HTTP-Method-Override": "GET",
+              },
+              type: "get",
+              // data: 스프링으로 보내는 데이터 작업 -> 경로안에 이미 데이터가 있기 떄문에
+              dataType: "json", // 스프링에서 넘어오는 데이터 타입
+              success: function (result) {
+                console.log(result);
+
+                // modal 내용에 리뷰 출력작업
+                $("#qna_type").val(result.qna_type);
+                $("#qna_title").val(result.qna_title);
+                $("#qna_content").val(result.qna_content);              
+
+                // modal 화면에 표시
+                $("#btnQnaSave").hide();
+                $("#btnQnaModify").show();
+                $("#btnQnaDelete").show();
+                $("#qnaModal").modal("show");
+              },
+            });
+          });
+          
+          
         }); // read event end
       </script>
-    </th:block>
-  </body>
+	</th:block>
+</body>
 </html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
+<th:block layout:fragment="css">
+	<link href="/css//user/book/booklist.css" rel="stylesheet" />
+	<style>
+.form-control-borderless {
+	border: none;
+}
+
+.form-control-borderless:hover, .form-control-borderless:active,
+	.form-control-borderless:focus {
+	border: none;
+	outline: none;
+	box-shadow: none;
+}
+</style>
+<!-- Handlebars template -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script id="search-template" type="text/x-handlebars-template">
+      <table class="table" id="searchTable">
+      	<thead>
+      		<tr>
+      			<th scope="col">번호</th>
+      			<th scope="col">도서명</th>
+      			<th scope="col">저자</th>
+				<th scope="col">출판사</th>        			
+      		</tr>
+      	</thead>
+      	<tbody>
+      		{{#each .}}
+      		<tr>
+            	<th scope="row">{{book_bno}}</th>
+      			<td><a href="/user/book/bookdetail?book_bno={{book_bno}}">{{book_name}}</a></td>
+				<td>{{book_author}}</td>
+      			<td>{{book_publisher}}</td>      			
+      		</tr>
+      		{{/each}}
+      	</tbody>
+      </table>
+    </script>
+</th:block>
+<body>
+	<th:block layout:fragment="content">
+		<div class="container">
+			<br />
+			<div class="row justify-content-center">
+				<div class="col-12 col-md-10 col-lg-8">
+					<form class="card card-sm">
+						<div class="card-body row no-gutters align-items-center">
+							<div class="col-auto">
+								<i class="fas fa-search h4 text-body"></i>
+							</div>
+							<!--end of col-->
+							<div class="col">
+								<input
+									class="form-control form-control-lg form-control-borderless"
+									type="text" placeholder="도서명, 저자또는 출판사 검색" id="keyword">
+							</div>
+							<!--end of col-->
+							<div class="col-auto">
+								<button class="btn btn-lg btn-success" name="btn_book_search">Search</button>
+							</div>
+							<!--end of col-->
+						</div>
+					</form>
+					 <div id="bookSearchListContainer">
+                        <div id="bookSearchList"></div>
+                        <div id="noResultsMessage" style="display: none;">검색된 도서가 없습니다.</div>
+                        <div id="emptyKeywordMessage" style="display: none;">검색어를 입력해 주세요.</div>
+                        
+                    </div>
+				</div>
+				<!--end of col-->
+			</div>
+		</div>
+	</th:block>
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+		 $(document).ready(function () {
+	            // When the search button is clicked
+	            $("button[name='btn_book_search']").click(function(event) {
+	                event.preventDefault(); // Prevent form submission
+
+	                let searchKeyword = $("#keyword").val().trim(); // Get input value and trim whitespace
+	                let searchPage = 1; // Assuming initial search page is 1
+	                
+	                if (searchKeyword === "") {
+                        $("#emptyKeywordMessage").show();
+                        $("#bookSearchList").hide();
+                        $("#noResultsMessage").hide();
+                        return;
+                    } else {
+                        $("#emptyKeywordMessage").hide();
+                    }
+	                
+	                
+	                let url = "/user/search/searchlist/" + searchKeyword + "/" + searchPage;
+
+	                console.log("Search URL:", url);
+
+	                // Perform further actions like AJAX request using 'url'
+	                const getSearchList = (url) => {
+	                    $.getJSON(url, (searchList) => {
+	                      console.log("searchList", searchList.searchList);
+	                      console.log("pageMaker", searchList.pageMaker);
+
+	                      printSerachList(searchList.searchList, $("#bookSearchList"), $("#search-template"));
+	                    });
+	                  };
+	                  
+	                  // 검색 UI작업
+	                  const printSerachList = (searchData, target, template) => {
+	                    console.log(searchData);
+	                    const templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
+	                    const searchHtml = templateObj(searchData);
+	                    target.children().remove();
+	                    target.append(searchHtml);
+	                    
+	                    if (searchData.length === 0) {
+                            $("#noResultsMessage").show();
+                        } else {
+                            $("#noResultsMessage").hide();
+                        }
+	                    
+	                  };
+	                  
+	                  getSearchList(url);	
+	            });
+	            
+	        });
+		
+		
+			// read event end
+		</script>
+	</th:block>
+</body>
+</html>

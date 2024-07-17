@@ -7,7 +7,7 @@
       <div th:replace="~{layout/comm/header :: headerFragment}"></div>
       <div th:replace="~{layout/comm/nav :: navFragment}"></div>
 
-      <th:block layout:fragment="content">
+      <th:block layout:fragment="content" id="wrap">
         <!-- 각각의 페이지에서 구현하고자 하는 컨텐츠를 작성 -->
       </th:block>
     </div>

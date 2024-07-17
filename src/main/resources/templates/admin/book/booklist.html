@@ -5,14 +5,23 @@
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{admin/layout/adminlayout}"
 >
+  <!-- 각 페이지의 title -->
+  <th:block layout:fragment="title">
+    <title>도서리스트</title>
+  </th:block>
+
+  <!-- 각 페이지의 css -->
+  <th:block layout:fragment="css">
+    <link href="/css/admin/book/booklist.css" rel="stylesheet" />
+  </th:block>
+
   <body class="hold-transition skin-blue sidebar-mini">
     <th:block layout:fragment="content">
       <script src="/css/admin/plugins/ckeditor/ckeditor.js"></script>
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
         <section class="content-header">
-          <h1>도서리스트</h1>
+          <h1>도서목록</h1>
           <ol class="breadcrumb">
             <li>
               <a href="#"><i class="fa fa-dashboard"></i> Level</a>
@@ -21,14 +30,14 @@
           </ol>
         </section>
 
-        <!-- Main content -->
+        <!-- start : 메인 내용 -->
         <section class="content">
           <!-- Your Page Content Here -->
           <div class="row">
             <div class="col-md-12">
               <div class="box">
                 <div class="box-header with-border">
-                  <h3 class="box-title">도서 리스트</h3>
+                  <h3 class="box-title">도서목록</h3>
                 </div>
 
                 <div class="box-body">
@@ -51,26 +60,26 @@
                   <table class="table table-bordered">
                     <tbody>
                       <tr>
-                        <th style="width: 2%"><input type="checkbox" id="checkAll" /></th>
-                        <th style="width: 8%">도서코드</th>
-                        <th style="width: 10%">도서명</th>
-                        <th style="width: 10%">도서이미지</th>
-                        <th style="width: 15%">저자</th>
-                        <th style="width: 10%">도서보증금</th>
-                        <th style="width: 15%">출판사</th>
-                        <th style="width: 15%">등록일</th>
-                        <th style="width: 5%">대출여부</th>
-                        <th style="width: 5%">수정</th>
-                        <th style="width: 5%">삭제</th>
+                        <th><input type="checkbox" id="checkAll" /></th>
+                        <th>도서코드</th>
+                        <th>도서명</th>
+                        <th>도서이미지</th>
+                        <th>저자</th>
+                        <th>도서보증금</th>
+                        <th>출판사</th>
+                        <th>등록일</th>
+                        <th>대출여부</th>
+                        <th>수정</th>
+                        <th>삭제</th>
                       </tr>
                       <tr th:each="BookVO : ${bookList}">
                         <td><input type="checkbox" name="check" th:value="${BookVO.book_bno}" /></td>
                         <td th:text="${BookVO.book_bno}"></td>
-                        <td><a class="move book_name" href="#" th:text="${BookVO.book_name}"> </a></td>
+                        <td><div class="move book_name" href="#" th:text="${BookVO.book_name}"></div></td>
                         <td>
                           <img
+                            id="imageStyle"
                             th:src="${'/admin/book/imagedisplay?dateFolderName=' + BookVO.book_up_folder + '&fileName=s_' + BookVO.book_img}"
-                            style="width: 100%; height: 255px; object-fit: contain"
                           />
                         </td>
                         <td><input type="text" name="book_author" th:value="${BookVO.book_author}" /></td>
@@ -84,14 +93,10 @@
                           </select>
                         </td>
                         <td>
-                          <button type="button" class="btn btn-primary" name="btn_book_edit" th:data-book_bno="${BookVO.book_bno}">
-                            수정
-                          </button>
+                          <button type="button" class="btn btn-primary" name="btn_book_edit" th:data-book_bno="${BookVO.book_bno}">수정</button>
                         </td>
                         <td>
-                          <button type="button" class="btn btn-danger" name="btn_book_del" th:data-book_bno="${BookVO.book_bno}">
-                            삭제
-                          </button>
+                          <button type="button" class="btn btn-danger" name="btn_book_del" th:data-book_bno="${BookVO.book_bno}">삭제</button>
                         </td>
                       </tr>
                     </tbody>
@@ -146,118 +151,113 @@
           </div>
         </section>
       </div>
-
-      <!-- /.content -->
+      <!-- end : 메인 내용 -->
     </th:block>
     <th:block layout:fragment="script">
       <script th:inline="javascript">
 
         let msg = [[${msg}]];
 
-
         if (msg == "successEdit") {
-        	alert(`도서 정보가 수정 되었습니다.`);
+          alert(`도서 정보가 수정 되었습니다.`);
         }
 
         let actionForm = $("#actionForm");
 
-        $(document).ready(function() {
+        $(document).ready(function () {
+          // 페이지 번호 클릭시, (이전 1 2 3 4 5 다음) -> actionForm을 사용한다.
+          $(".movepage").on("click", function (e) {
+            e.preventDefault(); // a 태그의 href 기능을 제거
 
-        	// 페이지 번호 클릭시, (이전 1 2 3 4 5 다음) -> actionForm을 사용한다.
-        	$(".movepage").on("click", function(e) {
-        		e.preventDefault(); // a 태그의 href 기능을 제거
+            // 주소변경
+            actionForm.attr("action", "/admin/book/booklist");
 
-        		// 주소변경
-        		actionForm.attr("action", "/admin/book/booklist");
+            // 클릭한 페이지 번호 작업
+            actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 
-        		// 클릭한 페이지 번호 작업
-        		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+            // 변경된 pageNum 값을 서버로 전송 (Criteria 클래스)
+            actionForm.submit();
+          });
 
-        		// 변경된 pageNum 값을 서버로 전송 (Criteria 클래스)
-        		actionForm.submit();
+          // 수정버튼 클릭시, name="btn_book_edit"
+          $("button[name='btn_book_edit']").on("click", function () {
+            let book_bno = $(this).data("book_bno");
 
+            // 뒤로버튼 클릭시, 사용되어 문제 발생
+            actionForm.find("input[name='book_bno']").remove();
 
-        	});
+            // console.log(pro_num);
 
-        	// 수정버튼 클릭시, name="btn_book_edit"
-        	$("button[name='btn_book_edit']").on("click", function() {
-        		let book_bno = $(this).data("book_bno");
+            // 자바스크립트 문법 : String Template 백틱에 문자열과 변수를 함께 사용 가능한 문법
+            let str = `<input type="hidden" name="book_bno" id="book_bno" value="${book_bno}"/>`;
+            console.log(str);
 
-        		// 뒤로버튼 클릭시, 사용되어 문제 발생
-        		actionForm.find("input[name='book_bno']").remove();
+            // actionForm에 해당 태그 추가
+            actionForm.append(str);
 
-        		// console.log(pro_num);
+            // get으로 요청방식
+            actionForm.attr("method", "get");
 
-        		// 자바스크립트 문법 : String Template 백틱에 문자열과 변수를 함께 사용 가능한 문법
-        		let str = `<input type="hidden" name="book_bno" id="book_bno" value="${book_bno}"/>`;
-        		console.log(str);
+            // 주소변경
+            actionForm.attr("action", "/admin/book/bookedit");
 
-        		// actionForm에 해당 태그 추가
-        		actionForm.append(str);
+            actionForm.submit();
+          });
 
-        		// get으로 요청방식
-        		actionForm.attr("method", "get");
+          // 삭제버튼 클릭시, name="btn_book_del"
+          $("button[name='btn_book_del']").on("click", function () {
+            if (!confirm("상품을 삭제하겠습니까?")) {
+              return;
+            }
 
-        		// 주소변경
-        		actionForm.attr("action", "/admin/book/bookedit");
+            let book_bno = $(this).data("book_bno");
 
-        		actionForm.submit();
-        	});
+            console.log(book_bno);
+            // 뒤로버튼 클릭시, 사용되어 문제 발생
+            actionForm.find("input[name='book_bno']").remove();
 
-        	// 삭제버튼 클릭시, name="btn_book_del"
-        	$("button[name='btn_book_del']").on("click", function() {
-        		if (!confirm("상품을 삭제하겠습니까?")) {
-                    return;
-                 }
+            // console.log(pro_num);
 
-        		let book_bno = $(this).data("book_bno");
+            // 자바스크립트 문법 : String Template 백틱에 문자열과 변수를 함께 사용 가능한 문법
+            let str = `<input type="hidden" name="book_bno" id="book_bno" value="${book_bno}"/>`;
+            console.log(str);
 
-        		console.log(book_bno);
-        		// 뒤로버튼 클릭시, 사용되어 문제 발생
-        		actionForm.find("input[name='book_bno']").remove();
+            // actionForm에 해당 태그 추가
+            actionForm.append(str);
 
-        		// console.log(pro_num);
+            // get으로 요청방식
+            actionForm.attr("method", "post");
 
-        		// 자바스크립트 문법 : String Template 백틱에 문자열과 변수를 함께 사용 가능한 문법
-        		let str = `<input type="hidden" name="book_bno" id="book_bno" value="${book_bno}"/>`;
-        		console.log(str);
+            // 주소변경
+            actionForm.attr("action", "/admin/book/bookdelete");
 
-        		// actionForm에 해당 태그 추가
-        		actionForm.append(str);
+            actionForm.submit();
+          });
 
-        		// get으로 요청방식
-        		actionForm.attr("method", "post");
+          // 제목행 checkbox 체크하기
+          let isCheck = true;
+          $("#checkAll").on("click", function () {
+            // this.checked : 제목의 check 상태
+            $("input[name='check']").prop("checked", this.checked);
+            isCheck = this.checked;
+          });
 
-        		// 주소변경
-        		actionForm.attr("action", "/admin/book/bookdelete");
-
-        		actionForm.submit();
-        	});
-
-        // 제목행 checkbox 체크하기
-        let isCheck = true;
-        $("#checkAll").on("click", function () {
-        	// this.checked : 제목의 check 상태
-        	$("input[name='check']").prop("checked", this.checked);
-        	isCheck = this.checked;
-        });
-
-        // 목록행 데이터행 체크하기
-        $("input[name='check']").on("click", function () {
+          // 목록행 데이터행 체크하기
+          $("input[name='check']").on("click", function () {
             // 전체 선택 체크박스를 우선 해제
             $("#checkAll").prop("checked", false);
 
             let allChecked = true;
 
-          // 모든 개별 항목 체크박스의 체크 상태를 검사
-          $("input[name='check']").each(function () {
-          	if (!$(this).is(":checked")) {
-              allChecked = false;
-            }
-          });
+            // 모든 개별 항목 체크박스의 체크 상태를 검사
+            $("input[name='check']").each(function () {
+              if (!$(this).is(":checked")) {
+                allChecked = false;
+              }
+            });
 
-          // 모든 개별 항목이 체크되었는지 여부에 따라 전체 선택 체크박스 상태를 설정
-          if (allChecked) {
+            // 모든 개별 항목이 체크되었는지 여부에 따라 전체 선택 체크박스 상태를 설정
+            if (allChecked) {
               $("#checkAll").prop("checked", true);
             }
           });
@@ -265,48 +265,52 @@
           // 체크 수정상품2 id="btn_check_modify2"
           $("#btn_check_modify").on("click", function () {
             if ($("input[name='check']:checked").length == 0) {
-                alert("수정할 상품을 체크하세요.");
-                return;
+              alert("수정할 상품을 체크하세요.");
+              return;
             }
 
-          // 자바스크립트 배열 문법
-          let book_bno_arr = []; // 체크된 도서코드가 저장될 배열
-          let book_author_arr = []; // 체크된 도서저자가 저장될 배열
-          let book_deposit_arr = []; // 체크된 도서보증금이 저장될 배열
-          let book_publisher_arr = []; // 체크된 출판사가 저장될 배열
-          let book_loan_arr = []; // 체크된 대출여부가 저장될 배열
+            // 자바스크립트 배열 문법
+            let book_bno_arr = []; // 체크된 도서코드가 저장될 배열
+            let book_author_arr = []; // 체크된 도서저자가 저장될 배열
+            let book_deposit_arr = []; // 체크된 도서보증금이 저장될 배열
+            let book_publisher_arr = []; // 체크된 출판사가 저장될 배열
+            let book_loan_arr = []; // 체크된 대출여부가 저장될 배열
 
-          // 체크된 상태를 접근
-          $("input[name='check']:checked").each(function () {
-        	  book_bno_arr.push($(this).val());
-        	  book_author_arr.push($(this).parent().parent().find("input[name='book_author']").val());
-        	  book_deposit_arr.push($(this).parent().parent().find("input[name='book_deposit']").val());
-        	  book_publisher_arr.push($(this).parent().parent().find("input[name='book_publisher']").val());
-        	  book_loan_arr.push($(this).parent().parent().find("select[name='book_loan']").val());
-          });
+            // 체크된 상태를 접근
+            $("input[name='check']:checked").each(function () {
+              book_bno_arr.push($(this).val());
+              book_author_arr.push($(this).parent().parent().find("input[name='book_author']").val());
+              book_deposit_arr.push($(this).parent().parent().find("input[name='book_deposit']").val());
+              book_publisher_arr.push($(this).parent().parent().find("input[name='book_publisher']").val());
+              book_loan_arr.push($(this).parent().parent().find("select[name='book_loan']").val());
+            });
 
-          console.log("도서코드", book_bno_arr);
-          console.log("저자", book_author_arr);
-          console.log("도서보증금", book_deposit_arr);
-          console.log("출판사", book_publisher_arr);
-          console.log("대출여부", book_loan_arr);
+            console.log("도서코드", book_bno_arr);
+            console.log("저자", book_author_arr);
+            console.log("도서보증금", book_deposit_arr);
+            console.log("출판사", book_publisher_arr);
+            console.log("대출여부", book_loan_arr);
 
-
-          $.ajax({
+            $.ajax({
               url: "/admin/book/checkedmodify",
               type: "post",
-              data: { book_bno_arr: book_bno_arr, book_author_arr: book_author_arr, book_deposit_arr: book_deposit_arr, book_publisher_arr: book_publisher_arr, book_loan_arr: book_loan_arr },
+              data: {
+                book_bno_arr: book_bno_arr,
+                book_author_arr: book_author_arr,
+                book_deposit_arr: book_deposit_arr,
+                book_publisher_arr: book_publisher_arr,
+                book_loan_arr: book_loan_arr,
+              },
               dataType: "text",
               success: function (result) {
-                  if (result == "success") {
-                         alert("체크상품이 수정되었습니다.");
-                         location.reload(); // 화면 새로고침
-                   }
-                 },
-              });
-           });
-
-        	// ready event end
+                if (result == "success") {
+                  alert("체크상품이 수정되었습니다.");
+                  location.reload(); // 화면 새로고침
+                }
+              },
+            });
+          });
+          // ready event end
         });
       </script>
     </th:block>

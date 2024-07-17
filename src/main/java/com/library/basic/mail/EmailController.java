@@ -23,6 +23,7 @@ public class EmailController {
 	// EmailDTO dto = new EmailDTO();
 	// dto.setReceiverMail("입력한 메일주소");
 	// 클라이언트에서 입력 받은 메일주소가 EmailDTO dto에 들어감 - receiverMail
+	// 인증코드 메일 발송 기능
 	@GetMapping("authcode")
 	public ResponseEntity<String> authCode(String type, EmailDTO dto, HttpSession session) {
 

@@ -23,20 +23,20 @@ public class AdminController {
 
 	// 관리자 로그인 페이지
 	@GetMapping("")
-	public String loginPage() {
+	public String adminLoginPage() {
 
 		log.info("관리자 로그인 페이지");
 
-		return "admin/adlogin";
+		return "admin/adminlogin";
 	}
 
 	// 관리자 로그인 확인
 	@PostMapping("/adminok")
-	public String loginOk(AdminVO vo, HttpSession session, RedirectAttributes rttr) throws Exception {
+	public String adminLoginOk(AdminVO vo, HttpSession session, RedirectAttributes rttr) throws Exception {
 		log.info("관리자 정보 : " + vo);
 
 		// 아이디 확인
-		AdminVO dVo = adminService.loginOk(vo.getAdmin_id());
+		AdminVO dVo = adminService.adminLoginOk(vo.getAdmin_id());
 
 		String url = "";
 		String msg = "";

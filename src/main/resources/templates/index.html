@@ -1,82 +1,78 @@
 <!DOCTYPE html>
-<html
-  lang="ko"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/baselayout}"
->
-  <body>
-    <th:block layout:fragment="content">
-    <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
-        <div class="col-md-6 px-0">
-          <h1 class="display-4 font-italic">Title of a longer featured blog post</h1>
-          <p class="lead my-3">
-            Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this
-            post’s contents.
-          </p>
-          <p class="lead mb-0">
-            <a href="#" class="text-white font-weight-bold">Continue reading...</a>
-          </p>
-        </div>
-      </div>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
 
-      <div class="row mb-2">
-        <div class="col-md-6">
-          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-            <div class="col p-4 d-flex flex-column position-static">
-              <strong class="d-inline-block mb-2 text-primary">World</strong>
-              <h3 class="mb-0">Featured post</h3>
-              <div class="mb-1 text-muted">Nov 12</div>
-              <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" class="stretched-link">Continue reading</a>
-            </div>
-            <div class="col-auto d-none d-lg-block">
-              <svg
-                class="bd-placeholder-img"
-                width="200"
-                height="250"
-                xmlns="http://www.w3.org/2000/svg"
-                role="img"
-                aria-label="Placeholder: Thumbnail"
-                preserveAspectRatio="xMidYMid slice"
-                focusable="false"
-              >
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" />
-                <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-            <div class="col p-4 d-flex flex-column position-static">
-              <strong class="d-inline-block mb-2 text-success">Design</strong>
-              <h3 class="mb-0">Post title</h3>
-              <div class="mb-1 text-muted">Nov 11</div>
-              <p class="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" class="stretched-link">Continue reading</a>
-            </div>
-            <div class="col-auto d-none d-lg-block">
-              <svg
-                class="bd-placeholder-img"
-                width="200"
-                height="250"
-                xmlns="http://www.w3.org/2000/svg"
-                role="img"
-                aria-label="Placeholder: Thumbnail"
-                preserveAspectRatio="xMidYMid slice"
-                focusable="false"
-              >
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" />
-                <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </th:block>
-    <!-- /.container -->
-  </body>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" type="text/css"
+		href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+	<link rel="stylesheet" type="text/css"
+		href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+
+	<style>
+.slick-prev {
+	left: 160px;
+	z-index: 1;
+}
+
+.slick-next {
+	right: 160px;
+	z-index: 1;
+}
+
+.slide_div img {
+	margin: auto;
+}
+
+.slide_div_wrap {
+	padding: 15px 0 15px 0;
+	background: #e6e9f6;
+}
+
+.image_wrap img {
+	max-width: 30%;
+	height: auto;
+	display: block;
+	margin: auto;
+}
+</style>
+</th:block>
+
+<body>
+	<th:block layout:fragment="content">
+		<div class="slide_div_wrap">
+			<div class="slide_div">
+				<div th:each="img : ${imgList}">
+					<div>
+						<a> <img
+							th:src="@{'/imagedisplay?dateFolderName=' + ${img.book_up_folder} + '&fileName=s_' + ${img.book_img}}"
+							style="width: 100%; height: 255px; object-fit: contain" />
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<!-- /.container -->
+
+	<th:block layout:fragment="script">
+		<script type="text/javascript"
+			src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+		<script>
+			$(document).ready(function() {
+
+				$(".slide_div").slick({
+					dots : true,
+					autoplay : true,
+					autoplaySpeed : 5000
+				}
+
+				);
+
+			});
+		</script>
+	</th:block>
+
+</body>
 </html>

@@ -119,7 +119,7 @@ public class UserController {
 	// 로그아웃
 	@GetMapping("logout")
 	public String logout(HttpSession session) {
-		// 세션 삭제
+		// 로그인 세션 삭제
 		session.invalidate();
 
 		return "redirect:/";
@@ -158,6 +158,7 @@ public class UserController {
 
 				emailService.sendMail("emailIDResult", dto, usr_id);
 
+				// 인증코드 세션 소멸
 				session.removeAttribute("authCode");
 
 				msg = "successID";
