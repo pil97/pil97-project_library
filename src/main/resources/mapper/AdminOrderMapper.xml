@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.library.basic.admin.order.AdminOrderMapper">
+
+	<!-- 검색종류가 (주문자 또는 주문코드 또는 아이디) 선택. "N" "C" "I" -->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'N'.toString()">
+							ord_name like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C'.toString()">
+							ord_code like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'I'.toString()">
+							usr_id like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 주문내역 목록 -->
+	<select id="orderList" resultType="OrderVO"
+		parameterType="Criteria">
+
+		SELECT
+		ord_code,
+		usr_id,
+		ord_name,
+		ord_addr_zipcode,
+		ord_addr_basic,
+		ord_addr_detail,
+		ord_tel,
+		ord_price,
+		ord_desc,
+		ord_regdate
+		FROM
+		(
+		SELECT /*+
+		INDEX_DESC(order_table PK_ORD_CODE) */
+		ROWNUM AS
+		RN,
+		ord_code,
+		usr_id,
+		ord_name,
+		ord_addr_zipcode,
+		ord_addr_basic,
+		ord_addr_detail,
+		ord_tel,
+		ord_price,
+		ord_desc,
+		ord_regdate
+		FROM
+		order_table
+		WHERE
+
+		<include refid="criteria"></include>
+		 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>
+		)
+		WHERE
+		RN > (#{pageNum} - 1 ) * #{amount}
+
+
+	</select>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 주문내역 개수 -->
+	<select id="getTotalCount" resultType="int">
+
+		SELECT
+		COUNT(*)
+		FROM
+		order_table
+		WHERE
+		<include refid="criteria"></include>
+		ord_code > 0
+	</select>
+
+	<!-- 주문자(수령인) 정보 -->
+	<select id="orderInfo" resultType="OrderVO" parameterType="Long">
+		SELECT
+		ord_code,
+		usr_id,
+		ord_name,
+		ord_addr_zipcode,
+		ord_addr_basic,
+		ord_addr_detail,
+		ord_tel,
+		ord_price,
+		ord_desc,
+		ord_regdate
+		FROM
+		order_table
+		WHERE
+		ord_code = ${ord_code}
+	</select>
+
+	<!-- 주문상세정보 -->
+	<select id="orderDetailInfo" resultType="OrderDetailInfoVO"
+		parameterType="Long">
+		SELECT
+		od.ord_code,
+		od.book_bno,
+		od.dt_amount,
+		od.dt_price,
+		b.book_name,
+		b.book_up_folder,
+		b_book_img
+		FROM
+		ordetail_table od
+		INNER JOIN
+		book_table b
+		ON
+		od.book_bno = b.book_bno
+		WHERE
+		od.ord_code = #{ord_code}
+	</select>
+
+
+</mapper>

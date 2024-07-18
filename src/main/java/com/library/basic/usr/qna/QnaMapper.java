@@ -20,6 +20,11 @@ public interface QnaMapper {
 	// QnA 상세글
 	QnaVO qnaForm(Long qna_code);
 	
+	// Qna 수정
+	void qnaModify(QnaVO vo);
+	
+	// Qna 삭제
+	void qnaDelete(Long qna_code);
 	
 	
 }

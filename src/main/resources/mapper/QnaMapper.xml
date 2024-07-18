@@ -20,11 +20,11 @@
 		#{usr_id},
 		#{book_bno},
 		#{qna_type},
-		#{qna_password},		
+		#{qna_password},
 		#{qna_title},
 		#{qna_content}
 		)
-		
+
 	</insert>
 
 
@@ -42,7 +42,8 @@
 		qna_update,
 		qna_date
 		FROM(
-		SELECT /*+ INDEX_DESC(qna_table PK_QNA_CODE) */
+		SELECT /*+ INDEX_DESC(qna_table
+		PK_QNA_CODE) */
 		ROWNUM AS RN,
 		qna_code,
 		usr_id,
@@ -80,10 +81,10 @@
 		book_bno = #{book_bno}
 
 	</select>
-	
+
 	<!-- QnA 상세폼 -->
 	<select id="qnaForm" resultType="QnaVO" parameterType="Long">
-	SELECT
+		SELECT
 		qna_code,
 		usr_id,
 		book_bno,
@@ -99,5 +100,27 @@
 		qna_code = #{qna_code}
 	</select>
 
+	<!-- QnA 수정 -->
+	<update id="qnaModify" parameterType="QnaVO">
+		UPDATE
+		qna_table
+		SET
+		qna_type = #{qna_type},
+		qna_title = #{qna_title}, 
+		qna_content = #{qna_content}, 
+		qna_update = SYSDATE
+		WHERE
+		qna_code = #{qna_code}
+
+	</update>
+
+		<!-- QnA 삭제 -->
+	<delete id="qnaDelete" parameterType="Long">
+		DELETE FROM
+		qna_table
+		WHERE
+		qna_code = #{qna_code}
+
+	</delete>
 
 </mapper>

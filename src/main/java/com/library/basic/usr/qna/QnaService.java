@@ -34,4 +34,14 @@ public class QnaService {
 		return qnaMapper.qnaForm(qna_code);
 	};
 	
+	// Qna 수정
+	public void qnaModify(QnaVO vo) {
+		qnaMapper.qnaModify(vo);
+	};
+	
+	// Qna 삭제
+	public void qnaDelete(Long qna_code) {
+		qnaMapper.qnaDelete(qna_code);
+	};
+	
 }
