@@ -9,5 +9,10 @@ import lombok.RequiredArgsConstructor;
 public class PaymentService {
 	
 	private final PaymentMapper paymentMapper;
+	
+	// 관리자 - 주문상세관리 결제정보
+	public PaymentVO orderPayInfo(Long ord_code) {
+		return paymentMapper.orderPayInfo(ord_code);
+	};
 
 }

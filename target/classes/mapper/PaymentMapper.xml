@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.library.basic.usr.payment.PaymentMapper">
 
+	<!-- 결제테이블 db 저장 -->
 	<insert id="paymentInsert" parameterType="PaymentVO">
 
 		INSERT INTO
@@ -30,5 +31,26 @@
 
 
 	</insert>
+
+	<select id="orderPayInfo" resultType="PaymentVO"
+		parameterType="Long">
+
+		SELECT
+		pay_id,
+		ord_code,
+		usr_id,
+		paymethod,
+		pay_bankinfo,
+		pay_account,
+		pay_name,
+		pay_price,
+		pay_status,
+		pay_date
+		FROM
+		payment_table
+		WHERE
+		ord_code = #{ord_code}
+
+	</select>
 
 </mapper>

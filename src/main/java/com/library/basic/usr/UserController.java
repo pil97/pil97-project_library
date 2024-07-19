@@ -14,6 +14,8 @@ import com.library.basic.mail.EmailDTO;
 import com.library.basic.mail.EmailService;
 import com.library.basic.usr.kakaologin.KakaoUserInfo;
 import com.library.basic.usr.naverlogin.NaverResponse;
+import com.library.basic.usr.qna.QnaService;
+import com.library.basic.usr.review.ReviewService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-
+	private final ReviewService reviewService;
+	private final QnaService qnaService;
 	private final PasswordEncoder passwordEncoder;
-
 	private final EmailService emailService;
 
 	// 회원가입 페이지
@@ -373,5 +375,25 @@ public class UserController {
 
 		return "redirect:" + url;
 	}
+	
+	// 회원 리뷰 목록 페이지
+	@GetMapping("/review")
+	public void reviewPage() {
+
+	}
+	
+	// 회원 리뷰 수정
+	
+	// 회원 리뷰 삭제
+	
+	// 회원 QnA 목록 페이지
+	@GetMapping("/qna")
+	public void qnaPage() {
+
+	}
+	
+	// 회원 QnA 수정
+	
+	// 회원 QnA 삭제
 
 }

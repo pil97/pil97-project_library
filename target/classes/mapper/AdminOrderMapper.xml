@@ -113,10 +113,11 @@
 		od.dt_amount,
 		od.dt_price,
 		b.book_name,
+		b.book_deposit,
 		b.book_up_folder,
-		b_book_img
+		b.book_img
 		FROM
-		ordetail_table od
+		order_detail_table od
 		INNER JOIN
 		book_table b
 		ON

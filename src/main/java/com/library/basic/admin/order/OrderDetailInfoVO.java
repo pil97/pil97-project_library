@@ -13,6 +13,7 @@ public class OrderDetailInfoVO {
 	private Integer book_bno;
 	private int dt_amount;
 	private int dt_price;
+	private int book_deposit;
 	private String book_name;
 	private String book_up_folder;
 	private String book_img;

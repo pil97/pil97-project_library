@@ -8,11 +8,48 @@
   <!-- 각 페이지의 title -->
   <th:block layout:fragment="title">
     <title>주문내역</title>
+    
   </th:block>
 
   <!-- 각 페이지의 css -->
   <th:block layout:fragment="css">
-    <link href="/css/admin/order/orderlist.css" rel="stylesheet" />
+    <link href="/css/admin/order/orderlist.css" rel="stylesheet" />  
+       <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
+    <script id="order-product-template" type="text/x-handlebars-template">
+      <h4>상품상세정보</h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">번호</th>
+            <th scope="col">주문상품</th>
+            <th scope="col">판매가격</th>
+            <th scope="col">수량</th>
+            <th scope="col">주문금액</th>
+            <th scope="col">비고</th>
+          </tr>
+        </thead>
+        {{#each .}}
+        <tbody>
+          <tr>
+             <td>{{inc @index}}</td>
+            <td>
+              <img style="width: 80px; height: 100px; object-fit: contain" src="/admin/order/imagedisplay?dateFolderName={{book_up_folder}}&fileName={{book_img}}" />
+              <a class="move pro_name" href="#">{{pro_name}}</a>
+            </td>
+            <td>
+              <span>{{formatCurrency book_deposit}}</span>
+            </td>
+            <td>{{dt_amount}}</td>
+            <td>
+              <span>{{formatCurrency dt_price}}</span>
+            </td>
+            <td><button type="button" class="btn btn-dark" data-book_bno='{{book_bno}}'>Delete</button></td>
+          </tr>
+        </tbody>
+        {{/each}}
+      </table>
+    </script>  
   </th:block>
 
   <body class="hold-transition skin-blue sidebar-mini">
@@ -141,22 +178,130 @@
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title" id="staticBackdropLabel2">Modal title</h5>
+	        <h3 class="modal-title" id="staticBackdropLabel2">주문상세</h3>
 	        <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
 	        </button>
 	      </div>
 	      <!-- load()메서드를 이용하여, pro_info_2.html파일이 실행된 내용이 삽입된다. -->
-	      <div class="modal-body" id="popupInfo">
+	      <div class="modal-body">
+	      
+	      <!-- 주문상품정보  -->
+              <div id="orderProdcutInfo"></div>
+	        
+	        <h4>결제정보</h4>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">결제방식</th>
+                    <td scope="col">
+                    	<span id="paymethod"></span>
+                    </td>
+                    <th scope="col">결제금액</th>
+                    <td scope="col">
+                    	<span id="pay_price"></span>
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">예금주</th>
+                    <td>
+                      <span id="pay_name"></span>
+                    </td>
+                    <th>은행명/입금계좌</th>
+                    <td>
+                    	<span id="pay_bankinfo"></span> / 
+                    	<span id="pay_account"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row" colspan="3">결제상태</th>
+                    <td>
+                    	<span id="pay_status"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h4>주문자(수령인)정보</h4>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">수령인</th>
+                    <td scope="col">
+                      <input type="text" id="ord_name" name="ord_name" />
+                    </td>
+                    <th scope="col">전화번호</th>
+                    <td scope="col">
+                      <input type="text" id="ord_tel" name="ord_tel" />
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">주소</th>
+                    <td colspan="3">
+                      <button type="button" class="btn btn-outline-primary" onclick="sample2_execDaumPostcode()">우편번호</button>
+                      <input type="text" class="form-control" id="sample2_postcode" name="ord_addr_zipcode" placeholder="우편번호 입력하세요" />
+
+                      <input type="text" class="form-control" id="sample2_address" name="ord_addr_basic" placeholder="기본주소 입력하세요" />
+
+                      <input type="text" class="form-control" id="sample2_detailAddress" name="ord_addr_detail" placeholder="상세주소 입력하세요" />
+                      <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">배송메모</th>
+                    <td colspan="3"><textarea rows="3" cols="70" id="ord_desc" name="ord_desc"></textarea></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h4>관리자메모</h4>
+              <table class="table table-bordered">
+                <tbody>
+                  <tr>
+                    <th scope="col">메모</th>
+                    <td scope="col"><textarea rows="3" cols="80">관리내용</textarea></td>
+                  </tr>
+                </tbody>
+              </table>
 	        
 	      </div>
 	      
 	    </div>
 	  </div>
 	</div>
+	    <!-- modal창 화면 css 수정  -->
+      <!-- iOS에서는 position:fixed 버그가 있음, 적용하는 사이트에 맞게 position:absolute 등을 이용하여 top,left값 조정 필요 -->
+      <div
+        id="layer"
+        style="
+          display: none;
+          position: fixed;
+          overflow: hidden;
+          z-index: 9999;
+          -webkit-overflow-scrolling: touch;
+          background: white;
+          width: 300px;
+          height: 400px;
+          border: 5px solid;
+        "
+      >
+        <img
+          src="//t1.daumcdn.net/postcode/resource/images/close.png"
+          id="btnCloseLayer"
+          style="cursor: pointer; position: absolute; right: -3px; top: -3px; z-index: 10000"
+          onclick="closeDaumPostcode()"
+          alt="닫기 버튼"
+        />
+      </div>
       <!-- end : 메인 내용 -->
     </th:block>
     <th:block layout:fragment="script">
+          <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+      <script src="/js/comm/addr.js"></script>
       <script th:inline="javascript">
         let actionForm = $("#actionForm");
 
@@ -181,9 +326,56 @@
 
   			// 주문상세정보.  id="order_detail_info_popup"
   			$("#orderDetailInfoPopup").modal('show');
+  			
+  			 $.ajax({
+  	              url: "/admin/order/orderdetailinfo",
+  	              type: "get",
+  	              data: { ord_code: ord_code },
+  	              dataType: "json",
+  	              success: function (result) {
+  	                console.log(result);
+  	                
+  	             	// 주문상품정보
+  	                printOrderProductInfo(result.orderDetailList, $("#orderProdcutInfo"), $("#order-product-template"));
 
-  			$("#popupInfo").load("/admin/order/orderdetailinfo?ord_code=" + ord_code);
+  	                // 결제정보
+  	                $("#paymethod").html(result.PaymentVO.paymethod);
+  	                $("#pay_price").html(result.PaymentVO.pay_price);
+  	                $("#pay_name").html(result.PaymentVO.pay_name);
+  	                $("#pay_bankinfo").html(result.PaymentVO.pay_bankinfo);
+  	              	$("#pay_account").html(result.PaymentVO.pay_account);
+  	                $("#pay_status").html(result.PaymentVO.pay_status);
 
+  	                // 주문자(수령인)
+  	                $("#ord_name").val(result.OrderVO.ord_name);
+  	                $("#ord_tel").val(result.OrderVO.ord_tel);
+  	                $("#sample2_postcode").val(result.OrderVO.ord_addr_zipcode);
+  	                $("#sample2_address").val(result.OrderVO.ord_addr_basic);
+  	                $("#sample2_detailAddress").val(result.OrderVO.ord_addr_detail);
+  	                $("#ord_desc").val(result.OrderVO.ord_desc);
+  	                
+  	              },
+  	            });
+
+  		// Handlebar UI작업 : Handlebars 템플릿 이용
+  	          let printOrderProductInfo = function (orderProductData, target, template) {
+  	            console.log(orderProductData);
+  	            let templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
+  	            let orderProductHtml = templateObj(orderProductData);
+  	            target.children().remove();
+  	            target.append(orderProductHtml);
+  	          };
+  	          
+  	        // 인덱스 넘버
+  	          Handlebars.registerHelper('inc', function(value) {
+  	        	    return parseInt(value) + 1;
+  	        	});
+
+  	        // 숫자 변환
+  	        Handlebars.registerHelper('formatCurrency1', function(value) {
+  	          // 숫자를 3자리마다 쉼표를 추가하고 "원"을 붙임
+  	          return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원';
+  	        });  	          	    
 
   		});
           // ready event end
