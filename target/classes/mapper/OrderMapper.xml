@@ -48,7 +48,7 @@
         #{ord_code},
         book_bno,
         cart_amount,
-        #{ord_price}
+        cart_amount * #{book_deposit}
     FROM	
         cart_table
     WHERE

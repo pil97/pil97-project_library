@@ -20,4 +20,5 @@ public class OrderVO {
 	private int ord_price;
 	private String ord_desc;
 	private Date ord_regdate;
+	private String ord_admin_memo; // 관리자 - 메모
 }

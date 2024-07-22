@@ -8,15 +8,14 @@
   <!-- 각 페이지의 title -->
   <th:block layout:fragment="title">
     <title>주문내역</title>
-    
   </th:block>
 
   <!-- 각 페이지의 css -->
   <th:block layout:fragment="css">
-    <link href="/css/admin/order/orderlist.css" rel="stylesheet" />  
-       <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <link href="/css/admin/order/orderlist.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
-    <script id="order-product-template" type="text/x-handlebars-template">
+    <script id="order-book-template" type="text/x-handlebars-template">
       <h4>상품상세정보</h4>
       <table class="table table-bordered">
         <thead>
@@ -38,18 +37,20 @@
               <a class="move pro_name" href="#">{{pro_name}}</a>
             </td>
             <td>
-              <span>{{formatCurrency book_deposit}}</span>
+              <span name="book_deposit" data-book_deposit="{{book_deposit}}">{{formatCurrency book_deposit}}</span>
             </td>
-            <td>{{dt_amount}}</td>
+            <td >
+              <span name="dt_amount" data-dt_amount="{{dt_amount}}">{{dt_amount}}</span>
+            </td>
             <td>
-              <span>{{formatCurrency dt_price}}</span>
+              <span>{{formatCurrency (unitOrderTotalPrice book_deposit dt_amount)}}</span>
             </td>
-            <td><button type="button" class="btn btn-dark" data-book_bno='{{book_bno}}'>Delete</button></td>
+            <td><button type="button" class="btn btn-dark" name="orderBookDelete" data-book_bno='{{book_bno}}'>삭제</button></td>
           </tr>
         </tbody>
         {{/each}}
       </table>
-    </script>  
+    </script>
   </th:block>
 
   <body class="hold-transition skin-blue sidebar-mini">
@@ -172,34 +173,41 @@
           </div>
         </section>
       </div>
-      
-       <!-- Modal -->
-	<div class="modal fade" id="orderDetailInfoPopup" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h3 class="modal-title" id="staticBackdropLabel2">주문상세</h3>
-	        <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
-	      </div>
-	      <!-- load()메서드를 이용하여, pro_info_2.html파일이 실행된 내용이 삽입된다. -->
-	      <div class="modal-body">
-	      
-	      <!-- 주문상품정보  -->
-              <div id="orderProdcutInfo"></div>
-	        
-	        <h4>결제정보</h4>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="orderDetailInfoPopup"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel2"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title" id="staticBackdropLabel2">주문상세</h3>
+              <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- load()메서드를 이용하여, pro_info_2.html파일이 실행된 내용이 삽입된다. -->
+            <div class="modal-body">
+              <!-- 주문상품정보  -->
+              <div id="orderBookInfo"></div>
+
+              <h4>결제정보</h4>
               <table class="table table-bordered">
                 <thead>
                   <tr>
                     <th scope="col">결제방식</th>
                     <td scope="col">
-                    	<span id="paymethod"></span>
+                      <span id="paymethod"></span>
                     </td>
                     <th scope="col">결제금액</th>
                     <td scope="col">
-                    	<span id="pay_price"></span>
+                      <span id="pay_price"></span>
                     </td>
                   </tr>
                 </thead>
@@ -211,14 +219,14 @@
                     </td>
                     <th>은행명/입금계좌</th>
                     <td>
-                    	<span id="pay_bankinfo"></span> / 
-                    	<span id="pay_account"></span>
+                      <span id="pay_bankinfo"></span> /
+                      <span id="pay_account"></span>
                     </td>
                   </tr>
                   <tr>
                     <th scope="row" colspan="3">결제상태</th>
                     <td>
-                    	<span id="pay_status"></span>
+                      <span id="pay_status"></span>
                     </td>
                   </tr>
                 </tbody>
@@ -231,6 +239,7 @@
                     <th scope="col">수령인</th>
                     <td scope="col">
                       <input type="text" id="ord_name" name="ord_name" />
+                      <input type="hidden" id="usr_id" name="usr_id" />
                     </td>
                     <th scope="col">전화번호</th>
                     <td scope="col">
@@ -263,17 +272,16 @@
                 <tbody>
                   <tr>
                     <th scope="col">메모</th>
-                    <td scope="col"><textarea rows="3" cols="80">관리내용</textarea></td>
+                    <td scope="col"><textarea rows="3" cols="80" id="ord_admin_memo" name="ord_admin_memo">관리내용</textarea></td>
                   </tr>
                 </tbody>
               </table>
-	        
-	      </div>
-	      
-	    </div>
-	  </div>
-	</div>
-	    <!-- modal창 화면 css 수정  -->
+              <button type="button" id="btnDetailModify" class="btn btn-secondary">수정</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal창 화면 css 수정  -->
       <!-- iOS에서는 position:fixed 버그가 있음, 적용하는 사이트에 맞게 position:absolute 등을 이용하여 top,left값 조정 필요 -->
       <div
         id="layer"
@@ -300,7 +308,7 @@
       <!-- end : 메인 내용 -->
     </th:block>
     <th:block layout:fragment="script">
-          <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+      <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
       <script src="/js/comm/addr.js"></script>
       <script th:inline="javascript">
         let actionForm = $("#actionForm");
@@ -319,65 +327,150 @@
             // 변경된 pageNum 값을 서버로 전송 (Criteria 클래스)
             actionForm.submit();
           });
-          
-  		// 상세보기 name="btn_order_info"
-  		$("button[name='btnOrderDetail']").on("click", function() {
-  			let ord_code = $(this).data("ord_code");
 
-  			// 주문상세정보.  id="order_detail_info_popup"
-  			$("#orderDetailInfoPopup").modal('show');
-  			
-  			 $.ajax({
-  	              url: "/admin/order/orderdetailinfo",
-  	              type: "get",
-  	              data: { ord_code: ord_code },
-  	              dataType: "json",
-  	              success: function (result) {
-  	                console.log(result);
-  	                
-  	             	// 주문상품정보
-  	                printOrderProductInfo(result.orderDetailList, $("#orderProdcutInfo"), $("#order-product-template"));
+          // 숫자 전환
+          const formatCurrency = (value) => {
+            const formatted = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return `${formatted} 원`; // Append "원" (or "₩" if you prefer)
+          };
 
-  	                // 결제정보
-  	                $("#paymethod").html(result.PaymentVO.paymethod);
-  	                $("#pay_price").html(result.PaymentVO.pay_price);
-  	                $("#pay_name").html(result.PaymentVO.pay_name);
-  	                $("#pay_bankinfo").html(result.PaymentVO.pay_bankinfo);
-  	              	$("#pay_account").html(result.PaymentVO.pay_account);
-  	                $("#pay_status").html(result.PaymentVO.pay_status);
+          // 전역변수 ord_code
+          let ord_code;
 
-  	                // 주문자(수령인)
-  	                $("#ord_name").val(result.OrderVO.ord_name);
-  	                $("#ord_tel").val(result.OrderVO.ord_tel);
-  	                $("#sample2_postcode").val(result.OrderVO.ord_addr_zipcode);
-  	                $("#sample2_address").val(result.OrderVO.ord_addr_basic);
-  	                $("#sample2_detailAddress").val(result.OrderVO.ord_addr_detail);
-  	                $("#ord_desc").val(result.OrderVO.ord_desc);
-  	                
-  	              },
-  	            });
+          // 주문상세정보.  id="order_detail_info_popup"
+          const orderDetailInfo = () => {
+            $("#orderDetailInfoPopup").modal("show");
+            $.ajax({
+              url: "/admin/order/orderdetailinfo",
+              type: "get",
+              data: { ord_code: ord_code },
+              dataType: "json",
+              success: (result) => {
+                console.log(result);
 
-  		// Handlebar UI작업 : Handlebars 템플릿 이용
-  	          let printOrderProductInfo = function (orderProductData, target, template) {
-  	            console.log(orderProductData);
-  	            let templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
-  	            let orderProductHtml = templateObj(orderProductData);
-  	            target.children().remove();
-  	            target.append(orderProductHtml);
-  	          };
-  	          
-  	        // 인덱스 넘버
-  	          Handlebars.registerHelper('inc', function(value) {
-  	        	    return parseInt(value) + 1;
-  	        	});
+                // 주문상품정보
+                printOrderBookInfo(result.orderDetailList, $("#orderBookInfo"), $("#order-book-template"));
 
-  	        // 숫자 변환
-  	        Handlebars.registerHelper('formatCurrency1', function(value) {
-  	          // 숫자를 3자리마다 쉼표를 추가하고 "원"을 붙임
-  	          return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원';
-  	        });  	          	    
+                // 결제정보
+                $("#paymethod").html(result.PaymentVO.paymethod);
+                $("#pay_price").html(formatCurrency(result.PaymentVO.pay_price));
+                $("#pay_name").html(result.PaymentVO.pay_name);
+                $("#pay_bankinfo").html(result.PaymentVO.pay_bankinfo);
+                $("#pay_account").html(result.PaymentVO.pay_account);
+                $("#pay_status").html(result.PaymentVO.pay_status);
 
-  		});
+                // 주문자(수령인)
+                $("#ord_name").val(result.OrderVO.ord_name);
+                $("#usr_id").val(result.OrderVO.usr_id);
+                $("#ord_tel").val(result.OrderVO.ord_tel);
+                $("#sample2_postcode").val(result.OrderVO.ord_addr_zipcode);
+                $("#sample2_address").val(result.OrderVO.ord_addr_basic);
+                $("#sample2_detailAddress").val(result.OrderVO.ord_addr_detail);
+                $("#ord_desc").val(result.OrderVO.ord_desc);
+                $("#ord_admin_memo").val(result.OrderVO.ord_admin_memo);
+              },
+            });
+          };
+
+          // 상세보기 name="btn_order_info"
+          $("button[name='btnOrderDetail']").on("click", function () {
+            ord_code = $(this).data("ord_code");
+
+            // 주문상세정보.  id="order_detail_info_popup"
+            orderDetailInfo();
+          });
+
+          // 주문 상세 개별 삭제
+          $("div#orderDetailInfoPopup div#orderBookInfo").on("click", "button[name='orderBookDelete']", function () {
+            if (confirm("삭제하겠습니까?")) {
+              // ord_code : 주문번호는 상세정보 클릭시 위에 전역변수로 선언
+
+              let book_bno = $(this).data("book_bno");
+              let book_deposit = $("span[name='book_deposit']").data("book_deposit");
+              let dt_amount = $("span[name='dt_amount']").data("dt_amount");
+              let changePrice = book_deposit * dt_amount;
+              // console.log("주문코드", ord_code);
+              // console.log("개별가격", book_deposit);
+              // console.log("수량", dt_amount);
+              // console.log("가격", changePrice);
+
+              // return;
+              $.ajax({
+                url: "/admin/order/orderbookdelete",
+                type: "get",
+                data: { ord_code: ord_code, book_bno: book_bno, changePrice: changePrice },
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    alert("주문도서가 삭제되었습니다.");
+                    // 주문상세정보
+                    orderDetailInfo();
+                  }
+                },
+              });
+            }
+          });
+
+          // 기본 주문(수령) 정보 수정하기.
+          $("button#btnDetailModify").on("click", function () {
+            // ord_code : 전역변수
+            // mbsp_id : 세션에서 참조하면 안됨
+
+            let ordDetailData = {
+              ord_code: ord_code,
+              ord_name: $("#ord_name").val(),
+              usr_id: $("#usr_id").val(),
+              ord_addr_zipcode: $("#sample2_postcode").val(),
+              ord_addr_basic: $("#sample2_address").val(),
+              ord_addr_detail: $("#sample2_detailAddress").val(),
+              ord_tel: $("#ord_tel").val(),
+              ord_desc: $("#ord_desc").val(),
+              ord_admin_memo: $("#ord_admin_memo").val(),
+            };
+
+            // console.log("데이터", ordDetailData);
+
+            // return;
+
+            $.ajax({
+              url: "/admin/order/orderdetailmodify",
+              type: "post",
+              data: ordDetailData,
+              dataType: "text",
+              success: function (result) {
+                if (result == "success") {
+                  alert("주문도서가 수정되었습니다.");
+                  // 주문상세정보
+                  orderDetailInfo();
+                }
+              },
+            });
+          });
+
+          // Handlebar UI작업 : Handlebars 템플릿 이용
+          let printOrderBookInfo = function (orderBookData, target, template) {
+            console.log(orderBookData);
+            let templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
+            let orderBookHtml = templateObj(orderBookData);
+            target.children().remove();
+            target.append(orderBookHtml);
+          };
+
+          // 인덱스 넘버
+          Handlebars.registerHelper("inc", function (value) {
+            return parseInt(value) + 1;
+          });
+
+          // 주문금액(가격 * 수량)
+          Handlebars.registerHelper("unitOrderTotalPrice", function (book_deposit, dt_amount) {
+            return book_deposit * dt_amount;
+          });
+
+          // 숫자 변환
+          Handlebars.registerHelper("formatCurrency", function (value) {
+            // 숫자를 3자리마다 쉼표를 추가하고 "원"을 붙임
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
+          });
           // ready event end
         });
       </script>

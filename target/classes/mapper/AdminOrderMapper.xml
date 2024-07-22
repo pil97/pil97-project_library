@@ -39,7 +39,8 @@
 		ord_tel,
 		ord_price,
 		ord_desc,
-		ord_regdate
+		ord_regdate,
+		ord_admin_memo
 		FROM
 		(
 		SELECT /*+
@@ -55,7 +56,8 @@
 		ord_tel,
 		ord_price,
 		ord_desc,
-		ord_regdate
+		ord_regdate,
+		ord_admin_memo
 		FROM
 		order_table
 		WHERE
@@ -97,7 +99,8 @@
 		ord_tel,
 		ord_price,
 		ord_desc,
-		ord_regdate
+		ord_regdate,
+		ord_admin_memo
 		FROM
 		order_table
 		WHERE
@@ -126,5 +129,58 @@
 		od.ord_code = #{ord_code}
 	</select>
 
+	<!-- 주문상품 개별 삭제 - 주문상세테이블 db 삭제 -->
+	<delete id="orderBookDelete" parameterType="map">
+		DELETE FROM
+		order_detail_table
+		WHERE
+		ord_code = #{ord_code}
+		AND
+		book_bno = #{book_bno}
+
+	</delete>
+
+	<!-- 주문상품 개별 삭제 - 2. 주문테이블 금액 변경 -->
+	<update id="orderBookPriceChange" parameterType="map">
+
+		UPDATE
+		order_table
+		SET
+		ord_price = ord_price - #{ord_price}
+		WHERE
+		ord_code = #{ord_code}
+
+
+	</update>
+
+	<!-- 주문상품 개별 삭제 - 결제테이블 db 수정 -->
+	<update id="paymentPriceChange" parameterType="map">
+
+		UPDATE
+		payment_table
+		SET
+		pay_price = pay_price - #{pay_price}
+		WHERE
+		ord_code = #{ord_code}
+
+	</update>
+
+	<!-- 주문상세 내역 주문자 정보 수정 -->
+	<update id="orderDetailModify" parameterType="OrderVO">
+
+		UPDATE
+		order_table
+		SET
+		ord_name = #{ord_name},
+		ord_addr_zipcode = #{ord_addr_zipcode},
+		ord_addr_basic = #{ord_addr_basic},
+		ord_addr_detail = #{ord_addr_detail},
+		ord_tel = #{ord_tel},
+		ord_desc = #{ord_desc},
+		ord_admin_memo = #{ord_admin_memo}
+		WHERE
+		ord_code = #{ord_code}
+
+	</update>
 
 </mapper>

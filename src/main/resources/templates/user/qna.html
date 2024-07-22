@@ -60,15 +60,12 @@
 
       <div class="container" id="cartInfo">
         <div class="row mb-3 text-center">
-          <div class="col-md-1">
-            <input type="checkbox" id="checkAll" />
-          </div>
-          <div class="col-md-3">번호</div>
+          <div class="col-md-1">번호</div>
           <div class="col-md-2">문의종류</div>
-          <div class="col-md-1">제목</div>
+          <div class="col-md-2">도서</div>
+          <div class="col-md-3">제목</div>
           <div class="col-md-2">등록일</div>
-          <div class="col-md-2">수정</div>
-          <div class="col-md-1">삭제</div>
+          <div class="col-md-2">상세보기</div>
         </div>
         <div class="row-divider"></div>
         <div class="row mb-3 d-flex justify-content-center" th:if="${#lists.isEmpty(cartList)}">
@@ -104,10 +101,7 @@
         </div>
         <div class="row mb-5">
           <div class="col text-center">
-            <button type="button" class="btn btn-secondary" id="btnCheckDelete">선택삭제</button>
-            <button type="button" class="btn btn-secondary" id="btnCartEmpty">장바구니 비우기</button>
-            <a type="button" th:href="@{/user/book/booklist?c_code=10&c_name=한국소설}" class="btn btn-secondary">계속 쇼핑하기</a>
-            <button type="button" class="btn btn-secondary" id="btnCartOrder">주문하기</button>
+            <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
           </div>
         </div>
       </div>

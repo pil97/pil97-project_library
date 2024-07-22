@@ -74,12 +74,12 @@ public class OrderController {
 
 	// 무통장 입금
 	@PostMapping("/ordernobank")
-	public String orderNoBank(OrderVO vo, String pay_bankinfo, String pay_account, String pay_name, HttpSession session) throws Exception {
+	public String orderNoBank(OrderVO vo, int book_deposit, String pay_bankinfo, String pay_account, String pay_name, HttpSession session) throws Exception {
 		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 		
 		vo.setUsr_id(usr_id);
 				
-		orderService.orderProcess(vo, usr_id, "무통장입금", pay_bankinfo, pay_account, pay_name, "미납");		
+		orderService.orderProcess(vo, book_deposit, usr_id, "무통장입금", pay_bankinfo, pay_account, pay_name, "미납");		
 						
 		return "redirect:/user/order/ordercomplete";
 	}

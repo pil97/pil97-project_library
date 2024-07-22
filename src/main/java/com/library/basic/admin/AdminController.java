@@ -22,7 +22,7 @@ public class AdminController {
 	private final PasswordEncoder passwordEncoder;
 
 	// 관리자 로그인 페이지
-	@GetMapping("")
+	@GetMapping("/")
 	public String adminLoginPage() {
 
 		log.info("관리자 로그인 페이지");

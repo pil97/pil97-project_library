@@ -8,6 +8,6 @@ public interface OrderMapper {
 	void orderInsert(OrderVO vo);
 	
 	// 주문상세테이블 db 저장
-	void orderDetailInsert(@Param("ord_code")Long ord_code, @Param("usr_id") String usr_id, @Param("ord_price") int ord_price);
+	void orderDetailInsert(@Param("ord_code")Long ord_code, @Param("usr_id") String usr_id, @Param("book_deposit") int book_deposit);
 
 }
