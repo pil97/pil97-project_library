@@ -44,4 +44,13 @@ public class QnaService {
 		qnaMapper.qnaDelete(qna_code);
 	};
 	
+	// 나의 QnA 목록
+	public List<MyQnaVO> myQnaList(String usr_id, Criteria cri) {
+		return qnaMapper.myQnaList(usr_id, cri);
+	};
+	
+	//  개수
+	public int getTotalCount(String usr_id, Criteria cri) {
+		return qnaMapper.getTotalCount(usr_id, cri);
+	};
 }

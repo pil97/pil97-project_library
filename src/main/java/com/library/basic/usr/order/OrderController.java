@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.library.basic.admin.book.BookVO;
 import com.library.basic.usr.UserService;
 import com.library.basic.usr.UserVO;
 import com.library.basic.usr.cart.CartProductVO;
@@ -51,6 +52,7 @@ public class OrderController {
 			d_vo.setBook_up_folder(d_vo.getBook_up_folder().replace("\\", "/"));
 			totalPrice += d_vo.getCart_amount() * d_vo.getBook_deposit();
 		}
+			
 		model.addAttribute("cartList", cartList);
 		model.addAttribute("totalPrice", totalPrice);
 
@@ -74,12 +76,12 @@ public class OrderController {
 
 	// 무통장 입금
 	@PostMapping("/ordernobank")
-	public String orderNoBank(OrderVO vo, int book_deposit, String pay_bankinfo, String pay_account, String pay_name, HttpSession session) throws Exception {
+	public String orderNoBank(OrderVO vo, String pay_bankinfo, String pay_account, String pay_name, HttpSession session) throws Exception {
 		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 		
 		vo.setUsr_id(usr_id);
 				
-		orderService.orderProcess(vo, book_deposit, usr_id, "무통장입금", pay_bankinfo, pay_account, pay_name, "미납");		
+		orderService.orderProcess(vo, usr_id, "무통장입금", pay_bankinfo, pay_account, pay_name, "미납");		
 						
 		return "redirect:/user/order/ordercomplete";
 	}

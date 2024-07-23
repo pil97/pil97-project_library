@@ -21,7 +21,7 @@ public class OrderService {
 	private final CartMapper cartMapper;
 
 	@Transactional
-	public void orderProcess(OrderVO vo, int book_deposit, String usr_id, String payMethod, String pay_bankinfo, String pay_account, 
+	public void orderProcess(OrderVO vo, String usr_id, String payMethod, String pay_bankinfo, String pay_account, 
 			String pay_name, String p_status) {
 				
 		// 1. 주문테이블 db 저장
@@ -32,7 +32,7 @@ public class OrderService {
 		orderMapper.orderInsert(vo);
 
 		// 2. 주문상세테이블 db 저장
-		orderMapper.orderDetailInsert(vo.getOrd_code(), usr_id, book_deposit);
+		orderMapper.orderDetailInsert(vo.getOrd_code(), usr_id);
 
 		// 3. 결제테이블 db 저장
 		PaymentVO paymentVO = PaymentVO.builder()

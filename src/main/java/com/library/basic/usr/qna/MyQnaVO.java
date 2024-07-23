@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class QnaVO {
+public class MyQnaVO {
 	
 	private Long qna_code;
 	private String usr_id;
@@ -23,5 +23,8 @@ public class QnaVO {
 	private Date qna_update;
 	private Date qna_date;
 	private Date qna_answer_date;
+	private String book_name;
+	private String book_up_folder;
+	private String book_img;
 
 }

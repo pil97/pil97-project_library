@@ -37,10 +37,10 @@
               <a class="move pro_name" href="#">{{pro_name}}</a>
             </td>
             <td>
-              <span name="book_deposit" data-book_deposit="{{book_deposit}}">{{formatCurrency book_deposit}}</span>
+              <span>{{formatCurrency book_deposit}}</span>
             </td>
             <td >
-              <span name="dt_amount" data-dt_amount="{{dt_amount}}">{{dt_amount}}</span>
+              <span>{{dt_amount}}</span>
             </td>
             <td>
               <span>{{formatCurrency (unitOrderTotalPrice book_deposit dt_amount)}}</span>
@@ -91,6 +91,7 @@
                       <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
                       <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
                       <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+                      날짜검색 : <input type="date" name="startDate" th:value="${startDate}"/> ~ <input type="date" name="endDate" th:value="${endDate}" />
                       <button type="submit" class="btn btn-primary" th:text="검색"></button>
                     </form>
                   </div>
@@ -386,9 +387,6 @@
               // ord_code : 주문번호는 상세정보 클릭시 위에 전역변수로 선언
 
               let book_bno = $(this).data("book_bno");
-              let book_deposit = $("span[name='book_deposit']").data("book_deposit");
-              let dt_amount = $("span[name='dt_amount']").data("dt_amount");
-              let changePrice = book_deposit * dt_amount;
               // console.log("주문코드", ord_code);
               // console.log("개별가격", book_deposit);
               // console.log("수량", dt_amount);
@@ -398,7 +396,7 @@
               $.ajax({
                 url: "/admin/order/orderbookdelete",
                 type: "get",
-                data: { ord_code: ord_code, book_bno: book_bno, changePrice: changePrice },
+                data: { ord_code: ord_code, book_bno: book_bno},
                 dataType: "text",
                 success: function (result) {
                   if (result == "success") {

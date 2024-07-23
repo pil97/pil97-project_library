@@ -17,13 +17,13 @@ public class AdminOrderService {
 	private final AdminOrderMapper adminOrderMapper;
 	
 	// 주문내역 목록
-	public List<OrderVO> orderList(Criteria cri) {
-		return adminOrderMapper.orderList(cri);
+	public List<OrderVO> orderList(Criteria cri, String startDate, String endDate) {
+		return adminOrderMapper.orderList(cri, startDate, endDate);
 	}; 
 	
 	// 주문내역 개수
-	public int getTotalCount(Criteria cri) {
-		return adminOrderMapper.getTotalCount(cri);
+	public int getTotalCount(Criteria cri, String startDate, String endDate) {
+		return adminOrderMapper.getTotalCount(cri, startDate, endDate);
 	};
 	
 	// 주문자(수령인) 정보
@@ -38,16 +38,16 @@ public class AdminOrderService {
 	
 	// 주문상세 개별 삭제
 	@Transactional
-	public void orderBookDeleteProcess(Long ord_code, int book_bno, int changePrice) {
+	public void orderBookDeleteProcess(Long ord_code, int book_bno) {
 		
 		// 1. 주문상세테이블 db 삭제
 		adminOrderMapper.orderBookDelete(ord_code, book_bno);
 		
 		// 2. 주문테이블 금액 변경
-		adminOrderMapper.orderBookPriceChange(ord_code, changePrice);
+		adminOrderMapper.orderBookPriceChange(ord_code);
 				
 		// 3. 결제테이블 금액 변경
-		adminOrderMapper.paymentPriceChange(ord_code, changePrice);
+		adminOrderMapper.paymentPriceChange(ord_code);
 		
 	}
 	

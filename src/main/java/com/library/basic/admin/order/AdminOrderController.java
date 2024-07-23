@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -38,16 +39,16 @@ public class AdminOrderController {
 
 	// 주문내역
 	@GetMapping("/orderlist")
-	public void orderList(Criteria cri, Model model) throws Exception {
+	public void orderList(Criteria cri, @ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate, Model model) throws Exception {
 
 		// 페이지당 주문내역 2개 출력
 		cri.setAmount(2);
 
 		// 주문내역 목록
-		List<OrderVO> vo = adminOrderService.orderList(cri);
+		List<OrderVO> vo = adminOrderService.orderList(cri, startDate, endDate);
 
 		// 주문내역 개수
-		int totalCount = adminOrderService.getTotalCount(cri);
+		int totalCount = adminOrderService.getTotalCount(cri, startDate, endDate);
 
 		model.addAttribute("orderList", vo);
 		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
@@ -87,12 +88,16 @@ public class AdminOrderController {
 
 	// 주문상세 개별 삭제
 	@GetMapping("/orderbookdelete")
-	public ResponseEntity<String> orderBookDelete(Long ord_code, int book_bno, int changePrice) throws Exception {
+	public ResponseEntity<String> orderBookDelete(Long ord_code, int book_bno) throws Exception {
 
+		log.info("주문번호: " + ord_code);
+		log.info("책번호: " + book_bno);
+		
+		
 		ResponseEntity<String> entity = null;
 
 		// db연동
-		 adminOrderService.orderBookDeleteProcess(ord_code, book_bno, changePrice);
+		 adminOrderService.orderBookDeleteProcess(ord_code, book_bno);
 
 		entity = new ResponseEntity<String>("success", HttpStatus.OK);
 

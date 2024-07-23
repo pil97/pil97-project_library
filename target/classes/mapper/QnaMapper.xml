@@ -39,8 +39,11 @@
 		qna_password,
 		qna_title,
 		qna_content,
+		qna_check,
+		qna_answer,
 		qna_update,
-		qna_date
+		qna_date,
+		qna_answer_date
 		FROM(
 		SELECT /*+ INDEX_DESC(qna_table
 		PK_QNA_CODE) */
@@ -52,8 +55,11 @@
 		qna_password,
 		qna_title,
 		qna_content,
+		qna_check,
+		qna_answer,
 		qna_update,
-		qna_date
+		qna_date,
+		qna_answer_date
 		FROM
 		qna_table
 		WHERE
@@ -92,8 +98,11 @@
 		qna_password,
 		qna_title,
 		qna_content,
+		qna_check,
+		qna_answer,
 		qna_update,
-		qna_date
+		qna_date,
+		qna_answer_date
 		FROM
 		qna_table
 		WHERE
@@ -105,16 +114,17 @@
 		UPDATE
 		qna_table
 		SET
-		qna_type = #{qna_type},
-		qna_title = #{qna_title}, 
-		qna_content = #{qna_content}, 
+		qna_type
+		= #{qna_type},
+		qna_title = #{qna_title},
+		qna_content = #{qna_content},
 		qna_update = SYSDATE
 		WHERE
 		qna_code = #{qna_code}
 
 	</update>
 
-		<!-- QnA 삭제 -->
+	<!-- QnA 삭제 -->
 	<delete id="qnaDelete" parameterType="Long">
 		DELETE FROM
 		qna_table
@@ -122,5 +132,96 @@
 		qna_code = #{qna_code}
 
 	</delete>
+
+	<!-- 검색종류가 (문의종류 또는 제목) 선택. "T" "N" -->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach collection="cri.typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							qna_type LIKE '%' || #{cri.keyword} || '%'
+						</when>
+						<when test="type == 'N'.toString()">
+							qna_title LIKE '%' || #{cri.keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- inner join 사용시 조건절은 내부 쿼리에 넣어서 해야함 -> 1. 성능 이슈 2. 값이 이상하게 나옴 -->
+	<!-- 나의 QnA 목록 -->
+	<select id="myQnaList"
+		resultType="com.library.basic.usr.qna.MyQnaVO" parameterType="map">
+		SELECT
+		qna_code,
+		usr_id,
+		book_bno,
+		qna_type,
+		qna_password,
+		qna_title,
+		qna_content,
+		qna_check,
+		qna_answer,
+		qna_update,
+		qna_date,
+		qna_answer_date,
+		book_name,
+		book_up_folder,
+		book_img
+		FROM
+		(
+		SELECT /*+ INDEX_DESC(qna_table PK_QNA_CODE) */
+		ROWNUM RN,
+		qna.qna_code,
+		qna.usr_id,
+		qna.book_bno,
+		qna.qna_type,
+		qna.qna_password,
+		qna.qna_title,
+		qna.qna_content,
+		qna.qna_check,
+		qna.qna_answer,
+		qna.qna_update,
+		qna.qna_date,
+		qna.qna_answer_date,
+		book.book_name,
+		book.book_up_folder,
+		book.book_img
+		FROM
+		qna_table qna
+		INNER JOIN
+		book_table book 
+		ON qna.book_bno = book.book_bno
+		AND
+		<include refid="criteria"></include>
+            <![CDATA[
+                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
+            ]]>
+            AND usr_id = #{usr_id}	
+		)	
+			
+		WHERE
+		RN > (#{cri.pageNum} - 1) * #{cri.amount}		
+	</select>
+
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 나의 QnA 개수 -->
+	<select id="getTotalCount" resultType="int" parameterType="map">
+		SELECT
+		COUNT(*)
+		FROM
+		qna_table
+		WHERE
+		<include refid="criteria"></include>
+		qna_code > 0
+		AND
+		usr_id = #{usr_id}
+	</select>
+
 
 </mapper>

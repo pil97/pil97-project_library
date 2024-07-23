@@ -6,22 +6,36 @@
 	<!-- 검색종류가 (주문자 또는 주문코드 또는 아이디) 선택. "N" "C" "I" -->
 	<sql id="criteria">
 		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
-			<foreach collection="typeArr" item="type">
+			<foreach collection="cri.typeArr" item="type">
 				<trim prefix="OR">
 					<choose>
 						<when test="type == 'N'.toString()">
-							ord_name like '%' || #{keyword} || '%'
+							ord_name like '%' || #{cri.keyword} || '%'
 						</when>
 						<when test="type == 'C'.toString()">
-							ord_code like '%' || #{keyword} || '%'
+							ord_code like '%' || #{cri.keyword} || '%'
 						</when>
 						<when test="type == 'I'.toString()">
-							usr_id like '%' || #{keyword} || '%'
+							usr_id like '%' || #{cri.keyword} || '%'
 						</when>
 					</choose>
 				</trim>
 			</foreach>
 		</trim>
+	</sql>
+	
+	<!-- 날짜검색 -->
+	<!-- 날짜 7/19 선택시 -> 7/19 00:00:00 여기까지만 포함 -> +1 해줘야함 -->
+	<sql id="period">
+
+		<if test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
+		
+			<![CDATA[  		
+		   		ord_regdate >= to_date(#{startDate}) AND ord_regdate < to_date(#{endDate}) + 1 AND	
+		 	]]>
+
+		</if>
+
 	</sql>
 
 	<!-- 공통사항 : 검색조건추가 -->
@@ -63,13 +77,13 @@
 		WHERE
 
 		<include refid="criteria"></include>
-		 
+		 <include refid="period"></include>
 		 <![CDATA[  		
-		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
 		 ]]>
 		)
 		WHERE
-		RN > (#{pageNum} - 1 ) * #{amount}
+		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
 
 
 	</select>
@@ -84,6 +98,7 @@
 		order_table
 		WHERE
 		<include refid="criteria"></include>
+		<include refid="period"></include>
 		ord_code > 0
 	</select>
 
@@ -141,29 +156,34 @@
 	</delete>
 
 	<!-- 주문상품 개별 삭제 - 2. 주문테이블 금액 변경 -->
-	<update id="orderBookPriceChange" parameterType="map">
-
+	<update id="orderBookPriceChange" parameterType="Long">
 		UPDATE
 		order_table
 		SET
-		ord_price = ord_price - #{ord_price}
+		ord_price = (
+		SELECT COALESCE(SUM(dt_amount * dt_price),
+		0) FROM order_detail_table
+		WHERE ord_code = #{ord_code}
+		)
 		WHERE
-		ord_code = #{ord_code}
-
-
+		ord_code =
+		#{ord_code}
 	</update>
 
-	<!-- 주문상품 개별 삭제 - 결제테이블 db 수정 -->
-	<update id="paymentPriceChange" parameterType="map">
 
+	<!-- 주문상품 개별 삭제 - 결제테이블 db 수정 -->
+	<update id="paymentPriceChange" parameterType="Long">
 		UPDATE
 		payment_table
 		SET
-		pay_price = pay_price - #{pay_price}
+		pay_price = (
+		SELECT COALESCE(SUM(dt_amount * dt_price), 0) FROM order_detail_table
+		WHERE ord_code = #{ord_code}
+		)
 		WHERE
 		ord_code = #{ord_code}
-
 	</update>
+
 
 	<!-- 주문상세 내역 주문자 정보 수정 -->
 	<update id="orderDetailModify" parameterType="OrderVO">
@@ -174,7 +194,8 @@
 		ord_name = #{ord_name},
 		ord_addr_zipcode = #{ord_addr_zipcode},
 		ord_addr_basic = #{ord_addr_basic},
-		ord_addr_detail = #{ord_addr_detail},
+		ord_addr_detail =
+		#{ord_addr_detail},
 		ord_tel = #{ord_tel},
 		ord_desc = #{ord_desc},
 		ord_admin_memo = #{ord_admin_memo}

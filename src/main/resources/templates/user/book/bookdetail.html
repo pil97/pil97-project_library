@@ -56,10 +56,11 @@
         	<thead>
         		<tr>
         			<th scope="col">번호</th>
-      <th scope="col">문의종류</th>
+      				<th scope="col">문의종류</th>
         			<th scope="col">제목</th>
         			<th scope="col">작성자</th>
         			<th scope="col">등록일</th>
+					<th scope="col">답변여부</th>
         			<th scope="col">비밀번호</th>
       <th scope="col">비고</th>
         		</tr>
@@ -72,6 +73,7 @@
         			<td>{{qna_title}}</td>
         			<td>{{usr_id}}</td>
       				<td>{{convertDate qna_date}}</td>
+					<td>{{qna_check}}</td>
         			<td scope="col"><input type="password" name="qna_form_password"/></td>
         			<td><button type="button" class="btn btn-secondary btn-custom" data-qna_code="{{qna_code}}" id="btnQnaPwd">비밀번호 확인</button></td>
         		</tr>
@@ -295,6 +297,9 @@
                   <div class="form-group" id="modalQnaPassword">
                     <label for="qna_password" class="col-form-label">비밀번호</label> <input type="password" class="form-control" id="qna_password" />
                   </div>
+                  <div class="form-group" id="qna_answer_form">
+                    <label for="qna_answer" class="col-form-label">판매자 답변</label> <textarea class="form-control" id="qna_answer" readonly></textarea>
+                  </div>
                 </form>
               </div>
               <div class="modal-footer">
@@ -468,7 +473,7 @@
             return star;
           });
 
-          <!-- 날짜 포맷 함수 작업  -->
+          // 날짜 포맷 함수 작업
           Handlebars.registerHelper("convertDate", function (rev_date) {
             const date = new Date(rev_date);
 
@@ -479,7 +484,7 @@
             return year + "/" + month + "/" + day;
           });
 
-          <!-- 작성자와 로그인 사용자가 일치되는 경우 수정, 삭제 버튼 표시 함수 작업  -->
+          // 작성자와 로그인 사용자가 일치되는 경우 수정, 삭제 버튼 표시 함수 작업
           Handlebars.registerHelper("authControlView", function (usr_id, rev_code) {
             let loginVO = /*[[session.loginStatus]]*/;
 
@@ -797,7 +802,9 @@
             $("#btnQnaSave").show();
             $("#btnQnaModify").hide();
             $("#btnQnaDelete").hide();
+            $("#qna_answer_form").hide();
             $("#qnaModal").modal("show");
+            $("#modalQnaPassword").show();
           });
 
           // 도서QnA modal 리셋
@@ -915,12 +922,14 @@
                       $("#qna_type").val(result.qna_type);
                       $("#qna_title").val(result.qna_title);
                       $("#qna_content").val(result.qna_content);
+                      $("#qna_answer").val(result.qna_answer);
 
                       // modal 화면에 표시
                       $("#modalQnaPassword").hide();
                       $("#btnQnaSave").hide();
                       $("#btnQnaModify").show();
-                      $("#btnQnaDelete").show();                      
+                      $("#btnQnaDelete").show();   
+                      $("#qna_answer_form").show();
                       $("#qnaModal").modal("show");
                     },
                   });

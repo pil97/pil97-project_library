@@ -102,6 +102,8 @@ public class QnaController {
 		ResponseEntity<QnaVO> entity = null;
 
 		QnaVO vo = qnaService.qnaForm(qna_code);
+		
+		log.info("상세 글" + vo);
 
 		entity = new ResponseEntity<QnaVO>(vo, HttpStatus.OK);		
 

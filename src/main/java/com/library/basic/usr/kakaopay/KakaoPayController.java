@@ -91,8 +91,9 @@ public class KakaoPayController {
 		if(approvalResponse.contains("aid")) {
 			
 			log.info("주문자 정보2 : " + vo);
-			String payName = vo.getOrd_name();
+			String payName = vo.getOrd_name();			
 			orderService.orderProcess(vo, usr_id, "카카오페이", "카카오페이", "카카오페이", payName, "완납");
+					
 		}
 		
 		log.info("최종결과 : " + approvalResponse);

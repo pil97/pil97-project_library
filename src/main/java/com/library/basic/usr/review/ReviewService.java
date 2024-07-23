@@ -2,6 +2,7 @@ package com.library.basic.usr.review;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.library.basic.common.dto.Criteria;
@@ -43,5 +44,15 @@ public class ReviewService {
 	public void reviewModify(ReviewVO vo) {
 		reviewMapper.reviewModify(vo);
 	};
+	
+	// 나의 리뷰 목록
+	public List<MyReviewVO> myReviewList(String usr_id, Criteria cri) {
+		return reviewMapper.myReviewList(usr_id, cri);
+	};
+
+	// 나의 리뷰 목록 개수
+	public int getTotalCount(String usr_id, Criteria cri) {
+		return reviewMapper.getTotalCount(usr_id, cri);
+	}
 	
 }

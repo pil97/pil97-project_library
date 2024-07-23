@@ -46,13 +46,17 @@
     )
     SELECT
         #{ord_code},
-        book_bno,
-        cart_amount,
-        cart_amount * #{book_deposit}
+        b.book_bno,
+        c.cart_amount,
+        b.book_deposit 
     FROM	
-        cart_table
+        cart_table c
+    INNER JOIN
+    	book_table b    
+    ON
+    	c.book_bno = b.book_bno	
     WHERE
-        usr_id = #{usr_id}
+        c.usr_id = #{usr_id}
 	
 	</insert>
 

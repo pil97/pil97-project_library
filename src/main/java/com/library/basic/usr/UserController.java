@@ -1,5 +1,8 @@
 package com.library.basic.usr;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,11 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.library.basic.common.dto.Criteria;
+import com.library.basic.common.dto.PageDTO;
+import com.library.basic.common.util.FileManagerUtils;
 import com.library.basic.mail.EmailDTO;
 import com.library.basic.mail.EmailService;
 import com.library.basic.usr.kakaologin.KakaoUserInfo;
 import com.library.basic.usr.naverlogin.NaverResponse;
+import com.library.basic.usr.qna.MyQnaVO;
 import com.library.basic.usr.qna.QnaService;
+import com.library.basic.usr.review.MyReviewVO;
 import com.library.basic.usr.review.ReviewService;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +40,10 @@ public class UserController {
 	private final QnaService qnaService;
 	private final PasswordEncoder passwordEncoder;
 	private final EmailService emailService;
+
+	// 도서 이미지 업로드 경로
+	@Value("${file.product.image.dir}")
+	private String uploadPath;
 
 	// 회원가입 페이지
 	@GetMapping("sign")
@@ -244,7 +256,7 @@ public class UserController {
 	@GetMapping("mypage")
 	public void mypage(HttpSession session, Model model) throws Exception {
 
-		if(session.getAttribute("loginStatus") != null) {
+		if (session.getAttribute("loginStatus") != null) {
 			// 세션에 저장된 u_id 정보를 꺼내오는 방법
 			// getAttribute(String name) Object -> UserInfoVO 형변환
 			String u_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
@@ -252,31 +264,30 @@ public class UserController {
 			UserVO vo = userService.login(u_id);
 
 			model.addAttribute("user", vo);
-		} else if(session.getAttribute("kakaoStatus") != null) {
-			
-			KakaoUserInfo kakaoUserInfo = (KakaoUserInfo) session.getAttribute("kakaoStatus"); 
-			
+		} else if (session.getAttribute("kakaoStatus") != null) {
+
+			KakaoUserInfo kakaoUserInfo = (KakaoUserInfo) session.getAttribute("kakaoStatus");
+
 			// mypage에서 보여줄 정보를 선택적으로 작업
 			UserVO vo = new UserVO();
 			vo.setUsr_name(kakaoUserInfo.getNickname());
 			vo.setUsr_email(kakaoUserInfo.getEmail());
-			
-			model.addAttribute("user", vo);		
-			model.addAttribute("msg","kakaoLogin");
-			
-		} else if(session.getAttribute("naverStatus") != null) {
-			
+
+			model.addAttribute("user", vo);
+			model.addAttribute("msg", "kakaoLogin");
+
+		} else if (session.getAttribute("naverStatus") != null) {
+
 			NaverResponse naverUserInfo = (NaverResponse) session.getAttribute("naverStatus");
-			
+
 			UserVO vo = new UserVO();
 			vo.setUsr_name(naverUserInfo.getResponse().getName());
 			vo.setUsr_email(naverUserInfo.getResponse().getEmail());
-			model.addAttribute("user", vo);		
-			model.addAttribute("msg","naverLogin");
+			model.addAttribute("user", vo);
+			model.addAttribute("msg", "naverLogin");
 		}
-			
-				
-		}
+
+	}
 
 	// 내정보 수정
 	@PostMapping("modify")
@@ -375,25 +386,59 @@ public class UserController {
 
 		return "redirect:" + url;
 	}
-	
+
 	// 회원 리뷰 목록 페이지
-	@GetMapping("/review")
-	public void reviewPage() {
+	@GetMapping("/myreviewlist")
+	public void myReviewList(Criteria cri, HttpSession session, Model model) {
+		// 로그인 세션 아이디 확인
+		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
+
+		cri.setAmount(2);
+
+		// 나의 QnA 목록
+		List<MyReviewVO> myReviewList = reviewService.myReviewList(usr_id, cri);
+
+		log.info("목록 " + myReviewList);
+
+		// 나의 QnA 개수
+		int totalCount = reviewService.getTotalCount(usr_id, cri);
+
+		model.addAttribute("myReviewList", myReviewList);
+		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
 
 	}
-	
-	// 회원 리뷰 수정
-	
-	// 회원 리뷰 삭제
-	
+
 	// 회원 QnA 목록 페이지
-	@GetMapping("/qna")
-	public void qnaPage() {
+	@GetMapping("/myqnalist")
+	public void myQnaList(Criteria cri, HttpSession session, Model model) {
+
+		// 로그인 세션 아이디 확인
+		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
+
+		cri.setAmount(2);
+
+		// 나의 QnA 목록
+		List<MyQnaVO> myQnaList = qnaService.myQnaList(usr_id, cri);
+
+		log.info("목록 " + myQnaList);
+
+		// 나의 QnA 개수
+		int totalCount = qnaService.getTotalCount(usr_id, cri);
+
+		model.addAttribute("myQnaList", myQnaList);
+		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
 
 	}
-	
-	// 회원 QnA 수정
-	
-	// 회원 QnA 삭제
+
+	// 도서 QnA 및 리뷰 목록 - 이미지 보여주기 <img src="메핑주소">
+	@GetMapping("/imagedisplay")
+	public ResponseEntity<byte[]> imageDisplay(String dateFolderName, String fileName) throws Exception {
+
+//			log.info("이미지 업로드 경로 : " + uploadPath);
+//			log.info("이미지 업로드 경로 : " + dateFolderName);
+//			log.info("이미지 업로드 경로 : " + fileName );
+
+		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
+	}
 
 }
