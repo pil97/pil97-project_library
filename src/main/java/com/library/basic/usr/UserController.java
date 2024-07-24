@@ -393,7 +393,7 @@ public class UserController {
 		// 로그인 세션 아이디 확인
 		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 
-		cri.setAmount(2);
+		// cri.setAmount(2);
 
 		// 나의 QnA 목록
 		List<MyReviewVO> myReviewList = reviewService.myReviewList(usr_id, cri);

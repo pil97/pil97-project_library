@@ -16,8 +16,9 @@
 		rev_date
 		FROM
 		(
-		SELECT /*+ INDEX_DESC(review_table PK_REVIEW_CODE) */
-		ROWNUM AS RN,
+		SELECT /*+ INDEX_DESC(review_table PK_REV_CODE) */
+		ROWNUM
+		AS RN,
 		rev_code,
 		usr_id,
 		book_bno,
@@ -139,31 +140,28 @@
 		book_img
 		FROM
 		(
-		SELECT /*+ INDEX_DESC(review_table PK_REV_CODE) */
-		ROWNUM RN,
-		r.rev_code,
-		r.usr_id,
-		r.book_bno,
-		r.rev_title,
-		r.rev_content,
-		r.rev_rate,
-		r.rev_date,
-		b.book_name,
-		b.book_up_folder,
-		b.book_img
+		SELECT /*+ USE_NL(rev book) INDEX_DESC(rev PK_REV_CODE) INDEX_DESC(book
+		PK_BOOK_BNO) */
+		ROWNUM AS rn,
+		rev.rev_code,
+		rev.usr_id,
+		rev.book_bno,
+		rev.rev_title,
+		rev.rev_content,
+		rev.rev_rate,
+		rev.rev_date,
+		book.book_name,
+		book.book_up_folder,
+		book.book_img
 		FROM
-		review_table r
-		INNER JOIN
-		book_table b
-		ON
-		r.book_bno = b.book_bno
+		review_table rev
+		INNER JOIN book_table book ON rev.book_bno = book.book_bno
 		AND
-			usr_id = #{usr_id}
-		AND 
 		<include refid="criteria"></include>
             <![CDATA[
-              ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
+                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
             ]]>
+		AND usr_id = #{usr_id}
 		)
 
 		WHERE

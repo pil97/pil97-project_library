@@ -13,7 +13,7 @@
               <section th:replace="~{user/comm/mypage_menu}"></section>
             </div>
             <div class="col-8">
-              <form th:action="@{/user/qnamylist}" th:method="get">
+              <form th:action="@{/user/myqnalist}" th:method="get">
                 <select name="type" th:value="${pageMaker.cri.type}">
                   <option value="" th:text="검색종류" th:if="${pageMaker.cri.type == null}"></option>
                   <option value="T" th:text="문의종류" th:selected="${pageMaker.cri.type == 'T'}"></option>
@@ -96,6 +96,51 @@
           </div> <!-- End of .row -->
         </div>
       </main>
+      
+            <!-- 도서 QnA Modal -->
+      <div class="modal fade" id="qnaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">도서 리뷰</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="qna_type" class="col-form-label">문의종류</label>
+                  <select class="form-control" id="qna_type">
+                    <option value="질문">문의종류를 선택하세요.</option>
+                    <option value="도서문의">도서문의</option>
+                    <option value="배송문의">배송문의</option>
+                    <option value="기타문의">기타문의</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="qna_title" class="col-form-label">제목</label> <input type="text" class="form-control" id="qna_title" />
+                  <input type="hidden" class="form-control" id="qna_code" />
+                </div>
+                <div class="form-group">
+                  <label for="qna_content" class="col-form-label">내용</label>
+                  <textarea class="form-control" id="qna_content"></textarea>
+                </div>
+                <div class="form-group" id="qna_answer_form">
+                  <label for="qna_answer" class="col-form-label">판매자 답변</label>
+                  <textarea class="form-control" id="qna_answer" readonly></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" id="btnQnaModify" class="btn btn-primary">도서QnA수정</button>
+              <button type="button" id="btnQnaDelete" class="btn btn-primary">도서QnA삭제</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal end -->
     </th:block>
 
     <th:block layout:fragment="script">

@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
   <th:block layout:fragment="css">
-    <style></style>
+    <style>
+      /* 별점 기본선택지 */
+      p#star_rev_rate a.rev_rate {
+        font-size: 22px;
+        text-decoration: none;
+        color: lightgray;
+      }
+
+      /* 별점에 마우스 오버했을 경우 선택지 */
+      p#star_rev_rate a.rev_rate.on {
+        color: red;
+      }
+    </style>
   </th:block>
   <body>
     <th:block layout:fragment="content">
@@ -33,7 +45,7 @@
             <th>상세보기</th>
           </tr>
           <tr th:each="MyReviewVO : ${myReviewList}">
-            <td th:text="${MyReviewVO.rev_code}"></td>          
+            <td th:text="${MyReviewVO.rev_code}"></td>
             <td>
               <a href="#">
                 <img
@@ -45,9 +57,17 @@
             </td>
             <td><span th:text="${MyReviewVO.rev_title}"></span></td>
             <td th:text="${#dates.format(MyReviewVO.rev_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td><span th:text="${MyReviewVO.rev_rate}"></span></td>
             <td>
-              <button type="button" class="btn btn-danger" name="btnReviewDetail" th:data-qna_code="${MyReviewVO.rev_code}">상세보기</button>
+              <p id="star_rev_rate" class="star-rating" th:data-rate="${MyReviewVO.rev_rate}">
+                <a class="rev_rate" href="#">☆</a>
+                <a class="rev_rate" href="#">☆</a>
+                <a class="rev_rate" href="#">☆</a>
+                <a class="rev_rate" href="#">☆</a>
+                <a class="rev_rate" href="#">☆</a>
+              </p>
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger" name="btnReviewDetail" th:data-rev_code="${MyReviewVO.rev_code}">상세보기</button>
             </td>
           </tr>
         </tbody>
@@ -89,20 +109,20 @@
               </ul>
             </nav>
           </div>
-          <div class="row mb-5">
-            <div class="col text-center">
-              <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
-            </div>
-          </div>
+        </div>
+      </div>
+      <div class="row mb-5">
+        <div class="col text-center">
+          <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
         </div>
       </div>
 
-      <!-- 도서 QnA Modal -->
-      <div class="modal fade" id="qnaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <!-- 도서리뷰 Modal -->
+      <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">도서 리뷰</h5>
+              <h5 class="modal-title" id="exampleModalLabel">도서리뷰</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -110,32 +130,26 @@
             <div class="modal-body">
               <form>
                 <div class="form-group">
-                  <label for="qna_type" class="col-form-label">문의종류</label>
-                  <select class="form-control" id="qna_type">
-                    <option value="질문">문의종류를 선택하세요.</option>
-                    <option value="도서문의">도서문의</option>
-                    <option value="배송문의">배송문의</option>
-                    <option value="기타문의">기타문의</option>
-                  </select>
+                  <label for="message-text" class="col-form-label">제목</label> <input type="text" class="form-control" id="rev_title" />
+                  <input type="hidden" class="form-control" id="rev_code" />
                 </div>
                 <div class="form-group">
-                  <label for="qna_title" class="col-form-label">제목</label> <input type="text" class="form-control" id="qna_title" />
-                  <input type="hidden" class="form-control" id="qna_code" />
+                  <label for="message-text" class="col-form-label">내용</label>
+                  <textarea class="form-control" id="rev_content"></textarea>
                 </div>
                 <div class="form-group">
-                  <label for="qna_content" class="col-form-label">내용</label>
-                  <textarea class="form-control" id="qna_content"></textarea>
-                </div>
-                <div class="form-group" id="qna_answer_form">
-                  <label for="qna_answer" class="col-form-label">판매자 답변</label>
-                  <textarea class="form-control" id="qna_answer" readonly></textarea>
+                  <label for="recipient-name" class="col-form-label">별점</label>
+                  <p id="star_rev_rate">
+                    <a class="rev_rate" href="#">☆</a> <a class="rev_rate" href="#">☆</a> <a class="rev_rate" href="#">☆</a>
+                    <a class="rev_rate" href="#">☆</a> <a class="rev_rate" href="#">☆</a>
+                  </p>
                 </div>
               </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" id="btnQnaModify" class="btn btn-primary">도서QnA수정</button>
-              <button type="button" id="btnQnaDelete" class="btn btn-primary">도서QnA삭제</button>
+              <button type="button" id="btnReviewModify" class="btn btn-primary">도서리뷰수정</button>
+              <button type="button" id="btnReviewDelete" class="btn btn-primary">도서리뷰삭제</button>
             </div>
           </div>
         </div>
@@ -161,8 +175,168 @@
             actionForm.submit();
           });
 
-         	
+          // 별점 표시
+          const displayStar = (rev_rate) => {
+            let star = "";
+            switch (rev_rate) {
+              case 1:
+                star = "★☆☆☆☆";
+                break;
+              case 2:
+                star = "★★☆☆☆";
+                break;
+              case 3:
+                star = "★★★☆☆";
+                break;
+              case 4:
+                star = "★★★★☆";
+                break;
+              case 5:
+                star = "★★★★★";
+                break;
+              default:
+                star = "☆☆☆☆☆"; // Default value when rating is not between 1 and 5
+            }
+            return star;
+          };
+
+          $(".star-rating").each(function () {
+            const rev_rate = parseInt($(this).data("rate")); // Get the rating value from data attribute
+            const stars = displayStar(rev_rate); // Get the star rating
+            $(this).text(stars); // Update the text with the star rating
+          });
+
+          let rev_code;
+          // 도서리뷰 modal
+          $("table#myReviewList").on("click", "button[name='btnReviewDetail']", function () {
+            $("#reviewModal").modal("show");
+            
+            // 모달내용 리셋 
+            $("#rev_title").val(""); 
+            $("#rev_content").val("");
+            $("p#star_rev_rate a.rev_rate").removeClass("on");
+            rev_code = $(this).data("rev_code");
+            
+            //console.log(rev_code);
+            
+            // return;
+
+            $.ajax({
+              url: "/user/review/reviewmodifyform/" + rev_code,
+              headers: {
+                "Content-Type": "application/json",
+                "X-HTTP-Method-Override": "GET",
+              },
+              type: "get",
+              // data: 스프링으로 보내는 데이터 작업 -> 경로안에 이미 데이터가 있기 떄문에
+              dataType: "json", // 스프링에서 넘어오는 데이터 타입
+              success: function (result) {
+                console.log(result);
+
+                // modal 내용에 리뷰 출력작업
+                $("#rev_title").val(result.rev_title);
+                $("#rev_content").val(result.rev_content);
+                $("#rev_code").val(result.rev_code); // <input type="hidden">
+
+                let rev_rate = result.rev_rate;
+
+                $("p#star_rev_rate a.rev_rate").each(function (index, item) {
+                  if (index < rev_rate) {
+                    $(this).addClass("on");
+                  }
+                });
+              },
+            });
+          });
           
+          // 상세보기 - 별점 클릭
+          $("p#star_rev_rate a.rev_rate").on("click", function (e) {
+            e.preventDefault();
+            $(this).parent().children().removeClass("on"); // on 선택자 제거
+            $(this).addClass("on").prevAll("a").addClass("on"); // 현재 선택한 별과 이전별까지 on 선택자 추가
+          });
+
+         // 도서 리뷰 수정
+          $("#btnReviewModify").on("click", function () {
+        	  // rev_code : 전역변수
+            let rev_title = $("#rev_title").val();
+            let rev_content = $("#rev_content").val();
+            let rev_rate = 0;
+            
+            // 별점 수정
+            $("p#star_rev_rate a.rev_rate").each(function () {
+              if ($(this).attr("class") == "rev_rate on") {
+                rev_rate += 1;
+              }
+            });
+            
+
+            if (rev_title == "") {
+              alert("제목을 입력하세요.");
+              $("#rev_title").focus();
+              return;
+            }
+
+            if (rev_content == "") {
+              alert("내용을 입력하세요.");
+              $("#rev_content").focus();
+              return;
+            }
+
+            if (rev_rate == 0) {
+              alert("별점을 선택하세요.");
+              $("#rev_rate").focus();
+              return;
+            }
+
+            // 자바스크립 object 문법 사용
+            let reviewData = { rev_code: rev_code, rev_title: rev_title, rev_content: rev_content, rev_rate: rev_rate };
+
+            console.log(reviewData);
+
+            // return;
+
+            $.ajax({
+              url: "/user/review/reviewmodify",
+              headers: {
+                "Content-Type": "application/json",
+                "X-HTTP-Method-Override": "PUT",
+              },
+              type: "put",
+              data: JSON.stringify(reviewData),
+              success: function (result) {
+                if (result == "success") {
+                  alert("도서리뷰가 수정되었습니다.");
+                  $("#reviewModal").modal("hide");
+                  location.reload();
+                }
+              },
+            });
+          });
+         
+          // 리뷰 삭제 버튼
+          $("#btnReviewDelete").on("click", function () {
+            if (confirm("도서리뷰를 삭제하시겠습니까?")) {
+              // rev_code : 전역변수
+
+              $.ajax({
+                url: "/user/review/reviewdelete/" + rev_code,
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-HTTP-Method-Override": "DELETE",
+                },
+                type: "delete",
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    alert("도서리뷰가 삭제되었습니다.");
+                    location.reload();
+                  }
+                },
+              });
+            }
+          });
+         
          
         }); // read event end
       </script>

@@ -174,8 +174,9 @@
 		book_img
 		FROM
 		(
-		SELECT /*+ INDEX_DESC(qna_table PK_QNA_CODE) */
-		ROWNUM RN,
+		SELECT /*+ USE_NL(qna book)
+		INDEX_DESC(qna PK_QNA_CODE) INDEX_DESC(book PK_BOOK_BNO) */
+		ROWNUM rn,
 		qna.qna_code,
 		qna.usr_id,
 		qna.book_bno,
@@ -193,19 +194,17 @@
 		book.book_img
 		FROM
 		qna_table qna
-		INNER JOIN
-		book_table book 
-		ON qna.book_bno = book.book_bno
+		INNER JOIN book_table book ON qna.book_bno = book.book_bno
 		AND
 		<include refid="criteria"></include>
             <![CDATA[
                 ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
             ]]>
-            AND usr_id = #{usr_id}	
-		)	
-			
+		AND usr_id = #{usr_id}
+		)
+
 		WHERE
-		RN > (#{cri.pageNum} - 1) * #{cri.amount}		
+		RN > (#{cri.pageNum} - 1) * #{cri.amount}
 	</select>
 
 

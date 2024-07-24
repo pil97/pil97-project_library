@@ -79,21 +79,22 @@
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
 		 $(document).ready(function () {
-	            // When the search button is clicked
+	            // 검색 버튼 클릭시 -> 검색 목록 출력
 	            $("button[name='btn_book_search']").click(function(event) {
-	                event.preventDefault(); // Prevent form submission
+	                event.preventDefault(); 
 
-	                let searchKeyword = $("#keyword").val().trim(); // Get input value and trim whitespace
-	                let searchPage = 1; // Assuming initial search page is 1
+	                let searchKeyword = $("#keyword").val().trim(); 
+	                let searchPage = 1; 
 	                
 	                if (searchKeyword === "") {
                         $("#emptyKeywordMessage").show();
-                        $("#bookSearchList").hide();
+                        // $("#bookSearchList").hide();
                         $("#noResultsMessage").hide();
                         return;
                     } else {
                         $("#emptyKeywordMessage").hide();
                     }
+	                	                
 	                
 	                
 	                let url = "/user/search/searchlist/" + searchKeyword + "/" + searchPage;
