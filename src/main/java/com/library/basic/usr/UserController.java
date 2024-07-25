@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.library.basic.common.dto.Criteria;
 import com.library.basic.common.dto.PageDTO;
 import com.library.basic.common.util.FileManagerUtils;
 import com.library.basic.mail.EmailDTO;
 import com.library.basic.mail.EmailService;
+import com.library.basic.usr.kakaologin.KakaoLoginService;
 import com.library.basic.usr.kakaologin.KakaoUserInfo;
+import com.library.basic.usr.naverlogin.NaverLoginService;
 import com.library.basic.usr.naverlogin.NaverResponse;
 import com.library.basic.usr.qna.MyQnaVO;
 import com.library.basic.usr.qna.QnaService;
@@ -35,7 +38,9 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class UserController {
 
-	private final UserService userService;
+	private final UserService userService;	
+	private final NaverLoginService naverLoginService;
+	private final KakaoLoginService kakaoLoginService;
 	private final ReviewService reviewService;
 	private final QnaService qnaService;
 	private final PasswordEncoder passwordEncoder;
@@ -47,18 +52,75 @@ public class UserController {
 
 	// 회원가입 페이지
 	@GetMapping("sign")
-	public void signPage() {
+	public void signPage(HttpSession session, Model model) {
 		log.info("회원가입 페이지");
+		
+		UserVO vo = new UserVO();
+		
+		if (session.getAttribute("kakaoStatus") != null) {
+
+			KakaoUserInfo kakaoUserInfo = (KakaoUserInfo) session.getAttribute("kakaoStatus");
+
+			// mypage에서 보여줄 정보를 선택적으로 작업
+			vo = new UserVO();
+			vo.setUsr_name(kakaoUserInfo.getNickname());
+			vo.setUsr_email(kakaoUserInfo.getEmail());
+
+			model.addAttribute("user", vo);
+			model.addAttribute("msg", "kakaoLogin");
+
+		} else if (session.getAttribute("naverStatus") != null) {
+
+			NaverResponse naverUserInfo = (NaverResponse) session.getAttribute("naverStatus");
+			
+			// 1. user_table db 작업
+			vo = new UserVO();
+			vo.setUsr_name(naverUserInfo.getResponse().getName());
+			vo.setUsr_email(naverUserInfo.getResponse().getEmail());
+			model.addAttribute("user", vo);
+			model.addAttribute("msg", "naverLogin");		
+			
+		} else {
+			model.addAttribute("user", vo);
+		}
 	}
 
 	// 회원가입 버튼
 	@PostMapping("sign")
-	public String signOk(UserVO vo) throws Exception {
+	public String signOk(UserVO vo, HttpSession session) throws Exception {
 
 		log.info("회원정보 : " + vo);
 
 		// 비밀번호 암호화 변경
 		vo.setUsr_password(passwordEncoder.encode(vo.getUsr_password()));
+
+		// 회원가입 sns 로그인 여부 확인
+		if (session.getAttribute("kakaoStatus") != null) {
+			vo.setUsr_sns_type("kakao");
+			// sns_table db 작업
+			SNSUserDto dto = new SNSUserDto();
+			dto.setId(vo.getUsr_id());
+			dto.setEmail(vo.getUsr_email());
+			dto.setNickname(vo.getUsr_nick());
+			dto.setSns_type(vo.getUsr_sns_type());
+			
+			userService.snsUserInsert(dto);
+			
+		} else if (session.getAttribute("naverStatus") != null) {
+			vo.setUsr_sns_type("naver");
+			
+			// sns_table db 작업
+			SNSUserDto dto = new SNSUserDto();
+			dto.setId(vo.getUsr_id());
+			dto.setEmail(vo.getUsr_email());
+			dto.setNickname(vo.getUsr_nick());
+			dto.setSns_type(vo.getUsr_sns_type());
+			
+			userService.snsUserInsert(dto);
+			
+		} else {
+			vo.setUsr_sns_type("x");
+		}
 
 		// 회원가입 정보 DB 저장
 		userService.sign(vo);
@@ -131,13 +193,45 @@ public class UserController {
 	}
 
 	// 로그아웃
-	@GetMapping("logout")
+	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		// 로그인 세션 삭제
-		session.invalidate();
+	    String accessToken = (String) session.getAttribute("accessToken");
 
-		return "redirect:/";
+	    log.info("access : " + accessToken);
+
+	    if (accessToken != null && !"".equals(accessToken)) {
+	        if (session.getAttribute("naverStatus") != null) {
+	            // 네이버 로그아웃 처리
+	            try {
+	                log.info("네이버 로그아웃");
+	                naverLoginService.getNaverTokenDelete(accessToken);
+	            } catch (Exception e) {
+	                log.error("네이버 로그아웃 중 오류 발생", e);
+	            }
+	            session.removeAttribute("naverStatus");
+	        } else if (session.getAttribute("kakaoStatus") != null) {
+	            // 카카오 로그아웃 처리
+	            try {
+	                log.info("카카오 로그아웃");
+	                kakaoLoginService.kakaoLogout(accessToken);
+	            } catch (JsonProcessingException e) {
+	                log.error("카카오 로그아웃 중 오류 발생", e);
+	            }
+	            session.removeAttribute("kakaoStatus");
+	        }
+
+	        session.removeAttribute("accessToken");
+	    }
+
+	    // 로그인 세션 삭제
+	    session.invalidate();
+
+	    log.info("로그아웃");
+
+	    return "redirect:/";
 	}
+
+
 
 	// 아이디 찾기 페이지
 	@GetMapping("/idfind")
@@ -297,7 +391,7 @@ public class UserController {
 		if (session.getAttribute("loginStatus") == null)
 			return "redirect:/user/login";
 
-		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
+		// String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 
 		log.info("수정데이터: " + vo);
 

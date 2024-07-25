@@ -155,7 +155,7 @@
 	<!-- inner join 사용시 조건절은 내부 쿼리에 넣어서 해야함 -> 1. 성능 이슈 2. 값이 이상하게 나옴 -->
 	<!-- 나의 QnA 목록 -->
 	<select id="myQnaList"
-		resultType="com.library.basic.usr.qna.MyQnaVO" parameterType="map">
+		resultType="MyQnaVO" parameterType="map">
 		SELECT
 		qna_code,
 		usr_id,

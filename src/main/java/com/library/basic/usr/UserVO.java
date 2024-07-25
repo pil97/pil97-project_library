@@ -21,6 +21,7 @@ public class UserVO {
 	private String usr_nick;
 	private String usr_receive;
 	private int usr_point;
+	private String usr_sns_type; 
 	private Date usr_lastlogin;
 	private Date usr_datesub;
 	private Date usr_updatedate;

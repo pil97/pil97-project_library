@@ -49,7 +49,7 @@ public class QnaService {
 		return qnaMapper.myQnaList(usr_id, cri);
 	};
 	
-	//  개수
+	//  QnA 목록 개수
 	public int getTotalCount(String usr_id, Criteria cri) {
 		return qnaMapper.getTotalCount(usr_id, cri);
 	};

@@ -12,6 +12,9 @@ public interface UserMapper {
 
 	// 로그인
 	UserVO login(String usr_id);
+	
+	// 네이버 로그인
+	UserVO snsLogin(String snsEmail);
 
 	// 아이디 찾기
 	String idFind(@Param("usr_name") String usr_name, @Param("usr_email") String usr_email);

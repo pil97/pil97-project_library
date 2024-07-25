@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.library.basic.usr.SNSUserDto;
 import com.library.basic.usr.UserService;
+import com.library.basic.usr.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -76,33 +77,33 @@ public class KakaoLoginController {
 
 		log.info("access : " + accessToken);
 
+		
+		String sns_email = null; 
 		if (kakaoUserInfo != null) {
-
 			log.info("사용자정보: " + kakaoUserInfo);
 
 			// 인증을 세션 방식으로 처리
 			session.setAttribute("kakaoStatus", kakaoUserInfo); // 인증여부 사용
 			session.setAttribute("accessToken", accessToken); // 카카오 로그아웃 사용
 
-			String sns_email = kakaoUserInfo.getEmail();
-
-			String sns_login_type = userService.existUserInfo(sns_email);			
-
-			// 둘 다 데이터가 존재하지 않으면 - 회원테이블 존재 안하고, 카카오 테이블에도 존재 안하면
-			if (userService.existUserInfo(sns_email) == null && userService.snsUserCheck(sns_email) == null) {
-				// SNS 테이블 데이터 삽입 작업
-				SNSUserDto dto = new SNSUserDto();
-				dto.setId(kakaoUserInfo.getId().toString());
-				dto.setEmail(kakaoUserInfo.getEmail());
-				dto.setNickname(kakaoUserInfo.getNickname());
-				dto.setSns_type("kakao");
-
-				userService.snsUserInsert(dto);
-
-			}
+			 sns_email = kakaoUserInfo.getEmail();
 		}
 
-		return "redirect:/";
+		    // SNS 회원가입 중복 체크
+		    boolean isUserExist = userService.existUserInfo(sns_email) != null;
+		    boolean isSNSUserExist = userService.snsUserCheck(sns_email) != null;
+		    
+			// SNS 회원가입 중복 체크
+		    if (!isUserExist && !isSNSUserExist) {
+		        // 회원가입 페이지로 리디렉션
+		        return "redirect:/user/sign";
+		    } else {
+		        // 이미 가입된 사용자, 메인 페이지로 리디렉션
+		    	UserVO vo = userService.snsLogin(sns_email);	    	
+		        session.setAttribute("loginStatus", vo);
+		        return "redirect:/";
+		    }
+						
 	}
 
 	// 카카오톡 로그아웃 

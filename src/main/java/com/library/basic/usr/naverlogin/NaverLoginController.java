@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.basic.usr.SNSUserDto;
 import com.library.basic.usr.UserService;
+import com.library.basic.usr.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -63,21 +63,25 @@ public class NaverLoginController {
 			session.setAttribute("naverStatus", naverResponse);
 			session.setAttribute("accessToken", naverToken.getAccess_token());
 		}
-
+		
+	    // SNS 회원가입 중복 체크
+	    boolean isUserExist = userService.existUserInfo(sns_email) != null;
+	    boolean isSNSUserExist = userService.snsUserCheck(sns_email) != null;
+		
 		// SNS 회원가입 중복 체크
-		if (userService.existUserInfo(sns_email) == null && userService.snsUserCheck(sns_email) == null) {
-			// true, SNS 테이블 데이터 삽입 작업
-			SNSUserDto dto = new SNSUserDto();
-			dto.setId(naverResponse.getResponse().getId());
-			dto.setEmail(naverResponse.getResponse().getEmail());
-			dto.setNickname(naverResponse.getResponse().getName());
-			dto.setSns_type("naver");
+	    if (!isUserExist && !isSNSUserExist) {
+	        // 회원가입 페이지로 리디렉션
+	        return "redirect:/user/sign";
+	    } else {
+	        // 이미 가입된 사용자, 메인 페이지로 리디렉션
+	    	UserVO vo = userService.snsLogin(naverResponse.getResponse().getEmail());	    	
+	        session.setAttribute("loginStatus", vo);
+	        return "redirect:/";
+	    }
+		
+		
 
-			userService.snsUserInsert(dto);
-
-		}
-
-		return "redirect:/";
+		
 
 	}
 

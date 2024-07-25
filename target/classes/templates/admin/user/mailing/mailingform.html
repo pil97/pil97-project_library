@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{admin/layout/adminlayout}"
+>
+  <body class="hold-transition skin-blue sidebar-mini">
+    <th:block layout:fragment="content">
+      <script src="/css/admin/plugins/ckeditor/ckeditor.js"></script>
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>이메일 발송</h1>
+          <ol class="breadcrumb">
+            <li>
+              <a href="#"><i class="fa fa-dashboard"></i> Level</a>
+            </li>
+            <li class="active">Here</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+          <!-- Your Page Content Here -->
+          <div class="row">
+            <div class="col">
+              <form th:action="@{/admin/user/mailing/mailingprocess}" th:method="post" class="form-horizontal">
+                <div class="box-body">
+                  <div class="form-group row">
+                    <label for="mailingType" class="col-sm-1 col-form-label">구분</label>
+                    <div class="col-sm-11">
+                      <input class="form-check-input" type="radio" name="mailingType" id="mailingType1" value="광고/이벤트" checked />
+                      <label class="form-check-label" for="mailingType1">광고/이벤트</label>
+
+                      <input class="form-check-input" type="radio" name="mailingType" id="mailingType2" value="일반" />
+                      <label class="form-check-label" for="mailingType2">일반</label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="mailingTitle" class="col-sm-1 col-form-label">제목</label>
+                    <div class="col-sm-11">
+                      <input type="text" class="form-control" name="mailingTitle" id="mailingTitle" placeholder="메일 제목 입력..." />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="mailingContent" class="col-sm-1 col-form-label">내용</label>
+                    <div class="col-sm-11">
+                      <textarea class="form-control" name="mailingContent" id="mailingContent" rows="3"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary" id="btnMailSend">메일내용 저장 및 보내기</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+        <!-- /.content -->
+      </div>
+    </th:block>
+    <th:block layout:fragment="script">
+      <script>
+        // ckeditor 환경설정.
+        $(document).ready(function () {
+          $("button#btnMailSend").on("click", function () {
+            if ($("#mailingTitle").val().trim() === "") {
+              alert("제목을 입력하세요.");
+              $("#mailingTitle").focus();
+              event.preventDefault();
+              return;
+            }
+            if ($("#mailingContent").val().trim() === "") {
+              alert("내용을 입력하세요.");
+              $("#mailingContent").focus();
+              event.preventDefault();
+              return;
+            }
+          });
+
+          // ckeditor 환경설정. 자바스크립트 Ojbect문법
+          var ckeditor_config = {
+            resize_enabled: false, // 박스 사이크 크기 조절
+            enterMode: CKEDITOR.ENTER_BR, // enter 입력마다 br 태그 적용
+            shiftEnterMode: CKEDITOR.ENTER_P,
+            toolbarCanCollapse: true,
+            removePlugins: "elementspath",
+            //업로드 탭기능추가 속성. CKEditor에서 파일업로드해서 서버로 전송클릭하면 , 이 주소가 동작된다.
+            // /admin/product/imageupload - controller 주소 참조
+            filebrowserUploadUrl: "/admin/user/mailing/imageupload", // 이미지 업로드 버튼
+          };
+
+          // pro_content - 상품설명 id 참조
+          CKEDITOR.replace("mailingContent", ckeditor_config);
+
+          console.log("ckediotr 버전: ", CKEDITOR.version); // ckeditor 버전: 4.12.1 (Standard)
+        });
+      </script>
+    </th:block>
+  </body>
+</html>

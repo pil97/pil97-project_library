@@ -5,80 +5,68 @@
   object-fit: contain;
 }
 
-/* Table Styles */
+/* Table CSS */
 table.table {
   width: 100%;
   border-collapse: collapse;
 }
 
-table.table th, 
-table.table td {
+table.table th, table.table td {
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: center; /* Center text */
 }
 
 table.table th {
   background-color: #f2f2f2;
+  text-align: left;
 }
 
 table.table th input[type="checkbox"] {
   margin: 0;
 }
 
-/* Column Widths */
-table.table th:nth-child(1), 
-table.table td:nth-child(1) {
+/* Column widths */
+table.table th:nth-child(1), table.table td:nth-child(1) {
   width: 2%;
 }
 
-table.table th:nth-child(2), 
-table.table td:nth-child(2) {
+table.table th:nth-child(2), table.table td:nth-child(2) {
   width: 8%;
 }
 
-table.table th:nth-child(3), 
-table.table td:nth-child(3) {
+table.table th:nth-child(3), table.table td:nth-child(3) {
   width: 10%;
 }
 
-table.table th:nth-child(4), 
-table.table td:nth-child(4) {
+table.table th:nth-child(4), table.table td:nth-child(4) {
   width: 10%;
 }
 
-table.table th:nth-child(5), 
-table.table td:nth-child(5) {
+table.table th:nth-child(5), table.table td:nth-child(5) {
   width: 15%;
 }
 
-table.table th:nth-child(6), 
-table.table td:nth-child(6) {
+table.table th:nth-child(6), table.table td:nth-child(6) {
   width: 10%;
 }
 
-table.table th:nth-child(7), 
-table.table td:nth-child(7) {
+table.table th:nth-child(7), table.table td:nth-child(7) {
   width: 15%;
 }
 
-table.table th:nth-child(8), 
-table.table td:nth-child(8) {
+table.table th:nth-child(8), table.table td:nth-child(8) {
   width: 15%;
 }
 
-table.table th:nth-child(9), 
-table.table td:nth-child(9) {
+table.table th:nth-child(9), table.table td:nth-child(9) {
   width: 5%;
 }
 
-table.table th:nth-child(10), 
-table.table td:nth-child(10) {
+table.table th:nth-child(10), table.table td:nth-child(10) {
   width: 5%;
 }
 
-table.table th:nth-child(11), 
-table.table td:nth-child(11) {
+table.table th:nth-child(11), table.table td:nth-child(11) {
   width: 5%;
 }
 
@@ -88,7 +76,6 @@ table.table img#imageStyle {
   object-fit: contain;
 }
 
-/* Button Styles */
 table.table button.btn {
   padding: 5px 10px;
 }
@@ -114,123 +101,3 @@ table.table button.btn-danger {
 table.table button.btn-danger:hover {
   background-color: #c82333;
 }
-
-/* Utility Classes */
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-/* Pagination Styles */
-.pagination {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
-}
-
-.pagination li {
-  margin: 0 5px;
-}
-
-.pagination a {
-  color: #3c8dbc;
-  padding: 5px 10px;
-  text-decoration: none;
-}
-
-.pagination .active a {
-  background-color: #3c8dbc;
-  color: #fff;
-}
-
-/* 기본 테이블 스타일 */
-table.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-/* 테이블 헤더 스타일 */
-table.table th {
-  background-color: #f2f2f2;
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: center;
-  font-weight: bold;
-}
-
-/* 테이블 셀 스타일 */
-table.table td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-}
-
-/* 짝수행 배경색 */
-table.table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-/* 헤더와 셀 텍스트 정렬 */
-table.table th, 
-table.table td {
-  vertical-align: middle;
-}
-
-/* 인풋 및 텍스트에어리어 스타일 */
-table.table input[type="text"], 
-table.table textarea {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-/* 버튼 스타일 */
-table.table button.btn {
-  padding: 8px 12px;
-  border-radius: 4px;
-}
-
-table.table button.btn-primary {
-  background-color: #007bff;
-  border: none;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-table.table button.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-table.table button.btn-outline-primary {
-  background-color: transparent;
-  border: 1px solid #007bff;
-  color: #007bff;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-table.table button.btn-outline-primary:hover {
-  background-color: #007bff;
-  color: white;
-}
-
-/* 유틸리티 클래스 */
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-
-
-

@@ -15,7 +15,8 @@
 			usr_deaddr,
 			usr_phone,
 			usr_nick,
-			usr_receive
+			usr_receive,
+			usr_sns_type
 		) 
 		VALUES (
 			#{usr_id},
@@ -27,7 +28,8 @@
 			#{usr_deaddr},
 			#{usr_phone},
 			#{usr_nick},
-			#{usr_receive}
+			#{usr_receive},
+			#{usr_sns_type}
 		)
 		
 	</insert>
@@ -60,6 +62,7 @@
 			usr_nick,
 			usr_receive,
 			usr_point,
+			usr_sns_type,
 			usr_lastlogin,
 			usr_datesub,
 			usr_updatedate
@@ -69,6 +72,34 @@
 			usr_id = #{usr_id}
 
 	</select>
+
+	<!-- SNS 로그인 -->
+	<select id="snsLogin" resultType="UserVO"
+		parameterType="String">
+
+		SELECT
+		usr_id,
+		usr_name,
+		usr_email,
+		usr_password,
+		usr_zipcode,
+		usr_addr,
+		usr_deaddr,
+		usr_phone,
+		usr_nick,
+		usr_receive,
+		usr_point,
+		usr_sns_type,
+		usr_lastlogin,
+		usr_datesub,
+		usr_updatedate
+		FROM
+		usr_table
+		WHERE
+		usr_email = #{snsEmail}
+
+	</select>
+
 
 	<!-- 아이디 찾기 -->
 	<select id="idFind" resultType="String">
@@ -154,7 +185,7 @@
 	<select id="existUserInfo" resultType="String">
 	
 		SELECT
-			sns_login_type
+			usr_sns_type
 		FROM
 			usr_table
 		WHERE 
@@ -175,7 +206,7 @@
 	</select>
 	
 	<!-- SNS 유저 정보 DB 저장 -->
-	<insert id="snsUserInsert" parameterType="com.library.basic.usr.SNSUserDto">
+	<insert id="snsUserInsert" parameterType="SNSUserDto">
 	
 		INSERT INTO
 			sns_user_tbl(

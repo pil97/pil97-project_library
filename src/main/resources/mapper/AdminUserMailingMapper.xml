@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.library.basic.admin.user.mailing.AdminUserMailingMapper">
+
+
+	<!-- 메일 내용 DB 저장 -->
+	<insert id="mailingSave" parameterType="MailingVO">
+
+		INSERT INTO
+		mailing_table(mailing_idx, mailing_title, mailing_content, mailing_type)
+		VALUES
+		(seq_mailing_idx.nextval, #{mailingTitle}, #{mailingContent}, #{mailingType})
+
+	</insert>
+	
+	<!-- 회원테이블에서 전체회원 메일정보를 읽어오는 작업 -->
+		<select id="getAllUserMailAddress" resultType="String">
+	
+		SELECT	
+			usr_email
+		FROM
+			usr_table
+	</select>
+
+</mapper>

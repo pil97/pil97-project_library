@@ -70,7 +70,7 @@
                     <div class="form-group row">
                       <label for="usr_email" class="col-sm-2 col-form-label">이메일</label>
                       <div class="col-sm-4">
-                        <input type="text" class="form-control" id="usr_email" name="usr_email" placeholder="이메일 입력" />
+                        <input type="text" class="form-control" id="usr_email" name="usr_email" th:value="${user.usr_email != null && !user.usr_email.isEmpty() ? user.usr_email : ''}" placeholder="이메일 입력" />
                       </div>
                       <div class="col-sm-2">
                         <button type="button" class="btn btn-outline-primary custom-btn" id="btnMailAuthCode">메일인증요청</button>

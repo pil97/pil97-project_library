@@ -28,6 +28,11 @@ public class UserService {
 
 		return userMapper.login(usr_id);
 	};
+	
+	// SNS 로그인
+	public UserVO snsLogin(String snsEmail) {
+		return userMapper.snsLogin(snsEmail);
+	};
 
 	// 아이디 찾기
 	public String idFind(String usr_name, String usr_email) {
