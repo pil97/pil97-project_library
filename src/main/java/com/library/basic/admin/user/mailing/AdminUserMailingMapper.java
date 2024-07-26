@@ -8,4 +8,6 @@ public interface AdminUserMailingMapper {
 	// 회원테이블에서 전체회원 메일정보를 읽어오는 작업
 	String[] getAllUserMailAddress();
 
+	// 메일 발송 횟수 업데이트
+	void mailSendCountUpadte(int idx);
 }

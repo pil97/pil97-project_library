@@ -19,5 +19,10 @@ public class AdminUserMailingService {
 	public String[] getAllUserMailAddress() {
 		return adminUserMailingMapper.getAllUserMailAddress();		
 	};
+	
+	// 메일 발송 횟수 업데이트
+	public void mailSendCountUpadte(int idx) {
+		adminUserMailingMapper.mailSendCountUpadte(idx);
+	};
 
 }

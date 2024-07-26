@@ -9,7 +9,6 @@ import lombok.ToString;
 @ToString
 public class SNSUserDto {
 	private String id;
-	private String nickname;
 	private String email;
 	private String sns_type;
 	

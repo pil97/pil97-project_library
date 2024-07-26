@@ -26,34 +26,44 @@
           <!-- Your Page Content Here -->
           <div class="row">
             <div class="col">
-              <form th:action="@{/admin/user/mailing/mailingprocess}" th:method="post" class="form-horizontal">
+              <form name="mailingForm" id="mailingForm" th:action="@{/admin/user/mailing/mailingprocess}" th:method="post" class="form-horizontal">
                 <div class="box-body">
                   <div class="form-group row">
                     <label for="mailingType" class="col-sm-1 col-form-label">구분</label>
                     <div class="col-sm-11">
-                      <input class="form-check-input" type="radio" name="mailingType" id="mailingType1" value="광고/이벤트" checked />
-                      <label class="form-check-label" for="mailingType1">광고/이벤트</label>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="type"
+                        id="type1"
+                        value="광고/이벤트"
+                        th:checked="${MailingVO.type eq '광고/이벤트'}"
+                      />
+                      <label class="form-check-label" for="type1">광고/이벤트</label>
 
-                      <input class="form-check-input" type="radio" name="mailingType" id="mailingType2" value="일반" />
-                      <label class="form-check-label" for="mailingType2">일반</label>
+                      <input class="form-check-input" type="radio" name="type" id="type2" value="일반" th:checked="${MailingVO.type eq '일반'}" />
+                      <label class="form-check-label" for="type2">일반</label>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="mailingTitle" class="col-sm-1 col-form-label">제목</label>
+                    <label for="title" class="col-sm-1 col-form-label">제목</label>
                     <div class="col-sm-11">
-                      <input type="text" class="form-control" name="mailingTitle" id="mailingTitle" placeholder="메일 제목 입력..." />
+                      <input type="hidden" name="idx" id="idx" th:value="${MailingVO.idx}" />
+                      <input type="text" class="form-control" name="title" id="title" placeholder="메일 제목 입력..." th:value="${MailingVO.title}" />
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="mailingContent" class="col-sm-1 col-form-label">내용</label>
+                    <label for="content" class="col-sm-1 col-form-label">내용</label>
                     <div class="col-sm-11">
-                      <textarea class="form-control" name="mailingContent" id="mailingContent" rows="3"></textarea>
+                      <textarea class="form-control" name="content" id="content" rows="3" th:text="${MailingVO.content}"></textarea>
                     </div>
                   </div>
                 </div>
 
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary" id="btnMailSend">메일내용 저장 및 보내기</button>
+                  <button type="submit" id="btnMailSave" class="btn btn-primary">저장</button>
+                  <button type="submit" id="btnMailSend" class="btn btn-primary">메일발송</button>
+                  <button type="submit" id="btnMailList" class="btn btn-primary">목록</button>
                 </div>
               </form>
             </div>
@@ -63,22 +73,75 @@
       </div>
     </th:block>
     <th:block layout:fragment="script">
+      <script th:inline="javascript">
+        let msg = [[${msg}]];
+
+        if (msg == "save") {
+          alert("메일정보가 저장 되었습니다.");
+        } else if (msg == "send") {
+          alert("메일이 발송 되었습니다.");
+        }
+      </script>
       <script>
         // ckeditor 환경설정.
         $(document).ready(function () {
-          $("button#btnMailSend").on("click", function () {
-            if ($("#mailingTitle").val().trim() === "") {
+          // 전역변수
+          let mailingForm = $("#mailingForm");	
+        	
+          // 메일 저장 버튼 클릭시
+          $("button#btnMailSave").on("click", function (event) {
+            let editorContent = CKEDITOR.instances["content"].getData().trim();
+            if (!$("input[name='type']:checked").val()) {
+              alert("구분을 선택하세요.");
+              event.preventDefault();
+              return;
+            }
+
+            if ($("#title").val().trim() === "") {
               alert("제목을 입력하세요.");
-              $("#mailingTitle").focus();
+              $("#title").focus();
               event.preventDefault();
               return;
             }
-            if ($("#mailingContent").val().trim() === "") {
+            if (editorContent === "") {
               alert("내용을 입력하세요.");
-              $("#mailingContent").focus();
+              CKEDITOR.instances["content"].focus();
               event.preventDefault();
               return;
             }
+
+            mailingForm.attr("action", "/admin/user/mailing/mailingsave");
+            mailingForm.submit();
+          });
+
+          // 메일 발송 버튼 클릭시
+          $("button#btnMailSend").on("click", function (event) {
+            let editorContent = CKEDITOR.instances["content"].getData().trim();
+            if (!$("input[name='type']:checked").val()) {
+              alert("구분을 선택하세요.");
+              event.preventDefault();
+              return;
+            }
+
+            if ($("#title").val().trim() === "") {
+              alert("제목을 입력하세요.");
+              $("#title").focus();
+              event.preventDefault();
+              return;
+            }
+            if (editorContent === "") {
+              alert("내용을 입력하세요.");
+              CKEDITOR.instances["content"].focus();
+              event.preventDefault();
+              return;
+            }
+            mailingForm.attr("action", "/admin/user/mailing/mailingsend");
+            mailingForm.submit();
+          });
+
+          // 메일 목록 버튼 클릭시
+          $("button#btnMailList").on("click", function () {
+            location.href = "/admin/user/mailing/mailinglist";
           });
 
           // ckeditor 환경설정. 자바스크립트 Ojbect문법
@@ -93,8 +156,7 @@
             filebrowserUploadUrl: "/admin/user/mailing/imageupload", // 이미지 업로드 버튼
           };
 
-          // pro_content - 상품설명 id 참조
-          CKEDITOR.replace("mailingContent", ckeditor_config);
+          CKEDITOR.replace("content", ckeditor_config);
 
           console.log("ckediotr 버전: ", CKEDITOR.version); // ckeditor 버전: 4.12.1 (Standard)
         });

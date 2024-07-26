@@ -30,4 +30,14 @@ public class AdminQnaService {
 		return adminQnaMapper.adminQnaDetailInfo(qna_code);
 	};
 	
+	// 도서 QnA 답변 등록
+	public void qnaAnswerSave(String qna_code, String qna_answer) {
+		adminQnaMapper.qnaAnswerSave(qna_code, qna_answer);
+	};
+	
+	// 도서 QnA 삭제
+	public void qnaDelete(String qna_code) {
+		adminQnaMapper.qnaDelete(qna_code);
+	};
+	
 }

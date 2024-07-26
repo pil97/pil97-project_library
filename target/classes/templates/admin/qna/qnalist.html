@@ -13,7 +13,7 @@
   <!-- 각 페이지의 css -->
   <th:block layout:fragment="css">
     <link href="/css/admin/order/orderlist.css" rel="stylesheet" />
-    <link href="/css/admin/qna/qnainfo.css" rel="stylesheet" />       
+    <link href="/css/admin/qna/qnainfo.css" rel="stylesheet" />
   </th:block>
 
   <body class="hold-transition skin-blue sidebar-mini">
@@ -46,15 +46,14 @@
                     <form th:action="@{/admin/qna/qnalist}" th:method="get">
                       <select name="type" th:value="${pageMaker.cri.type}">
                         <option value="" th:text="검색종류선택" th:if="${pageMaker.cri.type == null}"></option>
-                        <option value="T" th:text="문의종류" th:selected="${pageMaker.cri.type == 'T'}"></option>                        
+                        <option value="T" th:text="문의종류" th:selected="${pageMaker.cri.type == 'T'}"></option>
                         <option value="I" th:text="아이디" th:selected="${pageMaker.cri.type == 'I'}"></option>
                         <option value="C" th:text="답변유무" th:selected="${pageMaker.cri.type == 'C'}"></option>
                       </select>
                       <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
                       <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
-                      <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
-                      날짜검색 : <input type="date" name="startDate" th:value="${startDate}" /> ~
-                      <input type="date" name="endDate" th:value="${endDate}" />
+                      <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" /> 날짜검색 :
+                      <input type="date" name="startDate" th:value="${startDate}" /> ~ <input type="date" name="endDate" th:value="${endDate}" />
                       <button type="submit" class="btn btn-primary" th:text="검색"></button>
                     </form>
                   </div>
@@ -76,7 +75,7 @@
                         <td th:text="${AdQnaVO.usr_id}"></td>
                         <td th:text="${AdQnaVO.qna_type}"></td>
                         <td>
-                        	<img
+                          <img
                             id="imageStyle"
                             th:src="${'/admin/qna/imagedisplay?dateFolderName=' + AdQnaVO.book_up_folder + '&fileName=s_' + AdQnaVO.book_img}"
                           />
@@ -137,33 +136,32 @@
         </section>
       </div>
 
-     
-  <!-- Modal -->
-<div
-  class="modal fade"
-  id="qnaDetailInfoPopup"
-  data-backdrop="static"
-  data-keyboard="false"
-  tabindex="-1"
-  aria-labelledby="staticBackdropLabel2"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="staticBackdropLabel2">QnA 상세</h3>
-        <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="qnaDetailInfoPopup"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel2"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title" id="staticBackdropLabel2">QnA 상세</h3>
+              <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- load()메서드를 이용하여, qnainfo_.html파일이 실행된 내용이 삽입된다. -->
+            <div class="modal-body">
+              <!-- QnA정보  -->
+              <div id="qnaInfo"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- load()메서드를 이용하여, qnainfo_.html파일이 실행된 내용이 삽입된다. -->
-      <div class="modal-body">
-        <!-- QnA정보  -->
-        <div id="qnaInfo"></div>
-      </div>
-    </div>
-  </div>
-</div>
 
       <!-- end : 메인 내용 -->
     </th:block>
@@ -186,7 +184,7 @@
             actionForm.submit();
           });
 
-          // name="btnQnADetail" - 모달
+          // name="btnQnADetail" - 상세보기 모달
           $("button[name='btnQnADetail']").on("click", function () {
             $("#qnaDetailInfoPopup").modal("show");
 
@@ -195,6 +193,61 @@
             console.log("QnA코드", qna_code);
 
             $("#qnaInfo").load("/admin/qna/qnainfo?qna_code=" + qna_code);
+          });
+
+          // 답변등록
+          $("div#qnaDetailInfoPopup").on("click", "#btnQnaSave", function () {
+            let qna_code = $(this).data("qna_code");
+            let qna_answer = $("#info_qna_answer").val();
+            console.log("QnA코드", qna_code);
+            console.log("QnA답변", qna_answer);
+
+            if ($("#info_qna_answer").val().trim() === "") {
+              alert("답변을 입력해주세요."); // 추가: 관리자에게 답변을 입력하라고 알림
+              $("#info_qna_answer").focus();
+              return;
+            }
+
+            $.ajax({
+              url: "/admin/qna/qnaanswersave",
+              type: "get",
+              data: {
+                qna_code: qna_code,
+                qna_answer: qna_answer,
+              },
+              dataType: "text",
+              success: function (result) {
+                if (result == "success") {
+                  alert("답변이 등록되었습니다.");
+                  $("#qnaDetailInfoPopup").modal("hide");
+                  location.reload(); // 페이지 새로고침
+                }
+              },
+            });
+          });
+
+          // 답변등록
+          $("div#qnaDetailInfoPopup").on("click", "#btnQnaDelete", function () {
+            let qna_code = $(this).data("qna_code");
+            console.log("QnA코드", qna_code);
+
+            if (confirm("삭제하시겠습니까?")) {
+              $.ajax({
+                url: "/admin/qna/qnadelete",
+                type: "get",
+                data: {
+                  qna_code: qna_code,
+                },
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    alert("QnA가 삭제되었습니다.");
+                    $("#qnaDetailInfoPopup").modal("hide");
+                    location.reload(); // 페이지 새로고침
+                  }
+                },
+              });
+            }
           });
 
           // ready event end

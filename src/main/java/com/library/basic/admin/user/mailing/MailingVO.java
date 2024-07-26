@@ -6,16 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
 @Setter
 @ToString
 public class MailingVO {
 
-	private Integer mailingIdx;
-	private String mailingTitle;
-	private String mailingContent;
-	private String mailingType;
-	private Date mailingRegDate;
-	
+	private Integer idx;
+	private String title;
+	private String content;
+	private String type;
+	private String sendCount;
+	private Date regDate;
+
 }

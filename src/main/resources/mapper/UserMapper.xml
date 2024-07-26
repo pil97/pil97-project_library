@@ -14,7 +14,6 @@
 			usr_addr,
 			usr_deaddr,
 			usr_phone,
-			usr_nick,
 			usr_receive,
 			usr_sns_type
 		) 
@@ -27,7 +26,6 @@
 			#{usr_addr},
 			#{usr_deaddr},
 			#{usr_phone},
-			#{usr_nick},
 			#{usr_receive},
 			#{usr_sns_type}
 		)
@@ -59,7 +57,6 @@
 			usr_addr,
 			usr_deaddr,
 			usr_phone,
-			usr_nick,
 			usr_receive,
 			usr_point,
 			usr_sns_type,
@@ -199,7 +196,7 @@
 		SELECT
 			email
 		FROM
-			sns_user_tbl
+			sns_user_table
 		WHERE
 			email = #{sns_email}
 			
@@ -209,15 +206,13 @@
 	<insert id="snsUserInsert" parameterType="SNSUserDto">
 	
 		INSERT INTO
-			sns_user_tbl(
+			sns_user_table(
 				id, 
-				nickname, 
 				email, 
 				sns_type
 			)
 		VALUES (
 			#{id}, 
-			#{nickname}, 
 			#{email}, 
 			#{sns_type}
 		)	

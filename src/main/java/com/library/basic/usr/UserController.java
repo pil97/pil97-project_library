@@ -101,7 +101,6 @@ public class UserController {
 			SNSUserDto dto = new SNSUserDto();
 			dto.setId(vo.getUsr_id());
 			dto.setEmail(vo.getUsr_email());
-			dto.setNickname(vo.getUsr_nick());
 			dto.setSns_type(vo.getUsr_sns_type());
 			
 			userService.snsUserInsert(dto);
@@ -113,7 +112,6 @@ public class UserController {
 			SNSUserDto dto = new SNSUserDto();
 			dto.setId(vo.getUsr_id());
 			dto.setEmail(vo.getUsr_email());
-			dto.setNickname(vo.getUsr_nick());
 			dto.setSns_type(vo.getUsr_sns_type());
 			
 			userService.snsUserInsert(dto);

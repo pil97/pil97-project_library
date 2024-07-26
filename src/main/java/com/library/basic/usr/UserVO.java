@@ -18,7 +18,6 @@ public class UserVO {
 	private String usr_addr;
 	private String usr_deaddr;
 	private String usr_phone;
-	private String usr_nick;
 	private String usr_receive;
 	private int usr_point;
 	private String usr_sns_type; 

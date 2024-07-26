@@ -131,10 +131,32 @@
 		FROM
 		qna_table q
 		INNER JOIN
-		book_table b ON q.book_bno = b.book_bno
+		book_table b ON
+		q.book_bno = b.book_bno
 		WHERE
 		q.qna_code = #{qna_code}
 	</select>
+
+	<!-- 도서 QnA 답변 등록 -->
+	<update id="qnaAnswerSave" parameterType="map">
+		UPDATE
+		qna_table
+		SET
+		qna_check = 'Y',
+		qna_answer = #{qna_answer}
+		WHERE
+		qna_code = #{qna_code}
+
+	</update>
+
+	<!-- 도서 QnA 삭제 -->
+	<delete id="qnaDelete" parameterType="String">
+	DELETE FROM
+	qna_table
+	WHERE
+	qna_code = #{qna_code}
+	</delete>
+
 
 
 

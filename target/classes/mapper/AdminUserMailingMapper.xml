@@ -3,24 +3,51 @@
 <mapper
 	namespace="com.library.basic.admin.user.mailing.AdminUserMailingMapper">
 
+	<resultMap type="MailingVO" id="mailingMap">
+
+		<id property="idx" column="mailing_idx" />
+		<result property="title" column="mailing_title" />
+		<result property="content" column="mailing_content" />
+		<result property="type" column="mailing_type" />
+		<result property="sendCount" column="mailing_send_count" />
+		<result property="regDate" column="mailing_regdate" />
+
+	</resultMap>
+
 
 	<!-- 메일 내용 DB 저장 -->
 	<insert id="mailingSave" parameterType="MailingVO">
 
 		INSERT INTO
-		mailing_table(mailing_idx, mailing_title, mailing_content, mailing_type)
+		mailing_table(mailing_idx, mailing_title, mailing_content,
+		mailing_type)
 		VALUES
-		(seq_mailing_idx.nextval, #{mailingTitle}, #{mailingContent}, #{mailingType})
+		(seq_mailing_idx.nextval, #{title}, #{content},
+		#{type})
 
 	</insert>
-	
+
 	<!-- 회원테이블에서 전체회원 메일정보를 읽어오는 작업 -->
-		<select id="getAllUserMailAddress" resultType="String">
-	
-		SELECT	
-			usr_email
+	<select id="getAllUserMailAddress" resultType="String">
+
+		SELECT
+		usr_email
 		FROM
-			usr_table
+		usr_table
 	</select>
+
+	<!-- 메일 발송 횟수 업데이트 -->
+	<update id="mailSendCountUpadte" parameterType="int">
+		UPDATE
+		mailing_table
+		SET
+		mailing_send_count = mailing_send_count + 1
+		WHERE
+		m_idx = #{idx}
+
+	</update>
+
+
+
 
 </mapper>

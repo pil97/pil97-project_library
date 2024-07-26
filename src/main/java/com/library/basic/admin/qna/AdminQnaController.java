@@ -3,6 +3,7 @@ package com.library.basic.admin.qna;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.library.basic.common.dto.Criteria;
 import com.library.basic.common.dto.PageDTO;
 import com.library.basic.common.util.FileManagerUtils;
+import com.library.basic.usr.cart.CartVO;
 import com.library.basic.usr.qna.MyQnaVO;
 import com.library.basic.usr.qna.QnaService;
 import com.library.basic.usr.qna.QnaVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,4 +77,32 @@ public class AdminQnaController {
 			model.addAttribute("QnaVO", vo);
 		}
 
+		
+		// 도서 QnA 답변 등록
+		@GetMapping("/qnaanswersave")
+		public ResponseEntity<String> qnaAnswerSave(String qna_code, String qna_answer) throws Exception {
+			
+			ResponseEntity<String> entity = null;
+			
+			// db연동
+			adminQnaService.qnaAnswerSave(qna_code, qna_answer);
+			
+			entity = new ResponseEntity<String>("success", HttpStatus.OK);
+			
+			return entity;
+		}
+		
+		// 도서 QnA 삭제
+		@GetMapping("/qnadelete")
+		public ResponseEntity<String> qnaDelete(String qna_code) throws Exception {
+			
+			ResponseEntity<String> entity = null;
+			
+			// db연동
+			adminQnaService.qnaDelete(qna_code);
+			
+			entity = new ResponseEntity<String>("success", HttpStatus.OK);
+			
+			return entity;
+		}
 }
