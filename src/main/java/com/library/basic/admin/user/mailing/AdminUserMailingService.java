@@ -1,6 +1,11 @@
 package com.library.basic.admin.user.mailing;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+
+import com.library.basic.common.dto.Criteria;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +28,16 @@ public class AdminUserMailingService {
 	// 메일 발송 횟수 업데이트
 	public void mailSendCountUpadte(int idx) {
 		adminUserMailingMapper.mailSendCountUpadte(idx);
+	};
+	
+	// 메일 발송 목록
+	public List<MailingVO> mailingList(@Param("cri") Criteria cri, @Param("title") String title) {
+		return adminUserMailingMapper.mailingList(cri, title);
+	};
+	
+	// 메일 발송 목록 개수
+	public int mailingListgetTotalCount(String title) {
+		return adminUserMailingMapper.mailingListgetTotalCount(title);
 	};
 
 }

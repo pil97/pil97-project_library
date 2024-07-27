@@ -3,6 +3,7 @@ package com.library.basic.admin.user.mailing;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.library.basic.common.constants.Constants;
 import com.library.basic.common.dto.Criteria;
+import com.library.basic.common.dto.PageDTO;
 import com.library.basic.common.util.FileManagerUtils;
 import com.library.basic.mail.EmailDTO;
 import com.library.basic.mail.EmailService;
@@ -42,8 +44,16 @@ public class AdminUserMailingController {
 
 	// 메일 발송 목록
 	@GetMapping("/mailinglist")
-	public void mailingList(Criteria cri, Model model) throws Exception {
+	public void mailingList(Criteria cri, String title, Model model) throws Exception {
+		// 메일 발송 목록
+		List<MailingVO> mailingList = adminUserMailingService.mailingList(cri, title);
 
+		// 메일 발송 목록 개수
+		int totalCount = adminUserMailingService.mailingListgetTotalCount(title);
+		PageDTO pageDto = new PageDTO(cri, totalCount);
+
+		model.addAttribute("mailingList", mailingList);
+		model.addAttribute("pageMaker", pageDto);
 	}
 
 	// 메일 발송 폼(CkEditor 사용) - 구분 1. 광고/이벤트 2. 일반
@@ -52,7 +62,7 @@ public class AdminUserMailingController {
 	// 주소에 의하여 호출되는 메서드인 경우, 파라미터를 스프링이 관여, 객체를 먼저 생성 -> 사용자가 입력한 값이 setter 메서드에 의하여 객체에 저장한다.
 	@GetMapping("/mailingform")
 	public void mailingForm(@ModelAttribute("MailingVO") MailingVO vo) {
-
+				
 	}
 
 	// 메일 저장
@@ -65,7 +75,7 @@ public class AdminUserMailingController {
 
 		log.info("시퀀스 : " + vo.getIdx());
 
-		model.addAttribute("mailingIdx", vo.getIdx()); // 메일 보내기 횟수작업 사용
+		model.addAttribute("idx", vo.getIdx()); // 메일 보내기 횟수작업 사용
 
 		model.addAttribute("msg", "save"); // redirect 사용시 적용됨.
 
@@ -91,14 +101,15 @@ public class AdminUserMailingController {
 
 		// 메일 발송
 		emailService.sendMail(dto, emailArr);
-		
+				
 		// 3. 메일 발송 횟수 업데이트
+		log.info("시퀀스 : " + vo.getIdx());
 		adminUserMailingService.mailSendCountUpadte(vo.getIdx());
 		
 
 		rttr.addFlashAttribute("msg", "send");
 
-		return "redirect:/admin/user/mailing/mailingform";
+		return "redirect:/admin/user/mailing/mailinglist";
 	}
 
 	// CKEditor 상품설명 이미지 업로드

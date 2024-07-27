@@ -18,12 +18,20 @@
 	<!-- 메일 내용 DB 저장 -->
 	<insert id="mailingSave" parameterType="MailingVO">
 
+		<selectKey keyProperty="idx" resultType="Integer"
+			order="BEFORE">
+			SELECT
+			seq_mailing_idx.nextval
+			FROM
+			DUAL
+
+		</selectKey>
+
 		INSERT INTO
 		mailing_table(mailing_idx, mailing_title, mailing_content,
 		mailing_type)
 		VALUES
-		(seq_mailing_idx.nextval, #{title}, #{content},
-		#{type})
+		(#{idx}, #{title}, #{content}, #{type})
 
 	</insert>
 
@@ -43,10 +51,80 @@
 		SET
 		mailing_send_count = mailing_send_count + 1
 		WHERE
-		m_idx = #{idx}
+		mailing_idx = #{idx}
 
 	</update>
 
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 메일 발송 목록 -->
+	<select id="mailingList" resultMap="mailingMap"
+		parameterType="map">
+
+		SELECT
+		mailing_idx,
+		mailing_title,
+		mailing_content,
+		mailing_type,
+		mailing_send_count,
+		mailing_regdate
+		FROM
+		(
+		SELECT /*+
+		INDEX_DESC(mailing_table
+		PK_MAILING_IDX) */
+		ROWNUM AS
+		RN,
+		mailing_idx,
+		mailing_title,
+		mailing_content,
+		mailing_type,
+		mailing_send_count,
+		mailing_regdate
+		FROM
+		mailing_table
+		WHERE
+		1 = 1
+
+		<include refid="mailSearchTitle"></include>
+		 
+		 <![CDATA[  		
+		   		AND ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>
+		)
+		WHERE
+		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+
+
+
+	</select>
+	
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 메일 발송 목록 개수 -->
+	<select id="mailingListgetTotalCount" resultType="int">
+
+		SELECT
+		COUNT(*)
+		FROM
+		mailing_table
+		WHERE
+		1 = 1
+
+		<include refid="mailSearchTitle"></include>
+
+		AND
+		mailing_idx > 0
+	</select>
+	
+	<!-- 검색조건 -->
+	<sql id="mailSearchTitle">
+
+		<if test="title != null and !title.equals('')">
+
+			AND mailing_title like '%' || #{title} || '%'
+
+		</if>
+
+	</sql>
 
 
 
