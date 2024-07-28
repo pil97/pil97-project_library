@@ -39,7 +39,7 @@
 
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- inner join 사용시 조건절은 내부 쿼리에 넣어서 해야함 -> 1. 성능 이슈 2. 값이 이상하게 나옴 -->
-	<!-- 나의 QnA 목록 -->
+	<!-- 관리자 - QnA 목록 -->
 	<select id="adminQnaList" resultType="MyQnaVO"
 		parameterType="map">
 		SELECT
@@ -97,7 +97,7 @@
 
 
 	<!-- 공통사항 : 검색조건추가 -->
-	<!-- 나의 QnA 개수 -->
+	<!-- 관리자 - QnA 개수 -->
 	<select id="getTotalCount" resultType="int" parameterType="map">
 		SELECT
 		COUNT(*)

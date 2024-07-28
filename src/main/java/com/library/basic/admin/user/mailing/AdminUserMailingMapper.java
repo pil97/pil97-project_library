@@ -22,4 +22,10 @@ public interface AdminUserMailingMapper {
 	
 	// 메일 발송 목록 개수
 	int mailingListgetTotalCount(String title);
+	
+	// 메일 발송 폼
+	MailingVO mailingSendForm(int idx);
+	
+	// 메일 수정
+	void mailingModify(MailingVO vo);
 }

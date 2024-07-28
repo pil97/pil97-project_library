@@ -39,5 +39,15 @@ public class AdminUserMailingService {
 	public int mailingListgetTotalCount(String title) {
 		return adminUserMailingMapper.mailingListgetTotalCount(title);
 	};
+	
+	// 메일 발송 폼
+	public MailingVO mailingSendForm(int idx) {
+		return adminUserMailingMapper.mailingSendForm(idx);
+	};
+	
+	// 메일 수정
+	public void mailingModify(MailingVO vo) {
+		adminUserMailingMapper.mailingModify(vo);
+	};
 
 }

@@ -97,7 +97,7 @@
 
 
 	</select>
-	
+
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- 메일 발송 목록 개수 -->
 	<select id="mailingListgetTotalCount" resultType="int">
@@ -114,7 +114,7 @@
 		AND
 		mailing_idx > 0
 	</select>
-	
+
 	<!-- 검색조건 -->
 	<sql id="mailSearchTitle">
 
@@ -125,6 +125,36 @@
 		</if>
 
 	</sql>
+
+	<!-- 메일 발송 폼 -->
+	<select id="mailingSendForm" resultMap="mailingMap"
+		parameterType="int">
+		SELECT
+		mailing_idx,
+		mailing_title,
+		mailing_content,
+		mailing_type,
+		mailing_send_count,
+		mailing_regdate
+		FROM
+		mailing_table
+		WHERE
+		mailing_idx = #{idx}
+	</select>
+
+	<update id="mailingModify" parameterType="MailingVO">
+
+		UPDATE
+		mailing_table
+		SET
+		mailing_title = #{title},
+		mailing_content = #{content},
+		mailing_type = #{type},
+		mailing_regdate = sysdate
+		WHERE
+		mailing_idx = #{idx}
+
+	</update>
 
 
 

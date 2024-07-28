@@ -111,6 +111,28 @@ public class AdminUserMailingController {
 
 		return "redirect:/admin/user/mailing/mailinglist";
 	}
+	
+	// 메일 발송 폼
+	@GetMapping("/mailingsendform")
+	public void mailingSendForm(int idx, Model model) throws Exception {
+
+		MailingVO vo = adminUserMailingService.mailingSendForm(idx);
+
+		model.addAttribute("MailingVO", vo);
+
+	}
+	
+	// 메일 수정
+	@PostMapping("/mailingmodify")
+	public String mailingModify(@ModelAttribute("MailingVO") MailingVO vo, Model model) throws Exception {
+
+		adminUserMailingService.mailingModify(vo);
+
+		model.addAttribute("msg", "modify");
+		
+		return "/admin/user/mailing/mailingsendform";
+
+	}
 
 	// CKEditor 상품설명 이미지 업로드
 	// 파라미터명 - upload : 에디터 이미지 업로드 클릭시 나오는 name 명

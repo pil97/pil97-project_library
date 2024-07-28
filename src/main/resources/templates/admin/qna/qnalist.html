@@ -190,7 +190,7 @@
 
             let qna_code = $(this).data("qna_code");
 
-            console.log("QnA코드", qna_code);
+            // console.log("QnA코드", qna_code);
 
             $("#qnaInfo").load("/admin/qna/qnainfo?qna_code=" + qna_code);
           });
@@ -199,8 +199,8 @@
           $("div#qnaDetailInfoPopup").on("click", "#btnQnaSave", function () {
             let qna_code = $(this).data("qna_code");
             let qna_answer = $("#info_qna_answer").val();
-            console.log("QnA코드", qna_code);
-            console.log("QnA답변", qna_answer);
+            // console.log("QnA코드", qna_code);
+            // console.log("QnA답변", qna_answer);
 
             if ($("#info_qna_answer").val().trim() === "") {
               alert("답변을 입력해주세요."); // 추가: 관리자에게 답변을 입력하라고 알림
@@ -226,10 +226,10 @@
             });
           });
 
-          // 답변등록
+          // QnA 삭제
           $("div#qnaDetailInfoPopup").on("click", "#btnQnaDelete", function () {
             let qna_code = $(this).data("qna_code");
-            console.log("QnA코드", qna_code);
+            // console.log("QnA코드", qna_code);
 
             if (confirm("삭제하시겠습니까?")) {
               $.ajax({

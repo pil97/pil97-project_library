@@ -17,7 +17,7 @@ public class AdminQnaService {
 	private final AdminQnaMapper adminQnaMapper;
 	
 	// 관리자 - QnA 목록
-	public List<MyQnaVO> adminQnaListt(Criteria cri, String startDate, String endDate) {
+	public List<MyQnaVO> adminQnaList(Criteria cri, String startDate, String endDate) {
 		return adminQnaMapper.adminQnaList(cri, startDate, endDate);
 	};
 	

@@ -19,7 +19,7 @@
             <li class="active">Here</li>
           </ol>
         </section>
-        ㄴ
+        
 
         <!-- Main content -->
         <section class="content">
@@ -29,9 +29,9 @@
               <form name="mailingSearchForm" id="mailingSearchForm" th:action="@{/admin/user/mailing/mailinglist}" th:method="get" class="form-horizontal">
                 <div class="box-body">
                   <div class="form-group row">
-                    <label for="mailingTitle" class="col-sm-1 col-form-label">제목</label>
+                    <label for="title" class="col-sm-1 col-form-label">제목</label>
                     <div class="col-sm-11">
-                      <input type="text" class="form-control" name="mailingTitle" id="mailingTitle" placeholder="메일 제목 입력..." />
+                      <input type="text" class="form-control" name="title" id="title" placeholder="메일 제목 입력..." />
                     </div>
                   </div>
                 </div>
@@ -149,20 +149,15 @@
           // actionForm을 이용한 시작했던 목록의 페이지 이동작업
           // 메일발송 버튼 클릭 -> 메일 발송 폼 이동
           $("button[name='btnMailingSend']").on("click", function () {
-            let mailingIdx = $(this).data("mailing_idx");
-            console.log(mailingIdx);
+            let idx = $(this).data("idx");
+            // console.log(idx);
 
             // return;
 
-            location.href = "/admin/user/mailing/mailingsendform?mailingidx=" + mailingIdx;
+            location.href = "/admin/user/mailing/mailingsendform?idx=" + idx;
           });
 
-          // 메일발송 버튼 클릭 -> 메일 발송 폼 이동
-          $("button[name='btnMailingEdit']").on("click", function () {
-            let mailingIdx = $(this).data("mailingIdx");
 
-            location.href = "/admin/user/mailing/mailingsendform?mailingidx=" + mailingIdx;
-          });
         }); // ready event end
       </script>
     </th:block>

@@ -7,13 +7,26 @@
 >
   <!-- 각 페이지의 title -->
   <th:block layout:fragment="title">
-    <title>QnA목록</title>
+    <title>리뷰 목록</title>
   </th:block>
 
   <!-- 각 페이지의 css -->
   <th:block layout:fragment="css">
     <link href="/css/admin/order/orderlist.css" rel="stylesheet" />
     <link href="/css/admin/qna/qnainfo.css" rel="stylesheet" />
+    <style>
+      /* 별점 기본선택지 */
+      p#star_rev_rate a.rev_rate {
+        font-size: 22px;
+        text-decoration: none;
+        color: lightgray;
+      }
+
+      /* 별점에 마우스 오버했을 경우 선택지 */
+      p#star_rev_rate a.rev_rate.on {
+        color: red;
+      }
+    </style>
   </th:block>
 
   <body class="hold-transition skin-blue sidebar-mini">
@@ -22,7 +35,7 @@
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <section class="content-header">
-          <h1>QnA목록</h1>
+          <h1>리뷰 목록</h1>
           <ol class="breadcrumb">
             <li>
               <a href="#"><i class="fa fa-dashboard"></i> Level</a>
@@ -38,17 +51,16 @@
             <div class="col-md-12">
               <div class="box">
                 <div class="box-header with-border">
-                  <h3 class="box-title">QnA목록</h3>
+                  <h3 class="box-title">리뷰 목록</h3>
                 </div>
 
                 <div class="box-body">
                   <div>
-                    <form th:action="@{/admin/qna/qnalist}" th:method="get">
+                    <form th:action="@{/admin/review/reviewlist}" th:method="get">
                       <select name="type" th:value="${pageMaker.cri.type}">
                         <option value="" th:text="검색종류선택" th:if="${pageMaker.cri.type == null}"></option>
-                        <option value="T" th:text="문의종류" th:selected="${pageMaker.cri.type == 'T'}"></option>
+                        <option value="T" th:text="제목" th:selected="${pageMaker.cri.type == 'T'}"></option>
                         <option value="I" th:text="아이디" th:selected="${pageMaker.cri.type == 'I'}"></option>
-                        <option value="C" th:text="답변유무" th:selected="${pageMaker.cri.type == 'C'}"></option>
                       </select>
                       <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
                       <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
@@ -61,31 +73,39 @@
                   <table class="table table-bordered">
                     <tbody>
                       <tr>
-                        <th>QnA코드</th>
+                        <th>리뷰코드</th>
                         <th>아이디</th>
-                        <th>문의종류</th>
                         <th>도서명</th>
                         <th>제목</th>
                         <th>등록일</th>
-                        <th>답변유무</th>
+                        <th>별점</th>
                         <th>비고</th>
                       </tr>
-                      <tr th:each="AdQnaVO : ${adQnaList}">
-                        <td th:text="${AdQnaVO.qna_code}"></td>
-                        <td th:text="${AdQnaVO.usr_id}"></td>
-                        <td th:text="${AdQnaVO.qna_type}"></td>
+                      <tr th:each="adReviewList : ${adReviewList}">
+                        <td th:text="${adReviewList.rev_code}"></td>
+                        <td th:text="${adReviewList.usr_id}"></td>
                         <td>
                           <img
                             id="imageStyle"
-                            th:src="${'/admin/qna/imagedisplay?dateFolderName=' + AdQnaVO.book_up_folder + '&fileName=s_' + AdQnaVO.book_img}"
+                            th:src="${'/admin/review/imagedisplay?dateFolderName=' + adReviewList.book_up_folder + '&fileName=s_' + adReviewList.book_img}"
                           />
-                          <span th:text="${AdQnaVO.book_name}"></span>
+                          <span th:text="${adReviewList.book_name}"></span>
                         </td>
-                        <td th:text="${AdQnaVO.qna_title}"></td>
-                        <td th:text="${#dates.format(AdQnaVO.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                        <td th:text="${AdQnaVO.qna_check}"></td>
+                        <td th:text="${adReviewList.rev_title}"></td>
+                        <td th:text="${#dates.format(adReviewList.rev_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td>
-                          <button type="button" class="btn btn-danger" name="btnQnADetail" th:data-qna_code="${AdQnaVO.qna_code}">상세보기</button>
+                          <p id="star_rev_rate" class="star-rating" th:data-rate="${adReviewList.rev_rate}">
+                            <a class="rev_rate" href="#">☆</a>
+                            <a class="rev_rate" href="#">☆</a>
+                            <a class="rev_rate" href="#">☆</a>
+                            <a class="rev_rate" href="#">☆</a>
+                            <a class="rev_rate" href="#">☆</a>
+                          </p>
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-danger" name="btnReviewDetail" th:data-rev_code="${adReviewList.rev_code}">
+                            상세보기
+                          </button>
                         </td>
                       </tr>
                     </tbody>
@@ -139,7 +159,7 @@
       <!-- Modal -->
       <div
         class="modal fade"
-        id="qnaDetailInfoPopup"
+        id="reviewDetailInfoPopup"
         data-backdrop="static"
         data-keyboard="false"
         tabindex="-1"
@@ -149,15 +169,15 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h3 class="modal-title" id="staticBackdropLabel2">QnA 상세</h3>
+              <h3 class="modal-title" id="staticBackdropLabel2">리뷰 상세</h3>
               <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <!-- load()메서드를 이용하여, qnainfo_.html파일이 실행된 내용이 삽입된다. -->
+            <!-- load()메서드를 이용하여, reviewinfo_.html파일이 실행된 내용이 삽입된다. -->
             <div class="modal-body">
-              <!-- QnA정보  -->
-              <div id="qnaInfo"></div>
+              <!-- 리뷰 정보  -->
+              <div id="reviewInfo"></div>
             </div>
           </div>
         </div>
@@ -175,7 +195,7 @@
             e.preventDefault(); // a 태그의 href 기능을 제거
 
             // 주소변경
-            actionForm.attr("action", "/admin/qna/qnalist");
+            actionForm.attr("action", "/admin/review/reviewlist");
 
             // 클릭한 페이지 번호 작업
             actionForm.find("input[name='pageNum']").val($(this).attr("href"));
@@ -184,65 +204,75 @@
             actionForm.submit();
           });
 
-          // name="btnQnADetail" - 상세보기 모달
-          $("button[name='btnQnADetail']").on("click", function () {
-            $("#qnaDetailInfoPopup").modal("show");
-
-            let qna_code = $(this).data("qna_code");
-
-            // console.log("QnA코드", qna_code);
-
-            $("#qnaInfo").load("/admin/qna/qnainfo?qna_code=" + qna_code);
-          });
-
-          // 답변등록
-          $("div#qnaDetailInfoPopup").on("click", "#btnQnaSave", function () {
-            let qna_code = $(this).data("qna_code");
-            let qna_answer = $("#info_qna_answer").val();
-            // console.log("QnA코드", qna_code);
-            // console.log("QnA답변", qna_answer);
-
-            if ($("#info_qna_answer").val().trim() === "") {
-              alert("답변을 입력해주세요."); // 추가: 관리자에게 답변을 입력하라고 알림
-              $("#info_qna_answer").focus();
-              return;
+          // 별점 표시
+          const displayStar = (rev_rate) => {
+            let star = "";
+            switch (rev_rate) {
+              case 1:
+                star = "★☆☆☆☆";
+                break;
+              case 2:
+                star = "★★☆☆☆";
+                break;
+              case 3:
+                star = "★★★☆☆";
+                break;
+              case 4:
+                star = "★★★★☆";
+                break;
+              case 5:
+                star = "★★★★★";
+                break;
+              default:
+                star = "☆☆☆☆☆"; // 나머지는 0점
             }
+            return star;
+          };
 
-            $.ajax({
-              url: "/admin/qna/qnaanswersave",
-              type: "get",
-              data: {
-                qna_code: qna_code,
-                qna_answer: qna_answer,
-              },
-              dataType: "text",
-              success: function (result) {
-                if (result == "success") {
-                  alert("답변이 등록되었습니다.");
-                  $("#qnaDetailInfoPopup").modal("hide");
-                  location.reload(); // 페이지 새로고침
-                }
-              },
-            });
+          // 별점표시 함수 호출
+          // 클래스가 star-rating인 모든 요소에 대해 반복 작업을 수행
+          $(".star-rating").each(function () {
+            // 현재 요소 (this)의 data-rate 속성 값을 정수로 변환하여 rev_rate 변수에 저장합니다.
+            const rev_rate = parseInt($(this).data("rate"));
+            //  rev_rate에 해당하는 별점 문자열을 생성하고, stars 변수에 저장
+            const stars = displayStar(rev_rate);
+            // 현재 요소의 텍스트를 stars 문자열로 업데이트
+            $(this).text(stars);
           });
 
-          // QnA 삭제
-          $("div#qnaDetailInfoPopup").on("click", "#btnQnaDelete", function () {
-            let qna_code = $(this).data("qna_code");
-            // console.log("QnA코드", qna_code);
+          // name="btnQnADetail" - 상세보기 모달
+          $("button[name='btnReviewDetail']").on("click", function () {
+            $("#reviewDetailInfoPopup").modal("show");
+
+            let rev_code = $(this).data("rev_code");
+
+            // console.log("리뷰 코드", rev_code);
+            
+            // return;
+
+            $("#reviewInfo").load("/admin/review/reviewinfo?rev_code=" + rev_code);
+          });
+
+      
+
+          // 리뷰삭제
+          $("div#reviewDetailInfoPopup").on("click", "#btnReviewDelete", function () {
+        	let rev_code = $(this).data("rev_code");
+        	
+        	// console.log("리뷰 코드", rev_code);
 
             if (confirm("삭제하시겠습니까?")) {
               $.ajax({
-                url: "/admin/qna/qnadelete",
+                url: "/admin/review/reviewdelete",
                 type: "get",
                 data: {
-                  qna_code: qna_code,
+                	rev_code: rev_code,
                 },
                 dataType: "text",
                 success: function (result) {
                   if (result == "success") {
-                    alert("QnA가 삭제되었습니다.");
-                    $("#qnaDetailInfoPopup").modal("hide");
+                    alert("리뷰가 삭제되었습니다.");
+                    $("#reviewDetailInfoPopup").modal("hide");
                     location.reload(); // 페이지 새로고침
                   }
                 },

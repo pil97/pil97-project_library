@@ -206,7 +206,9 @@
             $(this).text(stars); // Update the text with the star rating
           });
 
+          // 전역변수
           let rev_code;
+          
           // 도서리뷰 modal
           $("table#myReviewList").on("click", "button[name='btnReviewDetail']", function () {
             $("#reviewModal").modal("show");
