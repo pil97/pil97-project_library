@@ -6,50 +6,51 @@
 	<insert id="paymentInsert" parameterType="PaymentVO">
 
 		INSERT INTO
-		payment_table(
-		pay_id,
-		ord_code,
-		usr_id,
-		paymethod,
-		pay_bankinfo,
-		pay_account,
-		pay_name,
-		pay_price,
-		pay_status
+			payment_table
+		(
+			pay_id,
+			ord_code,
+			usr_id,
+			paymethod,
+			pay_bankinfo,
+			pay_account,
+			pay_name,
+			pay_price,
+			pay_status
 		)
-		VALUES(
-		seq_payment_id.nextval,
-		#{ord_code},
-		#{usr_id},
-		#{paymethod},
-		#{pay_bankinfo},
-		#{pay_account},
-		#{pay_name},
-		#{pay_price},
-		#{pay_status}
+		VALUES
+		(
+			seq_payment_id.nextval,
+			#{ord_code},
+			#{usr_id},
+			#{paymethod},
+			#{pay_bankinfo},
+			#{pay_account},
+			#{pay_name},
+			#{pay_price},
+			#{pay_status}
 		)
 
 
 	</insert>
 
-	<select id="orderPayInfo" resultType="PaymentVO"
-		parameterType="Long">
+	<select id="orderPayInfo" resultType="PaymentVO" parameterType="Long">
 
 		SELECT
-		pay_id,
-		ord_code,
-		usr_id,
-		paymethod,
-		pay_bankinfo,
-		pay_account,
-		pay_name,
-		pay_price,
-		pay_status,
-		pay_date
+			pay_id,
+			ord_code,
+			usr_id,
+			paymethod,
+			pay_bankinfo,
+			pay_account,
+			pay_name,
+			pay_price,
+			pay_status,
+			pay_date
 		FROM
-		payment_table
+			payment_table
 		WHERE
-		ord_code = #{ord_code}
+			ord_code = #{ord_code}
 
 	</select>
 

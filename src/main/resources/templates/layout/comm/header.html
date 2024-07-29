@@ -11,14 +11,14 @@
 
       <div class="col-4 d-flex justify-content-end align-items-center">
         <!-- 로그인 전 -->
-        <th:block th:if="${session.loginStatus == null and session.kakaoStatus == null}">        
+        <th:block th:if="${session.loginStatus == null and session.kakaoStatus == null}">
           <a class="btn btn-sm btn-outline-secondary" th:href="@{/user/login}">로그인</a>
           <a class="btn btn-sm btn-outline-secondary" th:href="@{/user/sign}">회원가입</a>
         </th:block>
 
         <!-- 로그인 후 -->
         <th:block th:if="${session.loginStatus != null}">
-        <span>[[${session.loginStatus.usr_name}]]님 </span>         
+          <span>[[${session.loginStatus.usr_name}]]님 </span>
           <a class="btn btn-sm btn-outline-secondary" th:href="@{/user/logout}">로그아웃</a>
         </th:block>
 

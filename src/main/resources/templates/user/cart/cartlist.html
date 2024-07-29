@@ -183,7 +183,7 @@
               cart_code_arr.push($(this).val());
             });
 
-            console.log("장바구니 코드", cart_code_arr);
+            // console.log("장바구니 코드", cart_code_arr);
 
             // return;
             if (confirm("선택된 도서를 삭제하시겠습니까?")) {
@@ -204,7 +204,7 @@
 
           // 주문하기
           $("button#btnCartOrder").on("click", function () {
-          	location.href = "/user/order/orderlist?type=cartorder";
+            location.href = "/user/order/orderlist?type=cartorder";
           });
 
           /*

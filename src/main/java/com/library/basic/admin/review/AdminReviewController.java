@@ -56,13 +56,13 @@ public class AdminReviewController {
 	@GetMapping("/imagedisplay")
 	public ResponseEntity<byte[]> imageDisplay(String dateFolderName, String fileName) throws Exception {
 
-//				log.info("이미지 업로드 경로 : " + uploadPath);
-//				log.info("이미지 업로드 경로 : " + dateFolderName);
-//				log.info("이미지 업로드 경로 : " + fileName );
+		// log.info("이미지 업로드 경로 : " + uploadPath);
+		// log.info("이미지 업로드 경로 : " + dateFolderName);
+		// log.info("이미지 업로드 경로 : " + fileName);
 
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}
-	
+
 	// 관리자 - 리뷰 상세 정보
 	@GetMapping("/reviewinfo")
 	public void reviewInfo(Long rev_code, Model model) throws Exception {
@@ -72,7 +72,7 @@ public class AdminReviewController {
 
 		model.addAttribute("ReviewVO", vo);
 	}
-	
+
 	// 괸리자 - 도서 리뷰 삭제
 	@GetMapping("/reviewdelete")
 	public ResponseEntity<String> reviewDelete(String rev_code) throws Exception {

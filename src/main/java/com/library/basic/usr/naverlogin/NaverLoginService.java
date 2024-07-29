@@ -86,7 +86,7 @@ public class NaverLoginService {
 
 			br.close();
 
-			log.info("응답데이터 : " + response.toString());
+			// log.info("응답데이터 : " + response.toString());
 
 			return response.toString();
 
@@ -134,7 +134,7 @@ public class NaverLoginService {
 
 			br.close();
 
-			log.info("사용자 정보 응답데이터 : " + response.toString());
+			// log.info("사용자 정보 응답데이터 : " + response.toString());
 
 			return response.toString();
 
@@ -172,7 +172,7 @@ public class NaverLoginService {
 			
 			int responseCode = conn.getResponseCode();
 			
-			log.info("응답코드 : " + responseCode);
+			// log.info("응답코드 : " + responseCode);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

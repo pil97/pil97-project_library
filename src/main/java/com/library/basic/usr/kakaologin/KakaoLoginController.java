@@ -46,7 +46,7 @@ public class KakaoLoginController {
 		// 추가옵션. 다시 사요자 인증을 수행하고자 할 때 사용
 		url.append("&prompt=login");
 
-		log.info("인가코드 : " + url.toString());
+		// log.info("인가코드 : " + url.toString());
 
 		return "redirect:" + url.toString();
 	}
@@ -56,7 +56,7 @@ public class KakaoLoginController {
 	@GetMapping("/callback/kakao")
 	public String callback(String code, HttpSession session) {
 
-		log.info("code : " + code);
+		// log.info("code : " + code);
 
 		String accessToken = "";
 		KakaoUserInfo kakaoUserInfo = null;
@@ -75,12 +75,12 @@ public class KakaoLoginController {
 			ex.printStackTrace();
 		}
 
-		log.info("access : " + accessToken);
+		// log.info("access : " + accessToken);
 
 		
 		String sns_email = null; 
 		if (kakaoUserInfo != null) {
-			log.info("사용자정보: " + kakaoUserInfo);
+			// log.info("사용자정보: " + kakaoUserInfo);
 
 			// 인증을 세션 방식으로 처리
 			session.setAttribute("kakaoStatus", kakaoUserInfo); // 인증여부 사용
@@ -112,7 +112,7 @@ public class KakaoLoginController {
 						
 		String accessToken = (String) session.getAttribute("accessToken");
 				
-		log.info("access : " + accessToken);
+		// log.info("access : " + accessToken);
 		
 		if(accessToken != null && !"".equals(accessToken)) {
 			try {				
@@ -125,7 +125,7 @@ public class KakaoLoginController {
 			session.removeAttribute("accessToken");
 		}
 		
-		log.info("로그아웃");
+		// log.info("로그아웃");
 		
 		return "redirect:/";
 	}

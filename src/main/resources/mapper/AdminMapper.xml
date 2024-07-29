@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.library.basic.admin.AdminMapper">
 
-	<select id="adminLoginOk" resultType="com.library.basic.admin.AdminVO">
+	<!-- 관리자 로그인 확인 -->
+	<select id="adminLoginOk" resultType="AdminVO">
 	
 		SELECT
 			admin_id,

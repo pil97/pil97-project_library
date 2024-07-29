@@ -37,7 +37,7 @@ public class EmailController {
 			authCode += String.valueOf((int) (Math.random() * 10));
 		}
 
-		log.info("인증코드: " + authCode);
+		// log.info("인증코드: " + authCode);
 
 		// 사용자가 자신의 메일에서 발급받은 인증코드를 읽고, 회원가입시 인증 확인란에 입력을 하게되면, 서버에서 비교목적으로 세션방식으로 인증코드를
 		// 메모리에 저장해야함

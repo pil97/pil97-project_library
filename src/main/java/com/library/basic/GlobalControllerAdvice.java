@@ -22,13 +22,13 @@ public class GlobalControllerAdvice {
 	private final AdminCategoryService adminCategoryService;
 	
 	@ModelAttribute
-	public void comnTest(Model model) {
+	public void comnTest(Model model) throws Exception {
 		
 		List<AdminCategoryVO> cateList = adminCategoryService.getFirstCategoryList();
 		
 		model.addAttribute("userCateList", cateList);
 		
-		log.info("공통코드 실행");
+		// log.info("공통코드 실행");
 	}
 	
 }

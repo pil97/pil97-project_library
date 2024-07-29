@@ -11,42 +11,41 @@
     <div class="col-md-7">
       <form>
         <div class="form-group">
-        <div class="row">
-        <div class="col-md-6">
-          <label for="exampleFormControlInput1" class="modalFontStyle1">도서명</label>
-          <div class="modalFontStyle2" id="info_book_name" th:text="${ReviewVO.book_name}"></div>
-          </div>
-          
-          <div class="col-md-6">
-                <label for="exampleFormControlInput1" class="modalFontStyle1">아이디</label>
-                <div class="modalFontStyle2" id="info_usr_id" th:text="${ReviewVO.usr_id}"></div>
-              </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="exampleFormControlInput1" class="modalFontStyle1">도서명</label>
+              <div class="modalFontStyle2" id="info_book_name" th:text="${ReviewVO.book_name}"></div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="exampleFormControlInput1" class="modalFontStyle1">아이디</label>
+              <div class="modalFontStyle2" id="info_usr_id" th:text="${ReviewVO.usr_id}"></div>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <div class="form-group">
-            <div class="row">           
-                 <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-6">
                 <label for="exampleFormControlInput1" class="modalFontStyle1">제목</label>
                 <div class="modalFontStyle2" id="info_rev_title" th:text="${ReviewVO.rev_title}"></div>
               </div>
             </div>
           </div>
-          <div class="form-group">            
-          <div>내용</div>
-                <label for="exampleFormControlInput1" class="modalFontStyle1"></label>
-                <textarea class="form-control modalFontStyle2" id="info_rev_content" th:text="${ReviewVO.rev_content}" readonly></textarea>
-              
+          <div class="form-group">
+            <div>내용</div>
+            <label for="exampleFormControlInput1" class="modalFontStyle1"></label>
+            <textarea class="form-control modalFontStyle2" id="info_rev_content" th:text="${ReviewVO.rev_content}" readonly></textarea>
           </div>
           <div class="form-group">
-                  <label for="recipient-name" class="col-form-label">별점</label>
-                          <p id="star_rev_rate" class="star-rating" th:data-rate="${ReviewVO.rev_rate}">
-                            <a class="rev_rate" href="#">☆</a>
-                            <a class="rev_rate" href="#">☆</a>
-                            <a class="rev_rate" href="#">☆</a>
-                            <a class="rev_rate" href="#">☆</a>
-                            <a class="rev_rate" href="#">☆</a>
-                          </p>
+            <label for="recipient-name" class="col-form-label">별점</label>
+            <p id="star_rev_rate" class="star-rating" th:data-rate="${ReviewVO.rev_rate}">
+              <a class="rev_rate" href="#">☆</a>
+              <a class="rev_rate" href="#">☆</a>
+              <a class="rev_rate" href="#">☆</a>
+              <a class="rev_rate" href="#">☆</a>
+              <a class="rev_rate" href="#">☆</a>
+            </p>
           </div>
 
           <div class="row">
@@ -60,8 +59,8 @@
   </div>
 
   <script>
-  $(document).ready(function () {
-	  // 별점 표시
+    $(document).ready(function () {
+      // 별점 표시
       const displayStar = (rev_rate) => {
         let star = "";
         switch (rev_rate) {
@@ -96,11 +95,6 @@
         // 현재 요소의 텍스트를 stars 문자열로 업데이트
         $(this).text(stars);
       });
-      
-	  
-	  
-  }) // ready event end
-  
-  
+    }); // ready event end
   </script>
 </html>

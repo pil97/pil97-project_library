@@ -5,60 +5,63 @@
 	<!-- 주문테이블 db 저장 -->
 	<insert id="orderInsert" parameterType="OrderVO">
 
-		<selectKey keyProperty="ord_code" resultType="Long"
-			order="BEFORE">
+		<selectKey keyProperty="ord_code" resultType="Long" order="BEFORE">
 			SELECT
-			seq_ord_code.nextval
+				seq_ord_code.nextval
 			FROM
-			DUAL
+				DUAL
 		</selectKey>
+		
 		INSERT INTO
-		order_table(
-		ord_code,
-		usr_id,
-		ord_name,
-		ord_addr_zipcode,
-		ord_addr_basic,
-		ord_addr_detail,
-		ord_tel,
-		ord_price,
-		ord_desc
+			order_table
+		(
+			ord_code,
+			usr_id,
+			ord_name,
+			ord_addr_zipcode,
+			ord_addr_basic,
+			ord_addr_detail,
+			ord_tel,
+			ord_price,
+			ord_desc
 		)
-		VALUES(
-		#{ord_code},
-		#{usr_id},
-		#{ord_name},
-		#{ord_addr_zipcode},
-		#{ord_addr_basic},
-		#{ord_addr_detail},
-		#{ord_tel},
-		#{ord_price},
-		#{ord_desc}
+		VALUES
+		(
+			#{ord_code},
+			#{usr_id},
+			#{ord_name},
+			#{ord_addr_zipcode},
+			#{ord_addr_basic},
+			#{ord_addr_detail},
+			#{ord_tel},
+			#{ord_price},
+			#{ord_desc}
 		)
-	</insert>
-	
-		<insert id="orderDetailInsert" parameterType="map">
-	INSERT INTO order_detail_table (
-        ord_code,
-        book_bno,
-        dt_amount,
-        dt_price
-    )
-    SELECT
-        #{ord_code},
-        b.book_bno,
-        c.cart_amount,
-        b.book_deposit 
-    FROM	
-        cart_table c
-    INNER JOIN
-    	book_table b    
-    ON
-    	c.book_bno = b.book_bno	
-    WHERE
-        c.usr_id = #{usr_id}
-	
 	</insert>
 
+	<insert id="orderDetailInsert" parameterType="map">
+		INSERT INTO
+			order_detail_table 
+		(
+			ord_code,
+			book_bno,
+			dt_amount,
+			dt_price
+		)
+		SELECT
+			#{ord_code},
+			b.book_bno,
+			c.cart_amount,
+			b.book_deposit
+		FROM
+			cart_table c
+		INNER JOIN
+			book_table b
+		ON
+			c.book_bno = b.book_bno
+		WHERE
+			c.usr_id = #{usr_id}
+
+	</insert>
 
 </mapper>

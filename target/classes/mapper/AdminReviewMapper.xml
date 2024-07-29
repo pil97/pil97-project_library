@@ -38,95 +38,96 @@
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- inner join 사용시 조건절은 내부 쿼리에 넣어서 해야함 -> 1. 성능 이슈 2. 값이 이상하게 나옴 -->
 	<!-- 관리자 - 리뷰 목록 -->
-	<select id="adminReviewList" resultType="MyReviewVO"
-		parameterType="map">
+	<select id="adminReviewList" resultType="MyReviewVO" parameterType="map">
 		SELECT
-		rev_code,
-		usr_id,
-		book_bno,
-		rev_title,
-		rev_content,
-		rev_rate,
-		rev_date,
-		book_name,
-		book_up_folder,
-		book_img
+			rev_code,
+			usr_id,
+			book_bno,
+			rev_title,
+			rev_content,
+			rev_rate,
+			rev_date,
+			book_name,
+			book_up_folder,
+			book_img
 		FROM
 		(
-		SELECT /*+ USE_NL(rev book)
-		INDEX_DESC(rev PK_REV_CODE) INDEX_DESC(book PK_BOOK_BNO) */
-		ROWNUM rn,
-		rev.rev_code,
-		rev.usr_id,
-		rev.book_bno,
-		rev.rev_title,
-		rev.rev_content,
-		rev.rev_rate,
-		rev.rev_date,
-		book.book_name,
-		book.book_up_folder,
-		book.book_img
-		FROM
-		review_table rev
-		INNER JOIN
-		book_table book ON rev.book_bno = book.book_bno
-		AND
-		<include refid="criteria"></include>
-		<include refid="period"></include>
-            <![CDATA[
-                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
-            ]]>
-
+			SELECT /*+ USE_NL(r book) INDEX_DESC(r PK_REV_CODE) INDEX_DESC(b PK_BOOK_BNO) */
+				ROWNUM rn,
+				r.rev_code,
+				r.usr_id,
+				r.book_bno,
+				r.rev_title,
+				r.rev_content,
+				r.rev_rate,
+				r.rev_date,
+				b.book_name,
+				b.book_up_folder,
+				b.book_img
+			FROM
+				review_table r
+			INNER JOIN
+				book_table b
+			ON 
+				r.book_bno = b.book_bno
+			AND
+				<include refid="criteria"></include>
+				<include refid="period"></include>
+	            <![CDATA[
+	                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
+	            ]]>
 		)
-
 		WHERE
-		RN > (#{cri.pageNum} - 1) * #{cri.amount}
+			RN > (#{cri.pageNum} - 1) * #{cri.amount}
 	</select>
-
 
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- 관리자 - 리뷰 개수 -->
 	<select id="adminReviewgetTotalCount" resultType="int" parameterType="map">
+		
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		review_table
+			review_table
 		WHERE
-		<include refid="criteria"></include>
-		<include refid="period"></include>
-		rev_code > 0
+			<include refid="criteria"></include>
+			<include refid="period"></include>
+			rev_code > 0
+			
 	</select>
-	
-		<!-- 관리자 - 리뷰 상세 정보 -->
-	<select id="adminReviewDetailInfo" resultType="MyReviewVO"
-		parameterType="Long">
-		SELECT
-		r.rev_code,
-		r.usr_id,
-		r.book_bno,
-		r.rev_title,
-		r.rev_content,
-		r.rev_rate,
-		r.rev_date,
-		b.book_name,
-		b.book_up_folder,
-		b.book_img
-		FROM
-		review_table r
-		INNER JOIN
-		book_table b ON
-		r.book_bno = b.book_bno
-		WHERE
-		r.rev_code = #{rev_code}
-	</select>
-	
-		<!-- 괸리자 - 도서 리뷰 삭제 -->
-	<delete id="reviewDelete" parameterType="String">
-	DELETE FROM
-	review_table
-	WHERE
-	rev_code = #{rev_code}
-	</delete>
 
+	<!-- 관리자 - 리뷰 상세 정보 -->
+	<select id="adminReviewDetailInfo" resultType="MyReviewVO" parameterType="Long">
+		SELECT
+			r.rev_code,
+			r.usr_id,
+			r.book_bno,
+			r.rev_title,
+			r.rev_content,
+			r.rev_rate,
+			r.rev_date,
+			b.book_name,
+			b.book_up_folder,
+			b.book_img
+		FROM
+			review_table r
+		INNER JOIN
+			book_table b 
+		ON
+			r.book_bno = b.book_bno
+		WHERE
+			r.rev_code = #{rev_code}
+			
+	</select>
+
+	<!-- 괸리자 - 도서 리뷰 삭제 -->
+	<delete id="reviewDelete" parameterType="String">
+	
+		DELETE FROM
+			review_table
+		WHERE
+			rev_code = #{rev_code}
+			
+	</delete>
 
 </mapper>

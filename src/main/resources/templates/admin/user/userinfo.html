@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <div class="row">
+    <div class="col-md-12">
+      <form id="modifyForm" action="/admin/user/usermodify" method="post">
+        <div class="form-group row">
+          <label for="usr_id" class="col-sm-2 col-form-label">아이디</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="usr_id" name="usr_id" th:value="${adUserVO.usr_id}" readonly />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="usr_name" class="col-sm-2 col-form-label">이름</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="usr_name" name="usr_name" th:value="${adUserVO.usr_name}" placeholder="이름 입력" />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="usr_email" class="col-sm-2 col-form-label">이메일</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="usr_email" name="usr_email" th:value="${adUserVO.usr_email}" placeholder="이메일 입력" />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="usr_phone" class="col-sm-2 col-form-label">번호</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="usr_phone" name="usr_phone" th:value="${adUserVO.usr_phone}" placeholder="번호 입력" />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="sample2_postcode" class="col-sm-2 col-form-label">우편번호</label>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              class="form-control"
+              id="sample2_postcode"
+              name="usr_zipcode"
+              th:value="${adUserVO.usr_zipcode}"
+              placeholder="우편번호 입력"
+            />
+          </div>
+          <div class="col-sm-2">
+            <button type="button" class="btn btn-outline-primary custom-btn" onclick="sample2_execDaumPostcode()">우편번호</button>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="sample2_address" class="col-sm-2 col-form-label">주소</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="sample2_address" name="usr_addr" th:value="${adUserVO.usr_addr}" placeholder="주소 입력" />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="sample2_detailAddress" class="col-sm-2 col-form-label">상세주소</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="sample2_detailAddress"
+              name="usr_deaddr"
+              th:value="${adUserVO.usr_deaddr}"
+              placeholder="상세주소 입력"
+            />
+          </div>
+          <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" />
+        </div>
+
+        <div class="form-group row">
+          <label for="usr_updatedate" class="col-sm-2 col-form-label">수정일</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="usr_updatedate"
+              th:value="${#dates.format(adUserVO.usr_updatedate, 'yyyy-MM-dd HH:mm:ss')}"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-secondary btn-custom" th:data-usr_id="${adUserVO.usr_id}" id="btnUserModify">수정</button>
+            <button type="button" class="btn btn-light btn-custom" th:data-usr_id="${adUserVO.usr_id}" id="btnUserDelete">삭제</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script></script>
+</html>

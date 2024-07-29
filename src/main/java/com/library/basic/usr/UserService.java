@@ -29,6 +29,11 @@ public class UserService {
 		return userMapper.login(usr_id);
 	};
 	
+	// 최근 로그인
+	public void lastLogin(String usr_id) {
+		userMapper.lastLogin(usr_id);
+	};
+	
 	// SNS 로그인
 	public UserVO snsLogin(String snsEmail) {
 		return userMapper.snsLogin(snsEmail);

@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RequestMapping("/admin/category/*")
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/admin/category/*")
 @Controller
 public class AdminCategoryController {
 	
@@ -24,7 +24,7 @@ public class AdminCategoryController {
 	@GetMapping("/secondcategory/{c_pcode}")
 	public ResponseEntity<List<AdminCategoryVO>> getSecondCategoryList(@PathVariable("c_pcode") int c_pcode) throws Exception{
 		
-		log.info("1차 카테고리 코드 : " + c_pcode);
+		// log.info("1차 카테고리 코드 : " + c_pcode);
 		
 		ResponseEntity<List<AdminCategoryVO>> entity = null;
 		

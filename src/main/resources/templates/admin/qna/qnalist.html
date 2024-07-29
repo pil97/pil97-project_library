@@ -70,22 +70,22 @@
                         <th>답변유무</th>
                         <th>비고</th>
                       </tr>
-                      <tr th:each="AdQnaVO : ${adQnaList}">
-                        <td th:text="${AdQnaVO.qna_code}"></td>
-                        <td th:text="${AdQnaVO.usr_id}"></td>
-                        <td th:text="${AdQnaVO.qna_type}"></td>
+                      <tr th:each="adQnaList : ${adQnaList}">
+                        <td th:text="${adQnaList.qna_code}"></td>
+                        <td th:text="${adQnaList.usr_id}"></td>
+                        <td th:text="${adQnaList.qna_type}"></td>
                         <td>
                           <img
                             id="imageStyle"
-                            th:src="${'/admin/qna/imagedisplay?dateFolderName=' + AdQnaVO.book_up_folder + '&fileName=s_' + AdQnaVO.book_img}"
+                            th:src="${'/admin/qna/imagedisplay?dateFolderName=' + adQnaList.book_up_folder + '&fileName=s_' + adQnaList.book_img}"
                           />
-                          <span th:text="${AdQnaVO.book_name}"></span>
+                          <span th:text="${adQnaList.book_name}"></span>
                         </td>
-                        <td th:text="${AdQnaVO.qna_title}"></td>
-                        <td th:text="${#dates.format(AdQnaVO.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                        <td th:text="${AdQnaVO.qna_check}"></td>
+                        <td th:text="${adQnaList.qna_title}"></td>
+                        <td th:text="${#dates.format(adQnaList.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${adQnaList.qna_check}"></td>
                         <td>
-                          <button type="button" class="btn btn-danger" name="btnQnADetail" th:data-qna_code="${AdQnaVO.qna_code}">상세보기</button>
+                          <button type="button" class="btn btn-danger" name="btnQnADetail" th:data-qna_code="${adQnaList.qna_code}">상세보기</button>
                         </td>
                       </tr>
                     </tbody>

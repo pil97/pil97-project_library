@@ -35,7 +35,7 @@ public class CartController {
 	@GetMapping("/cartadd")
 	public ResponseEntity<String> cartAdd(CartVO vo, HttpSession session) throws Exception {
 
-		log.info("장바구니 정보 : " + vo);
+		// log.info("장바구니 정보 : " + vo);
 
 		ResponseEntity<String> entity = null;
 
@@ -79,9 +79,9 @@ public class CartController {
 	@GetMapping("/imagedisplay")
 	public ResponseEntity<byte[]> imageDisplay(String dateFolderName, String fileName) throws Exception {
 
-//			log.info("이미지 업로드 경로 : " + uploadPath);
-//			log.info("이미지 업로드 경로 : " + dateFolderName);
-//			log.info("이미지 업로드 경로 : " + fileName );
+		// log.info("이미지 업로드 경로 : " + uploadPath);
+		// log.info("이미지 업로드 경로 : " + dateFolderName);
+		// log.info("이미지 업로드 경로 : " + fileName );
 
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}
@@ -122,7 +122,7 @@ public class CartController {
 
 		ResponseEntity<String> entity = null;
 		
-		log.info("장바구니 코드 : " + cart_code_arr);
+		// log.info("장바구니 코드 : " + cart_code_arr);
 		
 		cartService.checkedDelete(cart_code_arr);
 		

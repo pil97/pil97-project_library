@@ -34,8 +34,8 @@ public class ReviewController {
 
 	// 리뷰목록
 	@GetMapping("/reviewlist/{book_bno}/{page}")
-	public ResponseEntity<Map<String, Object>> reviewList(@PathVariable("book_bno") int book_bno,
-			@PathVariable("page") int page) throws Exception {
+	public ResponseEntity<Map<String, Object>> reviewList(@PathVariable("book_bno") int book_bno, @PathVariable("page") int page) throws Exception {
+		
 		ResponseEntity<Map<String, Object>> entity = null;
 		Map<String, Object> map = new HashMap<>();
 
@@ -75,7 +75,7 @@ public class ReviewController {
 		String usr_id = loggedInUser.getUsr_id();
 		vo.setUsr_id(usr_id);
 
-		log.info("도서리뷰 데이터 : " + vo);
+		// log.info("도서리뷰 데이터 : " + vo);
 
 		// db연동 
 		reviewService.reviewSave(vo);
@@ -113,7 +113,7 @@ public class ReviewController {
 	@PutMapping("/reviewmodify")
 	public ResponseEntity<String> reviewModify(@RequestBody ReviewVO vo) throws Exception {
 		
-		log.info("수정정보" + vo);
+		// log.info("수정정보" + vo);
 		
 		ResponseEntity<String> entity = null;
 		

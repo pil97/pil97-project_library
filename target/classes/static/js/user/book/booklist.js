@@ -21,7 +21,7 @@ $(document).ready(function () {
 
     let book_bno = $(this).data("book_bno");
 
-    console.log("도서코드", book_bno);
+    // console.log("도서코드", book_bno);
 
     $("#popupInfo").load("/user/book/bookinfo?book_bno=" + book_bno);
   });
@@ -32,7 +32,7 @@ $(document).ready(function () {
 
     let book_bno = $(this).data("book_bno");
 
-    console.log("도서코드", book_bno);
+    // console.log("도서코드", book_bno);
 
     $("#popupInfo").load("/user/book/bookinfo?book_bno=" + book_bno);
   });
@@ -43,8 +43,8 @@ $(document).ready(function () {
     let book_bno = $(this).data("book_bno");
     let cart_amount = $("#btnCartAmount").val();
 
-    console.log("도서코드 : ", book_bno);
-    console.log("수량 : ", cart_amount);
+    // console.log("도서코드 : ", book_bno);
+    // console.log("수량 : ", cart_amount);
 
     $.ajax({
       url: "/user/cart/cartadd",

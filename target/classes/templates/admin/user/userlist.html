@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{admin/layout/adminlayout}"
+>
+  <!-- 각 페이지의 title -->
+  <th:block layout:fragment="title">
+    <title>회원 목록</title>
+  </th:block>
+
+  <!-- 각 페이지의 css -->
+  <th:block layout:fragment="css">
+    <link href="/css/admin/user/userlist.css" rel="stylesheet" />
+  </th:block>
+
+  <body class="hold-transition skin-blue sidebar-mini">
+    <th:block layout:fragment="content">
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+
+        <!-- start : 메인 내용 -->
+        <section class="content">
+          <!-- Your Page Content Here -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="box">
+                <div class="box-header with-border">
+                  <h3 class="box-title">회원 목록</h3>
+                </div>
+
+                <div class="box-body">
+                  <div>
+                    <form th:action="@{/admin/user/userlist}" th:method="get">
+                      <select name="type" th:value="${pageMaker.cri.type}">
+                        <option value="" th:text="검색종류선택" th:if="${pageMaker.cri.type == null}"></option>
+                        <option value="I" th:text="아이디" th:selected="${pageMaker.cri.type == 'I'}"></option>
+                        <option value="N" th:text="이름" th:selected="${pageMaker.cri.type == 'N'}"></option>
+                        <option value="A" th:text="주소" th:selected="${pageMaker.cri.type == 'A'}"></option>
+                      </select>
+                      <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
+                      <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                      <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" /> 날짜검색 :
+                      <input type="date" name="startDate" th:value="${startDate}" /> ~ <input type="date" name="endDate" th:value="${endDate}" />
+                      <button type="submit" class="btn btn-primary" th:text="검색"></button>
+                    </form>
+                  </div>
+
+                  <table class="table table-bordered">
+                    <tbody>
+                      <tr>
+                        <th>번호</th>
+                        <th>아이디</th>
+                        <th>이름</th>
+                        <th>이메일</th>
+                        <th>주소</th>
+                        <th>번호</th>
+                        <th>메일수신여부</th>
+                        <th>SNS</th>
+                        <th>최근로그인</th>
+                        <th>가입일</th>
+                        <th>총주문금액</th>
+                        <th>비고</th>
+                      </tr>
+                      <tr th:each="adUserList, iterStat : ${adUserList}">
+                      	 <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${adUserList['USR_ID']}"></td>
+                        <td th:text="${adUserList['USR_NAME']}"></td>
+                        <td th:text="${adUserList['USR_EMAIL']}"></td>
+						<td th:text="${adUserList['USR_ADDR']}"></td>
+						<td th:text="${adUserList['USR_PHONE']}"></td>
+						<td th:text="${adUserList['USR_RECEIVE']}"></td>
+						<td th:text="${adUserList['USR_SNS_TYPE']}"></td>
+                         <td th:text="${#dates.format(adUserList['USR_LASTLOGIN'], 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${#dates.format(adUserList['USR_DATESUB'], 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td><span th:text="${#numbers.formatInteger(adUserList['TOTAL_ORDER_PRICE'], 3, 'COMMA') + '원'}"></span></td>
+                        <td>                                                
+                          <button type="button" class="btn btn-danger" name="btnUserDetail" th:data-usr_id="${adUserList['USR_ID']}">상세보기</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="box-footer clearfix">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <!--1)페이지번호 클릭할 때 사용  [이전]  1	2	3	4	5 [다음]  -->
+                      <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
+                      <form id="actionForm" action="" method="get">
+                        <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                        <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
+                        <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+                        <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                      </form>
+                    </div>
+                    <div class="col-md-6 text-center">
+                      <nav aria-label="...">
+                        <ul class="pagination">
+                          <!-- 이전 표시여부 -->
+                          <th:block th:if="${pageMaker.prev}">
+                            <li class="page-item"><a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a></li>
+                          </th:block>
+                          <!-- 페이지번호 출력 -->
+                          <!-- 1 2 3 4 5 6 7 8 9 10 [다음] -->
+                          <!-- [이전] 11 12 13 14 15 16 17 18 19 20 -->
+                          <th:block th:with="pageMaker = ${pageMaker}">
+                            <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+                              <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
+                                <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
+                              </li>
+                            </th:block>
+                          </th:block>
+                          <!-- 다음 표시여부 -->
+                          <th:block th:if="${pageMaker.next}">
+                            <li class="page-item"><a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a></li>
+                          </th:block>
+                        </ul>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Modal -->
+  
+      <div
+        class="modal fade"
+        id="userDetailInfoPopup"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel2"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title" id="staticBackdropLabel2">회원 정보 상세</h3>
+              <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- load()메서드를 이용하여, qnainfo_.html파일이 실행된 내용이 삽입된다. -->
+            <div class="modal-body">
+              <!-- QnA정보  -->
+              <div id="userInfo"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- end : 메인 내용 -->
+      
+      <!-- modal창 화면 css 수정  -->
+      <!-- iOS에서는 position:fixed 버그가 있음, 적용하는 사이트에 맞게 position:absolute 등을 이용하여 top,left값 조정 필요 -->
+      <div
+        id="layer"
+        style="
+          display: none;
+          position: fixed;
+          overflow: hidden;
+          z-index: 9999;
+          -webkit-overflow-scrolling: touch;
+          background: white;
+          width: 300px;
+          height: 400px;
+          border: 5px solid;
+        "
+      >
+        <img
+          src="//t1.daumcdn.net/postcode/resource/images/close.png"
+          id="btnCloseLayer"
+          style="cursor: pointer; position: absolute; right: -3px; top: -3px; z-index: 10000"
+          onclick="closeDaumPostcode()"
+          alt="닫기 버튼"
+        />
+      </div>
+      <!-- end : 메인 내용 -->
+    </th:block>
+    <th:block layout:fragment="script">
+          <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+      <script src="/js/comm/addr.js"></script>
+      <script th:inline="javascript">
+        let actionForm = $("#actionForm");
+        let msg = [[${msg}]]; 
+        
+        if(msg == "modify") {
+        	alert("회원 정보가 수정되었습니다.");
+        }
+
+        $(document).ready(function () {
+          // 페이지 번호 클릭시, (이전 1 2 3 4 5 다음) -> actionForm을 사용한다.
+          $(".movepage").on("click", function (e) {
+            e.preventDefault(); // a 태그의 href 기능을 제거
+
+            // 주소변경
+            actionForm.attr("action", "/admin/user/userlist");
+
+            // 클릭한 페이지 번호 작업
+            actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+
+            // 변경된 pageNum 값을 서버로 전송 (Criteria 클래스)
+            actionForm.submit();
+          })
+
+                    // name="btnQnADetail" - 상세보기 모달
+          $("button[name='btnUserDetail']").on("click", function () {
+            $("#userDetailInfoPopup").modal("show");
+
+            let usr_id = $(this).data("usr_id");
+
+            // console.log("아이디", usr_id);
+
+            $("#userInfo").load("/admin/user/userinfo?usr_id=" + usr_id);
+          });
+
+          // 회원 아이디 삭제
+          $("div#userDetailInfoPopup").on("click", "#btnUserDelete", function () {
+              let usr_id = $(this).data("usr_id");
+              // console.log("아이디", usr_id);
+
+            if (confirm("삭제하시겠습니까?")) {
+              $.ajax({
+                url: "/admin/user/userdelete",
+                type: "get",
+                data: {
+                	usr_id: usr_id,
+                },
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    alert("회원 아이디가 삭제되었습니다.");
+                    $("#userDetailInfoPopup").modal("hide");
+                    location.reload(); // 페이지 새로고침
+                  }
+                },
+              });
+            }
+          });
+
+          // ready event end
+        });
+      </script>
+    </th:block>
+  </body>
+</html>

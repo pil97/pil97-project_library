@@ -43,19 +43,18 @@
         </div>
       </div>
     </div>
-    
-      <script th:inline="javascript">
-        // "failPW" or "failID"
-        let msg = [[${msg}]];
 
-        if (msg == "failID") {
-        	alert("아이디가 존재하지 않습니다.");
-        	document.getElementById("admin_id").focus();
-        } else if (msg == "failPW") {
-        	alert("비밀번호가 일치하지 않습니다.");
-        	document.getElementById("admin_password").focus();
-        }
-      </script>
-    
+    <script th:inline="javascript">
+      // "failPW" or "failID"
+      let msg = [[${msg}]];
+
+      if (msg == "failID") {
+        alert("아이디가 존재하지 않습니다.");
+        document.getElementById("admin_id").focus();
+      } else if (msg == "failPW") {
+        alert("비밀번호가 일치하지 않습니다.");
+        document.getElementById("admin_password").focus();
+      }
+    </script>
   </body>
 </html>

@@ -247,26 +247,24 @@
             let rev_code = $(this).data("rev_code");
 
             // console.log("리뷰 코드", rev_code);
-            
+
             // return;
 
             $("#reviewInfo").load("/admin/review/reviewinfo?rev_code=" + rev_code);
           });
 
-      
-
           // 리뷰삭제
           $("div#reviewDetailInfoPopup").on("click", "#btnReviewDelete", function () {
-        	let rev_code = $(this).data("rev_code");
-        	
-        	// console.log("리뷰 코드", rev_code);
+            let rev_code = $(this).data("rev_code");
+
+            // console.log("리뷰 코드", rev_code);
 
             if (confirm("삭제하시겠습니까?")) {
               $.ajax({
                 url: "/admin/review/reviewdelete",
                 type: "get",
                 data: {
-                	rev_code: rev_code,
+                  rev_code: rev_code,
                 },
                 dataType: "text",
                 success: function (result) {

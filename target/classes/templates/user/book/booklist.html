@@ -11,33 +11,36 @@
 
       <div class="container">
         <div class="row">
-          <div class="col-md-4" th:each="bookVO : ${userBookList}">
+          <div class="col-md-4" th:each="userBookList : ${userBookList}">
             <div class="card mb-4 shadow-sm">
-              <a th:href="@{/user/book/bookdetail(book_bno = ${bookVO.book_bno})}">
-                <img id="imageCustom"
-                  th:src="${'/user/book/imagedisplay?dateFolderName=' + bookVO.book_up_folder + '&fileName=s_' + bookVO.book_img}"/>
+              <a th:href="@{/user/book/bookdetail(book_bno = ${userBookList.book_bno})}">
+                <img
+                  id="imageCustom"
+                  th:src="${'/user/book/imagedisplay?dateFolderName=' + userBookList.book_up_folder + '&fileName=s_' + userBookList.book_img}"
+                />
               </a>
               <div class="card-body">
                 <p class="card-text" id="bookBnoCustom">
-                <a th:href="@{/user/book/bookdetail(book_bno = ${bookVO.book_bno})}">
-                <span th:text="${bookVO.book_name}" id="bookNameCustom"></span><br /></a>
-                  
-                  <span th:text="${bookVO.book_author}"></span><span> 지음 | </span> <span th:text="${bookVO.book_publisher}"></span><span> | </span>
-                  <span th:text="${bookVO.book_publishing_date}"></span><br />
+                  <a th:href="@{/user/book/bookdetail(book_bno = ${userBookList.book_bno})}">
+                    <span th:text="${userBookList.book_name}" id="bookNameCustom"></span><br /></a
+                  >å
+
+                  <span th:text="${userBookList.book_author}"></span><span> 지음 | </span> <span th:text="${userBookList.book_publisher}"></span
+                  ><span> | </span> <span th:text="${userBookList.book_publishing_date}"></span><br />
                   <span> 대출상태 : </span>
                   <span
-                    th:text="${bookVO.book_loan == 'Y' ? '대출가능' : '대출불가'}"
-                    th:style="${bookVO.book_loan == 'Y' ? 'color: green; font-weight: 700;' : 'color: red; font-weight: 700;'}"
+                    th:text="${userBookList.book_loan == 'Y' ? '대출가능' : '대출불가'}"
+                    th:style="${userBookList.book_loan == 'Y' ? 'color: green; font-weight: 700;' : 'color: red; font-weight: 700;'}"
                   ></span>
                   <span> | 보증금 : </span>
-                  <span th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"></span>
+                  <span th:text="${#numbers.formatInteger(userBookList.book_deposit, 3, 'COMMA') + '원'}"></span>
                 </p>
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnDirectOrder" th:data-book_bno="${bookVO.book_bno}">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnDirectOrder" th:data-book_bno="${userBookList.book_bno}">
                       바로구매
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnCartAdd" th:data-book_bno="${bookVO.book_bno}">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnCartAdd" th:data-book_bno="${userBookList.book_bno}">
                       장바구니
                     </button>
                   </div>
@@ -62,7 +65,7 @@
                 <input type="hidden" name="c_name" id="c_name" th:value="${c_name}" />
               </form>
             </div>
-            
+
             <div class="col-md-6 text-center">
               <nav aria-label="...">
                 <ul class="pagination">
@@ -72,15 +75,14 @@
                       <a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a>
                     </li>
                   </th:block>
-                  
-                  <!-- 페이지번호 출력 -->                  
+
+                  <!-- 페이지번호 출력 -->
                   <th:block th:with="pageMaker = ${pageMaker}">
                     <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
                       <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
                         <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
                       </li>
                     </th:block>
-                    
                   </th:block>
                   <!-- 다음 표시여부 -->
                   <th:block th:if="${pageMaker.next}">
@@ -88,15 +90,13 @@
                       <a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a>
                     </li>
                   </th:block>
-                  
                 </ul>
               </nav>
             </div>
-            
           </div>
         </div>
       </div>
-      <!-- Modal Start : 장바구니 -->	
+      <!-- Modal Start : 장바구니 -->
       <div
         class="modal fade custom-modal"
         id="orderProcessPopUp"

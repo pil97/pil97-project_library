@@ -111,7 +111,7 @@
             <div class="form-group row">
               <label for="ord_name" class="col-sm-2 col-form-label">이름</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="ord_name" name="ord_name" placeholder="이름 입력" />                
+                <input type="text" class="form-control" id="ord_name" name="ord_name" placeholder="이름 입력" />
               </div>
             </div>
 
@@ -145,7 +145,7 @@
                 <input type="text" class="form-control" id="sample2_detailAddress" name="ord_addr_detail" placeholder="상세주소 입력" />
               </div>
               <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" />
-              <input type="hidden" th:value="${totalPrice}" name="ord_price" id="ord_price" />              
+              <input type="hidden" th:value="${totalPrice}" name="ord_price" id="ord_price" />
             </div>
             <div class="form-group">
               <label for="ord_desc">요청사항</label>
@@ -219,7 +219,7 @@
           $("input[name='payMethod']").on("click", function () {
             let payMethod = $("input[name='payMethod']:checked").val();
 
-            console.log(payMethod);
+            // console.log(payMethod);
 
             if (payMethod == "nobank") {
               $("#nobank_info").show();
@@ -278,7 +278,7 @@
                 },
                 dataType: "json",
                 success: function (response) {
-                  console.log("응답 : " + response);
+                  // console.log("응답 : " + response);
 
                   // alert(response.next_redirect_pc_url);
                   location.href = response.next_redirect_pc_url; // 결제 QR코드 주소 이동

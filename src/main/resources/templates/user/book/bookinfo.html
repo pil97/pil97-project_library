@@ -5,24 +5,24 @@
       <img
         id="info_book_img"
         class="img-fluid"
-        th:src="@{/user/book/imagedisplay(dateFolderName=${bookVO.book_up_folder}, fileName=${bookVO.book_img})}"
+        th:src="@{/user/book/imagedisplay(dateFolderName=${BookVO.book_up_folder}, fileName=${BookVO.book_img})}"
       />
     </div>
     <div class="col-7">
       <form>
         <div class="form-group">
           <label for="exampleFormControlInput1" class="modalFontStyle1">도서명</label>
-          <div class="modalFontStyle2" id="info_book_name" th:text="${bookVO.book_name}"></div>
+          <div class="modalFontStyle2" id="info_book_name" th:text="${BookVO.book_name}"></div>
         </div>
         <div class="form-group">
           <div class="row">
             <div class="col-6">
               <label for="exampleFormControlInput1" class="modalFontStyle1">저자</label>
-              <div class="modalFontStyle2" id="info_book_author" th:text="${bookVO.book_author}"></div>
+              <div class="modalFontStyle2" id="info_book_author" th:text="${BookVO.book_author}"></div>
             </div>
             <div class="col-6">
               <label for="exampleFormControlInput1" class="modalFontStyle1">출판사</label>
-              <div class="modalFontStyle2" id="info_book_publisher" th:text="${bookVO.book_publisher}"></div>
+              <div class="modalFontStyle2" id="info_book_publisher" th:text="${BookVO.book_publisher}"></div>
             </div>
           </div>
         </div>
@@ -30,34 +30,30 @@
           <div class="row">
             <div class="col-6">
               <label for="exampleFormControlInput1" class="modalFontStyle1">보증금</label>
-              <div class="modalFontStyle2" id="info_book_deposit" th:text="${#numbers.formatInteger(bookVO.book_deposit, 3, 'COMMA') + '원'}"></div>
+              <div class="modalFontStyle2" id="info_book_deposit" th:text="${#numbers.formatInteger(BookVO.book_deposit, 3, 'COMMA') + '원'}"></div>
             </div>
             <div class="col-6">
               <label for="exampleFormControlInput1" class="modalFontStyle1">대출상태</label>
               <div
                 class="modalFontStyle2"
                 id="info_book_loan"
-                th:text="${bookVO.book_loan == 'Y' ? '대출가능' : '대출불가'}"
-                th:style="${bookVO.book_loan == 'Y' ? 'color: green;' : 'color: red;'}"
+                th:text="${BookVO.book_loan == 'Y' ? '대출가능' : '대출불가'}"
+                th:style="${BookVO.book_loan == 'Y' ? 'color: green;' : 'color: red;'}"
               ></div>
             </div>
           </div>
         </div>
         <div class="form-group">
           <label for="exampleFormControlSelect1" class="modalFontStyle1">수량</label>
-          <input type="number" class="form-control modalFontStyle2" id="btnCartAmount" value="1" min="1" max="99"/>
+          <input type="number" class="form-control modalFontStyle2" id="btnCartAmount" value="1" min="1" max="99" />
         </div>
         <div class="form-group">
           <div class="row">
             <div class="col-6">
-              <button type="button" class="btn btn-secondary btn-custom" th:data-book_bno="${bookVO.book_bno}" id="btnDirectOrder">
-              	바로구매
-              </button>
+              <button type="button" class="btn btn-secondary btn-custom" th:data-book_bno="${BookVO.book_bno}" id="btnDirectOrder">바로구매</button>
             </div>
             <div class="col-6">
-              <button type="button" class="btn btn-light btn-custom" th:data-book_bno="${bookVO.book_bno}" id="btnCartAdd">
-              	장바구니
-              </button>
+              <button type="button" class="btn btn-light btn-custom" th:data-book_bno="${BookVO.book_bno}" id="btnCartAdd">장바구니</button>
             </div>
           </div>
         </div>
@@ -65,18 +61,17 @@
     </div>
   </div>
   <script>
-  
-  // 수량 제한
-  document.getElementById('btnCartAmount').addEventListener('input', function (e) {
+    // 수량 제한
+    document.getElementById("btnCartAmount").addEventListener("input", function (e) {
       var value = parseInt(e.target.value);
       if (value > 99) {
-          e.target.value = 99;
-          alert("최대수량은 99개입니다.");
+        e.target.value = 99;
+        alert("최대수량은 99개입니다.");
       }
       if (value < 1) {
-          e.target.value = 1;
-          alert("최소수량은 1개입니다.");
+        e.target.value = 1;
+        alert("최소수량은 1개입니다.");
       }
-  });
+    });
   </script>
 </html>

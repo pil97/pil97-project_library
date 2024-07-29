@@ -40,7 +40,7 @@ public class KakaoPayController {
 	@GetMapping(value = "/kakaopay")
 	public ReadyResponse kakaoPay(OrderVO vo, HttpSession session) {
 		
-		log.info("주문자 정보 : " + vo);
+		// log.info("주문자 정보 : " + vo);
 
 		// 1. 결제 준비 요청(ready)
 		// ready(String partnerOrderId, String partnerUserId, String itemName, int quantity, int totalAmount, int taxFreeAmount, int vatAmount)		
@@ -66,7 +66,7 @@ public class KakaoPayController {
 		
 		ReadyResponse readyResponse = kakaoPayService.ready(partnerOrderId, partnerUserId, itemName, quantity, totalAmount, taxFreeAmount, vatAmount);											
 
-		log.info("응답데이터" + readyResponse);
+		// log.info("응답데이터" + readyResponse);
 		
 		this.vo = vo;
 
@@ -77,7 +77,7 @@ public class KakaoPayController {
 	// 성공
 	@GetMapping("/approval")
 	public void approval(String pg_token) {
-		log.info("pg_token : " + pg_token);
+		// log.info("pg_token : " + pg_token);
 		
 		// 2. 결제승인 요청
 		String approvalResponse = kakaoPayService.approve(pg_token);
@@ -85,18 +85,18 @@ public class KakaoPayController {
 		// 주문정보 저장
 		// 최종결과 -> aid 값이 존재하면
 		
-		log.info("최종결과2 : " + approvalResponse);
+		// log.info("최종결과2 : " + approvalResponse);
 		
 		// 트랜잭션으로 처리 : 주문테이블, 주문상세테이블, 결제테이블, 장바구니 비우기
 		if(approvalResponse.contains("aid")) {
 			
-			log.info("주문자 정보2 : " + vo);
+			// log.info("주문자 정보2 : " + vo);
 			String payName = vo.getOrd_name();			
 			orderService.orderProcess(vo, usr_id, "카카오페이", "카카오페이", "카카오페이", payName, "완납");
 					
 		}
 		
-		log.info("최종결과 : " + approvalResponse);
+		// log.info("최종결과 : " + approvalResponse);
 	}
 	
 	// 취소

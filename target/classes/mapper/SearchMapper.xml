@@ -4,8 +4,7 @@
 
 
 	<!-- 자료검색 페이지 -->
-	<select id="searchList" resultType="BookVO"
-		parameterType="map">
+	<select id="searchList" resultType="BookVO" parameterType="map">
 
 	<![CDATA[
     SELECT
@@ -27,47 +26,53 @@
     FROM
         book_table
     WHERE
-        (book_name LIKE '%' || #{keyword} || '%'
-        OR book_author LIKE '%' || #{keyword} || '%'
-        OR book_publisher LIKE '%' || #{keyword} || '%')
+    (
+        book_name LIKE '%' || #{keyword} || '%'
+        OR 
+        	book_author LIKE '%' || #{keyword} || '%'
+        OR 
+        	book_publisher LIKE '%' || #{keyword} || '%'
+    )
     ]]>
-
 
 	</select>
 
-	
+
 
 	<!-- 도서 개수 -->
 	<select id="getTotalCount" resultType="int">
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		book_table
-		WHERE		
-		book_bno > 0
+			book_table
+		WHERE
+			book_bno > 0
 
 	</select>
-	
+
 	<!-- 메인페이지 최신 이미지 업로드 -->
 	<select id="imageList" resultType="BookVO">
+	
 	<![CDATA[ 
 	SELECT
         book_up_folder,
         book_img
-    FROM (
-        SELECT
+    FROM 
+    (
+    	SELECT
             book_up_folder,
             book_img,
             ROW_NUMBER() OVER (ORDER BY book_up_folder DESC) AS rn
-        FROM book_table
+        FROM 
+        	book_table
     )
-    
     WHERE rn <= 5
     ]]>
-    </select>
     
-        
-   
+	</select>
+
+
+
 
 
 

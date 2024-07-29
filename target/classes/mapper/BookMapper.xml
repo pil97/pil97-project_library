@@ -6,57 +6,52 @@
 	<select id="bookList" resultType="BookVO" parameterType="map">
 
 		SELECT
-		book_bno,
-		c_code,
-		book_name,
-		book_author,
-		book_publishing_date,
-		book_deposit,
-		book_deposit_discount,
-		book_publisher,
-		book_content,
-		book_up_folder,
-		book_img,
-		book_amount,
-		book_loan,
-		book_date,
-		book_updatedate
+			book_bno,
+			c_code,
+			book_name,
+			book_author,
+			book_publishing_date,
+			book_deposit,
+			book_deposit_discount,
+			book_publisher,
+			book_content,
+			book_up_folder,
+			book_img,
+			book_amount,
+			book_loan,
+			book_date,
+			book_updatedate
 		FROM
 		(
-		SELECT /*+
-		INDEX_DESC(product_tbl PK_BOOK_BNO) */
-		ROWNUM AS
-		RN,
-		book_bno,
-		c_code,
-		book_name,
-		book_author,
-		book_publishing_date,
-		book_deposit,
-		book_deposit_discount,
-		book_publisher,
-		book_content,
-		book_up_folder,
-		book_img,
-		book_amount,
-		book_loan,
-		book_date,
-		book_updatedate
-		FROM
-		book_table
-		WHERE
-		c_code =
-		#{c_code}
-		AND		 
-		 <![CDATA[  		
-		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
-		 ]]>
-		ORDER BY book_bno DESC
+			SELECT /*+ INDEX_DESC(book_table PK_BOOK_BNO) */
+				ROWNUM AS RN,
+				book_bno,
+				c_code,
+				book_name,
+				book_author,
+				book_publishing_date,
+				book_deposit,
+				book_deposit_discount,
+				book_publisher,
+				book_content,
+				book_up_folder,
+				book_img,
+				book_amount,
+				book_loan,
+				book_date,
+				book_updatedate
+			FROM
+				book_table
+			WHERE
+				c_code = #{c_code}
+			AND		 
+				 <![CDATA[  		
+				   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+				 ]]>			
 		)
 		WHERE
-		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
-
-
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+			
 	</select>
 
 	<!-- 공통사항 : 검색조건추가 -->
@@ -65,34 +60,33 @@
 		parameterType="int">
 
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		book_table
+			book_table
 		WHERE
-		c_code = #{c_code}
+			c_code = #{c_code}
+		
 	</select>
 
-		<!-- 도서정보 - 모달창 및 도서 상세페이지 -->
+	<!-- 도서정보 - 모달창 및 도서 상세페이지 -->
 	<select id="bookInfo" resultType="BookVO" parameterType="int">
 		SELECT
-		book_bno,		
-		book_name,
-		book_author,
-		book_deposit,
-		book_publisher,
-		book_content,
-		book_up_folder,
-		book_img,
-		book_loan,
-		book_isbn,
-		book_page
+			book_bno,
+			book_name,
+			book_author,
+			book_deposit,
+			book_publisher,
+			book_content,
+			book_up_folder,
+			book_img,
+			book_loan,
+			book_isbn,
+			book_page
 		FROM
-		book_table
+			book_table
 		WHERE
-		book_bno = #{book_bno}
+			book_bno = #{book_bno}
 
 	</select>
-
-
 
 </mapper>

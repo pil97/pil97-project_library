@@ -2,36 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.library.basic.admin.category.AdminCategoryMapper">
 
-	<select id="getFirstCategoryList"
-		resultType="AdminCategoryVO">
+	<!-- 1차 카테고리 목록 -->
+	<select id="getFirstCategoryList" resultType="AdminCategoryVO">
 
 		SELECT
-		c_code, c_name, c_pcode
+			c_code,
+			c_name, 
+			c_pcode
 		FROM
-		category_table
+			category_table
 		WHERE
-		c_pcode IS NULL
+			c_pcode IS NULL
 
 	</select>
 
-	<select id="getSecondCategoryList"
-		resultType="AdminCategoryVO">
-		SELECT
-		c_code, c_name, c_pcode
-		FROM
-		category_table
-		WHERE
-		c_pcode = #{c_pcode}
-
-	</select>
+	<!-- 2차 카테고리 -->	
+	<select id="getSecondCategoryList" resultType="AdminCategoryVO">
 	
+		SELECT
+			c_code,
+			c_name, 
+			c_pcode
+		FROM
+			category_table
+		WHERE
+			c_pcode = #{c_pcode}
+
+	</select>
+
+	<!-- 2차 카테고리 정보를 이용한 1차 카테고리 정보 -->
 	<select id="getFirstCategoryBySecondCategory" resultType="AdminCategoryVO" parameterType="int">
 		SELECT
-		c_code, c_name, c_pcode
+			c_code, 
+			c_name,
+			c_pcode
 		FROM
-		category_table
+			category_table
 		WHERE
-		c_code = #{c_code}
-		</select>
+			c_code = #{c_code}
+	</select>
 
 </mapper>

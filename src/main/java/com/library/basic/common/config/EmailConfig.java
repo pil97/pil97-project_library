@@ -77,7 +77,7 @@ public class EmailConfig {
 		mailSender.setJavaMailProperties(properties);
 		mailSender.setDefaultEncoding(encoding);
 		
-		log.info("메일서버: " + host);
+		// log.info("메일서버: " + host);
 		return mailSender;
 
 	}

@@ -73,24 +73,24 @@
         let email = [[${usr_email}]];
 
         if (msg == "successID") {
-        	alert(`아이디를 ${email} 메일로 발송했습니다.`);
-        	document.getElementById("usr_id").focus();
+          alert(`아이디를 ${email} 메일로 발송했습니다.`);
+          document.getElementById("usr_id").focus();
         }
 
         if (msg == "successTempPw") {
-        	alert(`임시비밀번호를 ${email} 메일로 발송했습니다.`);
-        	document.getElementById("usr_id").focus();
+          alert(`임시비밀번호를 ${email} 메일로 발송했습니다.`);
+          document.getElementById("usr_id").focus();
         }
 
         if (msg == "failID") {
-        	alert("아이디가 존재하지 않습니다.");
-        	document.getElementById("usr_id").focus();
+          alert("아이디가 존재하지 않습니다.");
+          document.getElementById("usr_id").focus();
         } else if (msg == "failPW") {
-        	alert("비밀번호가 일치하지 않습니다.");
-        	document.getElementById("usr_password").focus();
+          alert("비밀번호가 일치하지 않습니다.");
+          document.getElementById("usr_password").focus();
         }
-        $(document).ready(function() {
-        	// ready event end
+        $(document).ready(function () {
+          // ready event end
         });
       </script>
     </th:block>

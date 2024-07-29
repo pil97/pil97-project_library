@@ -54,7 +54,7 @@ public class QnaController {
 		vo.setUsr_id(usr_id);
 		vo.setQna_password(passwordEncoder.encode(vo.getQna_password()));
 
-		log.info("도서 QnA 데이터 : " + vo);
+		// log.info("도서 QnA 데이터 : " + vo);
 
 		qnaService.qnaWrite(vo);
 
@@ -65,14 +65,14 @@ public class QnaController {
 
 	// QnA 목록
 	@GetMapping("/qnalist/{book_bno}/{page}")
-	public ResponseEntity<Map<String, Object>> qnaList(@PathVariable("book_bno") int book_bno,
-			@PathVariable("page") int page) throws Exception {
+	public ResponseEntity<Map<String, Object>> qnaList(@PathVariable("book_bno") int book_bno, @PathVariable("page") int page) throws Exception {
+		
 		ResponseEntity<Map<String, Object>> entity = null;
 		Map<String, Object> map = new HashMap<>();
 
-		log.info("QnA 리스트 기능 시작");
-		log.info("번호" + book_bno);
-		log.info("패이지 " + page);
+		//log.info("QnA 리스트 기능 시작");
+		// log.info("번호" + book_bno);
+		// log.info("패이지 " + page);
 
 		// 1. QnA 목록
 		Criteria cri = new Criteria();
@@ -88,7 +88,7 @@ public class QnaController {
 		map.put("qnaList", qnaList);
 		map.put("qnaPageMaker", pageMaker);
 
-		log.info("qnaPageMaker : " + pageMaker);
+		// log.info("qnaPageMaker : " + pageMaker);
 
 		entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 
@@ -103,7 +103,7 @@ public class QnaController {
 
 		QnaVO vo = qnaService.qnaForm(qna_code);
 		
-		log.info("상세 글" + vo);
+		// log.info("상세 글" + vo);
 
 		entity = new ResponseEntity<QnaVO>(vo, HttpStatus.OK);		
 
@@ -115,7 +115,7 @@ public class QnaController {
 	@GetMapping("/qnacheckpwd")
 	public ResponseEntity<String> qnaCheckPwd(QnaDTO dto) throws Exception {
 
-		log.info("정보 : " + dto);
+		// log.info("정보 : " + dto);
 
 		QnaVO vo = qnaService.qnaForm(dto.getQna_code());
 
@@ -137,7 +137,7 @@ public class QnaController {
 	@PutMapping("/qnamodify")
 	public ResponseEntity<String> qnaModify(@RequestBody QnaVO vo) throws Exception {
 		
-		log.info("수정정보" + vo);
+		// log.info("수정정보" + vo);
 		
 		ResponseEntity<String> entity = null;
 		
@@ -151,6 +151,7 @@ public class QnaController {
 	// QnA 삭제
 	@DeleteMapping("/qnadelete/{qna_code}")
 	public ResponseEntity<String> qnaDelete(@PathVariable("qna_code") Long qna_code) throws Exception {
+		
 		ResponseEntity<String> entity = null;
 
 		entity = new ResponseEntity<String>("success", HttpStatus.OK);

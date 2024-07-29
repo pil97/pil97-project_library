@@ -32,7 +32,7 @@ public class HomeController {
 
 	// @ResponseBody // 어노테이션이 사용이 안되면, return "index"는 데이터가 아니라 타임리프 파일명으로 인식
 	@GetMapping("/")
-	public String index(Model model) {
+	public String index(Model model) throws Exception {
 
 		List<AdminCategoryVO> cateList = adminCategoryService.getFirstCategoryList();		
 		model.addAttribute("userCateList", cateList);
@@ -44,7 +44,7 @@ public class HomeController {
 		
 		
 
-		log.info("기본 주소.");
+		// log.info("기본 주소.");
 
 		return "index";
 	}

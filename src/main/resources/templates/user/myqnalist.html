@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
- 
   <body>
     <th:block layout:fragment="content">
       <main role="main" class="flex-shrink-0">
         <div class="container">
           <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
             <h1 class="display-8">나의 QnA</h1>
-          </div>	
+          </div>
           <div class="row">
             <div class="col-4">
               <section th:replace="~{user/comm/mypage_menu}"></section>
@@ -35,23 +34,23 @@
                     <th>답변여부</th>
                     <th>상세보기</th>
                   </tr>
-                  <tr th:each="MyQnaVO : ${myQnaList}">
-                    <td th:text="${MyQnaVO.qna_code}"></td>
-                    <td><span th:text="${MyQnaVO.qna_type}"></span></td>
+                  <tr th:each="myQnaList : ${myQnaList}">
+                    <td th:text="${myQnaList.qna_code}"></td>
+                    <td><span th:text="${myQnaList.qna_type}"></span></td>
                     <td>
                       <a href="#">
                         <img
-                          th:src="@{'/user/imagedisplay?dateFolderName=' + ${MyQnaVO.book_up_folder} + '&fileName=s_' + ${MyQnaVO.book_img}}"
+                          th:src="@{'/user/imagedisplay?dateFolderName=' + ${myQnaList.book_up_folder} + '&fileName=s_' + ${myQnaList.book_img}}"
                           style="width: 100px; height: 100px; object-fit: contain"
                         />
                       </a>
-                      <div th:text="${MyQnaVO.book_name}"></div>
+                      <div th:text="${myQnaList.book_name}"></div>
                     </td>
-                    <td><span th:text="${MyQnaVO.qna_title}"></span></td>
-                    <td th:text="${#dates.format(MyQnaVO.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                    <td><span th:text="${MyQnaVO.qna_check}"></span></td>
+                    <td><span th:text="${myQnaList.qna_title}"></span></td>
+                    <td th:text="${#dates.format(myQnaList.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td><span th:text="${myQnaList.qna_check}"></span></td>
                     <td>
-                      <button type="button" class="btn btn-danger" name="btnQnaDetail" th:data-qna_code="${MyQnaVO.qna_code}">상세보기</button>
+                      <button type="button" class="btn btn-danger" name="btnQnaDetail" th:data-qna_code="${myQnaList.qna_code}">상세보기</button>
                     </td>
                   </tr>
                 </tbody>
@@ -93,11 +92,12 @@
                 </div>
               </div>
             </div>
-          </div> <!-- End of .row -->
+          </div>
+          <!-- End of .row -->
         </div>
       </main>
-      
-            <!-- 도서 QnA Modal -->
+
+      <!-- 도서 QnA Modal -->
       <div class="modal fade" id="qnaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -161,16 +161,16 @@
             actionForm.submit();
           });
 
-         	let qna_code;
-          
+          let qna_code;
+
           // 도서QnA modal
           $("table#myQnaList").on("click", "button[name='btnQnaDetail']", function () {
             $("#qnaModal").modal("show");
-            
-            qna_code = $(this).data('qna_code');
-            
-         	// qna_code : 전역변수
-            
+
+            qna_code = $(this).data("qna_code");
+
+            // qna_code : 전역변수
+
             // console.log(qna_code);
 
             // QnA 상세글
@@ -184,7 +184,7 @@
               // data: 스프링으로 보내는 데이터 작업 -> 경로안에 이미 데이터가 있기 떄문에
               dataType: "json", // 스프링에서 넘어오는 데이터 타입
               success: function (result) {
-                console.log(result);
+                // console.log(result);
 
                 // modal 내용에 리뷰 출력작업
                 $("#qna_type").val(result.qna_type);
@@ -194,63 +194,60 @@
               },
             });
           });
-          
+
           // 도서 QnA 수정
-          $("#btnQnaModify").on("click", function() {
-        	  // qna_code : 전역변수
-        	  let qna_type = $("#qna_type").val();              
-              let qna_title = $("#qna_title").val();
-              let qna_content = $("#qna_content").val();
+          $("#btnQnaModify").on("click", function () {
+            // qna_code : 전역변수
+            let qna_type = $("#qna_type").val();
+            let qna_title = $("#qna_title").val();
+            let qna_content = $("#qna_content").val();
 
-              console.log(qna_code);          
+            console.log(qna_code);
 
+            if (qna_type == "질문") {
+              alert("질문을 선택하세요.");
+              $("#qna_type").focus();
+              return;
+            }
 
-              
-              if (qna_type == "질문") {
-                  alert("질문을 선택하세요.");
-                  $("#qna_type").focus();
-                  return;
+            if (qna_title == "") {
+              alert("제목을 입력하세요.");
+              $("#qna_title").focus();
+              return;
+            }
+
+            if (qna_content == "") {
+              alert("내용을 입력하세요.");
+              $("#qna_content").focus();
+              return;
+            }
+
+            // 자바스크립 object 문법 사용
+            let qnaData = { qna_type: qna_type, qna_code: qna_code, qna_title: qna_title, qna_content: qna_content };
+
+            // console.log(qnaData);
+
+            $.ajax({
+              url: "/user/qna/qnamodify",
+              headers: {
+                "Content-Type": "application/json",
+                "X-HTTP-Method-Override": "PUT",
+              },
+              type: "put",
+              data: JSON.stringify(qnaData),
+              success: function (result) {
+                if (result == "success") {
+                  alert("도서QnA가 수정되었습니다.");
+                  $("#qnaModal").modal("hide");
+                  location.reload();
                 }
-
-                if (qna_title == "") {
-                  alert("제목을 입력하세요.");
-                  $("#qna_title").focus();
-                  return;
-                }
-
-                if (qna_content == "") {
-                  alert("내용을 입력하세요.");
-                  $("#qna_content").focus();
-                  return;
-                }
-                
-                // 자바스크립 object 문법 사용
-                let qnaData = { qna_type: qna_type, qna_code: qna_code, qna_title: qna_title, qna_content: qna_content };
-                
-                console.log(qnaData);
-              	
-              $.ajax({
-                url: "/user/qna/qnamodify",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-HTTP-Method-Override": "PUT",
-                },
-                type: "put",
-                data: JSON.stringify(qnaData),
-                success: function (result) {
-                  if (result == "success") {
-                    alert("도서QnA가 수정되었습니다.");
-                    $("#qnaModal").modal("hide");
-                    location.reload();
-                  }                 	                    
-                },
-              });        	          	          	  
+              },
+            });
           });
-          
-       // QnA 삭제
-          $("#btnQnaDelete").on("click", function() {
-            if (confirm("도서리뷰를 삭제하시겠습니까?")) {            	
 
+          // QnA 삭제
+          $("#btnQnaDelete").on("click", function () {
+            if (confirm("도서리뷰를 삭제하시겠습니까?")) {
               $.ajax({
                 url: "/user/qna/qnadelete/" + qna_code,
                 headers: {

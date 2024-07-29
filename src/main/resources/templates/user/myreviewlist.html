@@ -44,21 +44,21 @@
             <th>별점</th>
             <th>상세보기</th>
           </tr>
-          <tr th:each="MyReviewVO : ${myReviewList}">
-            <td th:text="${MyReviewVO.rev_code}"></td>
+          <tr th:each="myReviewList : ${myReviewList}">
+            <td th:text="${myReviewList.rev_code}"></td>
             <td>
               <a href="#">
                 <img
-                  th:src="@{'/user/imagedisplay?dateFolderName=' + ${MyReviewVO.book_up_folder} + '&fileName=s_' + ${MyReviewVO.book_img}}"
+                  th:src="@{'/user/imagedisplay?dateFolderName=' + ${myReviewList.book_up_folder} + '&fileName=s_' + ${myReviewList.book_img}}"
                   style="width: 100px; height: 100px; object-fit: contain"
                 />
               </a>
-              <div th:text="${MyReviewVO.book_name}"></div>
+              <div th:text="${myReviewList.book_name}"></div>
             </td>
-            <td><span th:text="${MyReviewVO.rev_title}"></span></td>
-            <td th:text="${#dates.format(MyReviewVO.rev_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td><span th:text="${myReviewList.rev_title}"></span></td>
+            <td th:text="${#dates.format(myReviewList.rev_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td>
-              <p id="star_rev_rate" class="star-rating" th:data-rate="${MyReviewVO.rev_rate}">
+              <p id="star_rev_rate" class="star-rating" th:data-rate="${myReviewList.rev_rate}">
                 <a class="rev_rate" href="#">☆</a>
                 <a class="rev_rate" href="#">☆</a>
                 <a class="rev_rate" href="#">☆</a>
@@ -67,7 +67,7 @@
               </p>
             </td>
             <td>
-              <button type="button" class="btn btn-danger" name="btnReviewDetail" th:data-rev_code="${MyReviewVO.rev_code}">상세보기</button>
+              <button type="button" class="btn btn-danger" name="btnReviewDetail" th:data-rev_code="${myReviewList.rev_code}">상세보기</button>
             </td>
           </tr>
         </tbody>
@@ -208,19 +208,19 @@
 
           // 전역변수
           let rev_code;
-          
+
           // 도서리뷰 modal
           $("table#myReviewList").on("click", "button[name='btnReviewDetail']", function () {
             $("#reviewModal").modal("show");
-            
-            // 모달내용 리셋 
-            $("#rev_title").val(""); 
+
+            // 모달내용 리셋
+            $("#rev_title").val("");
             $("#rev_content").val("");
             $("p#star_rev_rate a.rev_rate").removeClass("on");
             rev_code = $(this).data("rev_code");
-            
+
             //console.log(rev_code);
-            
+
             // return;
 
             $.ajax({
@@ -233,7 +233,7 @@
               // data: 스프링으로 보내는 데이터 작업 -> 경로안에 이미 데이터가 있기 떄문에
               dataType: "json", // 스프링에서 넘어오는 데이터 타입
               success: function (result) {
-                console.log(result);
+                // console.log(result);
 
                 // modal 내용에 리뷰 출력작업
                 $("#rev_title").val(result.rev_title);
@@ -250,7 +250,7 @@
               },
             });
           });
-          
+
           // 상세보기 - 별점 클릭
           $("p#star_rev_rate a.rev_rate").on("click", function (e) {
             e.preventDefault();
@@ -258,20 +258,19 @@
             $(this).addClass("on").prevAll("a").addClass("on"); // 현재 선택한 별과 이전별까지 on 선택자 추가
           });
 
-         // 도서 리뷰 수정
+          // 도서 리뷰 수정
           $("#btnReviewModify").on("click", function () {
-        	  // rev_code : 전역변수
+            // rev_code : 전역변수
             let rev_title = $("#rev_title").val();
             let rev_content = $("#rev_content").val();
             let rev_rate = 0;
-            
+
             // 별점 수정
             $("p#star_rev_rate a.rev_rate").each(function () {
               if ($(this).attr("class") == "rev_rate on") {
                 rev_rate += 1;
               }
             });
-            
 
             if (rev_title == "") {
               alert("제목을 입력하세요.");
@@ -294,7 +293,7 @@
             // 자바스크립 object 문법 사용
             let reviewData = { rev_code: rev_code, rev_title: rev_title, rev_content: rev_content, rev_rate: rev_rate };
 
-            console.log(reviewData);
+            // console.log(reviewData);
 
             // return;
 
@@ -315,7 +314,7 @@
               },
             });
           });
-         
+
           // 리뷰 삭제 버튼
           $("#btnReviewDelete").on("click", function () {
             if (confirm("도서리뷰를 삭제하시겠습니까?")) {
@@ -338,8 +337,6 @@
               });
             }
           });
-         
-         
         }); // read event end
       </script>
     </th:block>

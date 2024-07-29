@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminQnaController {
 
 	private final AdminQnaService adminQnaService;
-	private final QnaService qnaService;
 
 	// 도서 이미지 업로드 경로
 	@Value("${file.product.image.dir}")
@@ -57,9 +56,9 @@ public class AdminQnaController {
 	@GetMapping("/imagedisplay")
 	public ResponseEntity<byte[]> imageDisplay(String dateFolderName, String fileName) throws Exception {
 
-//				log.info("이미지 업로드 경로 : " + uploadPath);
-//				log.info("이미지 업로드 경로 : " + dateFolderName);
-//				log.info("이미지 업로드 경로 : " + fileName );
+		// log.info("이미지 업로드 경로 : " + uploadPath);
+		// log.info("이미지 업로드 경로 : " + dateFolderName);
+		// log.info("이미지 업로드 경로 : " + fileName);
 
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}

@@ -6,130 +6,132 @@
 	<insert id="qnaWrite" parameterType="QnaVO">
 
 		INSERT INTO
-		qna_table(
-		qna_code,
-		usr_id,
-		book_bno,
-		qna_type,
-		qna_password,
-		qna_title,
-		qna_content
+		qna_table
+		(
+			qna_code,
+			usr_id,
+			book_bno,
+			qna_type,
+			qna_password,
+			qna_title,
+			qna_content
 		)
-		VALUES(
-		seq_qna_code.nextval,
-		#{usr_id},
-		#{book_bno},
-		#{qna_type},
-		#{qna_password},
-		#{qna_title},
-		#{qna_content}
+		VALUES
+		(
+			seq_qna_code.nextval,
+			#{usr_id},
+			#{book_bno},
+			#{qna_type},
+			#{qna_password},
+			#{qna_title},
+			#{qna_content}
 		)
 
 	</insert>
-
 
 	<!-- QnA 목록 -->
 	<select id="qnaList" resultType="QnaVO" parameterType="map">
 
 		SELECT
-		qna_code,
-		usr_id,
-		book_bno,
-		qna_type,
-		qna_password,
-		qna_title,
-		qna_content,
-		qna_check,
-		qna_answer,
-		qna_update,
-		qna_date,
-		qna_answer_date
-		FROM(
-		SELECT /*+ INDEX_DESC(qna_table
-		PK_QNA_CODE) */
-		ROWNUM AS RN,
-		qna_code,
-		usr_id,
-		book_bno,
-		qna_type,
-		qna_password,
-		qna_title,
-		qna_content,
-		qna_check,
-		qna_answer,
-		qna_update,
-		qna_date,
-		qna_answer_date
+			qna_code,
+			usr_id,
+			book_bno,
+			qna_type,
+			qna_password,
+			qna_title,
+			qna_content,
+			qna_check,
+			qna_answer,
+			qna_update,
+			qna_date,
+			qna_answer_date
 		FROM
-		qna_table
-		WHERE
-		book_bno = ${book_bno}
-		AND
-		 <![CDATA[  		
-		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
-		 ]]>
+		(
+			SELECT /*+ INDEX_DESC(qna_table PK_QNA_CODE) */
+				ROWNUM AS RN,
+				qna_code,
+				usr_id,
+				book_bno,
+				qna_type,
+				qna_password,
+				qna_title,
+				qna_content,
+				qna_check,
+				qna_answer,
+				qna_update,
+				qna_date,
+				qna_answer_date
+			FROM
+				qna_table
+			WHERE
+				book_bno = ${book_bno}
+			AND
+				 <![CDATA[  		
+				   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+				 ]]>
 		)
 		WHERE
-		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
-
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
 
 	</select>
 
 	<!-- QnA 개수 -->
-	<select id="getCountQnaByBookBno" resultType="int"
-		parameterType="int">
+	<select id="getCountQnaByBookBno" resultType="int" parameterType="int">
 
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		qna_table
+			qna_table
 		WHERE
-		book_bno = #{book_bno}
+			book_bno = #{book_bno}
 
 	</select>
 
 	<!-- QnA 상세폼 -->
 	<select id="qnaForm" resultType="QnaVO" parameterType="Long">
+	
 		SELECT
-		qna_code,
-		usr_id,
-		book_bno,
-		qna_type,
-		qna_password,
-		qna_title,
-		qna_content,
-		qna_check,
-		qna_answer,
-		qna_update,
-		qna_date,
-		qna_answer_date
+			qna_code,
+			usr_id,
+			book_bno,
+			qna_type,
+			qna_password,
+			qna_title,
+			qna_content,
+			qna_check,
+			qna_answer,
+			qna_update,
+			qna_date,
+			qna_answer_date
 		FROM
-		qna_table
+			qna_table
 		WHERE
-		qna_code = #{qna_code}
+			qna_code = #{qna_code}
+			
 	</select>
 
 	<!-- QnA 수정 -->
 	<update id="qnaModify" parameterType="QnaVO">
+	
 		UPDATE
-		qna_table
+			qna_table
 		SET
-		qna_type
-		= #{qna_type},
-		qna_title = #{qna_title},
-		qna_content = #{qna_content},
-		qna_update = SYSDATE
+			qna_type = #{qna_type},
+			qna_title = #{qna_title},
+			qna_content = #{qna_content},
+			qna_update = SYSDATE
 		WHERE
-		qna_code = #{qna_code}
+			qna_code = #{qna_code}
 
 	</update>
 
 	<!-- QnA 삭제 -->
 	<delete id="qnaDelete" parameterType="Long">
+	
 		DELETE FROM
-		qna_table
+			qna_table
 		WHERE
-		qna_code = #{qna_code}
+			qna_code = #{qna_code}
 
 	</delete>
 
@@ -154,73 +156,75 @@
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- inner join 사용시 조건절은 내부 쿼리에 넣어서 해야함 -> 1. 성능 이슈 2. 값이 이상하게 나옴 -->
 	<!-- 나의 QnA 목록 -->
-	<select id="myQnaList"
-		resultType="MyQnaVO" parameterType="map">
+	<select id="myQnaList" resultType="MyQnaVO" parameterType="map">
 		SELECT
-		qna_code,
-		usr_id,
-		book_bno,
-		qna_type,
-		qna_password,
-		qna_title,
-		qna_content,
-		qna_check,
-		qna_answer,
-		qna_update,
-		qna_date,
-		qna_answer_date,
-		book_name,
-		book_up_folder,
-		book_img
+			qna_code,
+			usr_id,
+			book_bno,
+			qna_type,
+			qna_password,
+			qna_title,
+			qna_content,
+			qna_check,
+			qna_answer,
+			qna_update,
+			qna_date,
+			qna_answer_date,
+			book_name,
+			book_up_folder,
+			book_img
 		FROM
 		(
-		SELECT /*+ USE_NL(qna book)
-		INDEX_DESC(qna PK_QNA_CODE) INDEX_DESC(book PK_BOOK_BNO) */
-		ROWNUM rn,
-		qna.qna_code,
-		qna.usr_id,
-		qna.book_bno,
-		qna.qna_type,
-		qna.qna_password,
-		qna.qna_title,
-		qna.qna_content,
-		qna.qna_check,
-		qna.qna_answer,
-		qna.qna_update,
-		qna.qna_date,
-		qna.qna_answer_date,
-		book.book_name,
-		book.book_up_folder,
-		book.book_img
-		FROM
-		qna_table qna
-		INNER JOIN book_table book ON qna.book_bno = book.book_bno
-		AND
-		<include refid="criteria"></include>
-            <![CDATA[
-                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
-            ]]>
-		AND usr_id = #{usr_id}
+			SELECT /*+ USE_NL(q b) INDEX_DESC(q PK_QNA_CODE) INDEX_DESC(b PK_BOOK_BNO) */
+				ROWNUM rn,
+				q.qna_code,
+				q.usr_id,
+				q.book_bno,
+				q.qna_type,
+				q.qna_password,
+				q.qna_title,
+				q.qna_content,
+				q.qna_check,
+				q.qna_answer,
+				q.qna_update,
+				q.qna_date,
+				q.qna_answer_date,
+				b.book_name,
+				b.book_up_folder,
+				b.book_img
+			FROM
+				qna_table q
+			INNER JOIN
+				book_table b
+			ON 
+				q.book_bno = b.book_bno
+			AND
+				<include refid="criteria"></include>
+	            <![CDATA[
+	                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
+	            ]]>
+			AND 
+				usr_id = #{usr_id}
 		)
-
 		WHERE
-		RN > (#{cri.pageNum} - 1) * #{cri.amount}
+			RN > (#{cri.pageNum} - 1) * #{cri.amount}
 	</select>
 
 
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- 나의 QnA 개수 -->
 	<select id="getTotalCount" resultType="int" parameterType="map">
+	
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		qna_table
+			qna_table
 		WHERE
-		<include refid="criteria"></include>
-		qna_code > 0
+			<include refid="criteria"></include>
+			qna_code > 0
 		AND
-		usr_id = #{usr_id}
+			usr_id = #{usr_id}
+			
 	</select>
-
 
 </mapper>

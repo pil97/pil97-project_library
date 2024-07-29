@@ -50,7 +50,7 @@ public class AdminBookController {
 
 	// 도서등록 페이지
 	@GetMapping("bookregister")
-	public void bookRegisterPage(Model model) {
+	public void bookRegisterPage(Model model) throws Exception {
 
 		List<AdminCategoryVO> cateList = adminCategoryService.getFirstCategoryList();
 		model.addAttribute("cateList", cateList);
@@ -68,7 +68,7 @@ public class AdminBookController {
 		vo.setBook_img(saveFileName);
 		vo.setBook_up_folder(dateFolder);
 
-		log.info("상품정보 : " + vo);
+		// log.info("상품정보 : " + vo);
 
 		// 2. 도서정보 DB저장
 		adminBookService.bookRegister(vo);
@@ -78,7 +78,7 @@ public class AdminBookController {
 
 	// 도서등록 - 도서설명 이미지 업로드
 	@PostMapping("/imageupload")
-	public void imageUpload(HttpServletRequest request, HttpServletResponse response, MultipartFile upload) {
+	public void imageUpload(HttpServletRequest request, HttpServletResponse response, MultipartFile upload) throws Exception {
 
 		OutputStream out = null;
 		PrintWriter printWriter = null; // 서버에서 클라이언트에게 응답정보를 보낼때 사용 (업로드한 이미지 정보를 브라우저에게 보내는 작업용도)
@@ -107,7 +107,7 @@ public class AdminBookController {
 			String fileUrl = "/admin/book/display/" + fileName; // 메핑주소/이미지파일
 			// String fileUrl = fileName;
 
-			log.info("파일 URL: " + fileUrl);
+			// log.info("파일 URL: " + fileUrl);
 
 			// CKeditor 4.12에서는 파일 정보를 아래와 같이 구성해서 보내야함
 			// ("filename :" + "abc.gif"(변수처리), "uploaded":1,
@@ -138,11 +138,11 @@ public class AdminBookController {
 
 	// 도서등록 - 도서설명 이미지 업로드 매핑주소
 	@GetMapping("display/{fileName}")
-	public ResponseEntity<byte[]> getFile(@PathVariable("fileName") String fileName) {
+	public ResponseEntity<byte[]> getFile(@PathVariable("fileName") String fileName) throws Exception {
 
 		ResponseEntity<byte[]> entity = null;
 
-		log.info("파일이미지" + fileName);
+		// log.info("파일이미지" + fileName);
 
 		try {
 			entity = FileManagerUtils.getFile(uploadCKPath, fileName);
@@ -199,7 +199,7 @@ public class AdminBookController {
 	public String bookEdit(BookVO vo, MultipartFile uploadFile, Criteria cri, RedirectAttributes rttr)
 			throws Exception {
 
-		log.info("상품 수정정보 : " + vo);
+		// log.info("상품 수정정보 : " + vo);
 
 		String msg = "";
 
@@ -229,7 +229,7 @@ public class AdminBookController {
 	
 	// 도서 삭제
 	@PostMapping("/bookdelete")
-	public String bookDelete(Integer book_bno, Criteria cri) {
+	public String bookDelete(Integer book_bno, Criteria cri) throws Exception {
 		
 		adminBookService.bookDelete(book_bno);
 		

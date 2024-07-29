@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<html
-  lang="ko"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/baselayout}"
->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
   <th:block layout:fragment="title">
     <title>Mypage</title>
   </th:block>
@@ -68,37 +63,33 @@
       <script th:inline="javascript">
         let msg = [[${msg}]];
 
-               if (msg == "successPW") {
-               	alert("비밀번호가 변경되었습니다.");
-               } else if (msg == "failPW") {
-               	alert("현재비밀번호가 일치하지 않습니다.")
-               };
+        if (msg == "successPW") {
+          alert("비밀번호가 변경되었습니다.");
+        } else if (msg == "failPW") {
+          alert("현재비밀번호가 일치하지 않습니다.");
+        }
 
+        $(document).ready(function () {
+          // 비밀번호 변경 버튼 클릭
+          $("#btnChangePw").on("click", function () {
+            // 현재 비밀번호 입력 확인
+            if ($("#cur_pwd").val() == "") {
+              alert("현재 비밀번호를 입력하세요.");
+              $("#cur_pwd").focus();
+              return;
+            }
 
+            // 신규 비밀번호 일치 확인
+            if ($("#new_pwd").val() != $("#new_pwd_2").val()) {
+              alert("신규 비밀번호가 일치하지 않습니다.");
+              $("#new_pwd_2").focus();
+              $("#new_pwd_2").val("");
+              return;
+            }
 
-               $(document).ready(function () {
-                   // 비밀번호 변경 버튼 클릭
-                   $("#btnChangePw").on("click", function () {
-                     // 현재 비밀번호 입력 확인
-                     if ($("#cur_pwd").val() == "") {
-                       alert("현재 비밀번호를 입력하세요.");
-                       $("#cur_pwd").focus();
-                       return;
-                     }
-
-                     // 신규 비밀번호 일치 확인
-                     if ($("#new_pwd").val() != $("#new_pwd_2").val()) {
-                       alert("신규 비밀번호가 일치하지 않습니다.");
-                       $("#new_pwd_2").focus();
-                       $("#new_pwd_2").val("");
-                       return;
-                     }
-
-                     $("#changPwForm").submit();
-                   });
-
-
-                 });// ready event end
+            $("#changPwForm").submit();
+          });
+        }); // ready event end
       </script>
     </th:block>
   </body>

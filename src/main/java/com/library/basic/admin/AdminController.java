@@ -25,7 +25,7 @@ public class AdminController {
 	@GetMapping("/")
 	public String adminLoginPage() {
 
-		log.info("관리자 로그인 페이지");
+		// log.info("관리자 로그인 페이지");
 
 		return "admin/adminlogin";
 	}
@@ -69,7 +69,7 @@ public class AdminController {
 	}
 	
 	@GetMapping("/logout")
-	public String adminLogout(HttpSession session){
+	public String adminLogout(HttpSession session) {
 		
 		session.removeAttribute("adminStatus");
 		

@@ -3,55 +3,51 @@
 <mapper namespace="com.library.basic.usr.review.ReviewMapper">
 
 	<!-- 리뷰 목록 -->
-	<select id="reviewList" resultType="ReviewVO"
-		parameterType="map">
+	<select id="reviewList" resultType="ReviewVO" parameterType="map">
 
 		SELECT
-		rev_code,
-		usr_id,
-		book_bno,
-		rev_title,
-		rev_content,
-		rev_rate,
-		rev_date
+			rev_code,
+			usr_id,
+			book_bno,
+			rev_title,
+			rev_content,
+			rev_rate,
+			rev_date
 		FROM
 		(
-		SELECT /*+ INDEX_DESC(review_table PK_REV_CODE) */
-		ROWNUM
-		AS RN,
-		rev_code,
-		usr_id,
-		book_bno,
-		rev_title,
-		rev_content,
-		rev_rate,
-		rev_date
-		FROM
-		review_table
-		WHERE
-		book_bno = ${book_bno}
-		AND
-		 <![CDATA[  		
-		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
-		 ]]>
+			SELECT /*+ INDEX_DESC(review_table PK_REV_CODE) */
+				ROWNUM AS RN,
+				rev_code,
+				usr_id,
+				book_bno,
+				rev_title,
+				rev_content,
+				rev_rate,
+				rev_date
+			FROM
+				review_table
+			WHERE
+				book_bno = ${book_bno}
+			AND
+				 <![CDATA[  		
+				   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+				 ]]>
 		)
 		WHERE
-		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
 
 
 	</select>
 
 	<!-- 리뷰 개수 -->
-	<select id="getCountReviewByBookBno" resultType="int"
-		parameterType="int">
+	<select id="getCountReviewByBookBno" resultType="int" parameterType="int">
 
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		review_table
+			review_table
 		WHERE
-		book_bno =
-		#{book_bno}
+			book_bno = #{book_bno}
 
 	</select>
 
@@ -59,50 +55,66 @@
 	<insert id="reviewSave" parameterType="ReviewVO">
 
 		INSERT INTO
-		review_table(rev_code, usr_id, book_bno, rev_title, rev_content,
-		rev_rate )
-		VALUES(
-		seq_review_code.nextval,
-		#{usr_id},
-		#{book_bno},
-		#{rev_title},
-		#{rev_content},
-		#{rev_rate}
+		review_table
+		(
+			rev_code, 
+			usr_id, 
+			book_bno, 
+			rev_title, 
+			rev_content, 
+			rev_rate 
 		)
+		VALUES
+		(
+			seq_review_code.nextval,
+			#{usr_id},
+			#{book_bno},
+			#{rev_title},
+			#{rev_content},
+			#{rev_rate}
+		)
+		
 	</insert>
 
 	<!-- 도서리뷰 삭제 -->
 	<delete id="reviewDelete" parameterType="Long">
+	
 		DELETE FROM
-		review_table
+			review_table
 		WHERE
-		rev_code = #{rev_code}
+			rev_code = #{rev_code}
 
 	</delete>
 
 	<!-- 도서리뷰 수정폼 -->
-	<select id="reviewModifyForm" resultType="ReviewVO"
-		parameterType="Long">
+	<select id="reviewModifyForm" resultType="ReviewVO" parameterType="Long">
+	
 		SELECT
-		rev_code, usr_id, book_bno, rev_title,
-		rev_content, rev_rate
+			rev_code, 
+			usr_id, 
+			book_bno, 
+			rev_title,
+			rev_content, 
+			rev_rate
 		FROM
-		review_table
+			review_table
 		WHERE
-		rev_code = #{rev_code}
-
+			rev_code = #{rev_code}
 
 	</select>
 
 	<!-- 도서리뷰 수정 -->
 	<update id="reviewModify" parameterType="ReviewVO">
+	
 		UPDATE
-		review_table
+			review_table
 		SET
-		rev_title = #{rev_title}, rev_content = #{rev_content}, rev_rate =
-		#{rev_rate}, rev_date = SYSDATE
+			rev_title = #{rev_title}, 
+			rev_content = #{rev_content}, 
+			rev_rate = #{rev_rate}, 
+			rev_date = SYSDATE
 		WHERE
-		rev_code = #{rev_code}
+			rev_code = #{rev_code}
 
 	</update>
 
@@ -124,65 +136,65 @@
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- inner join 사용시 조건절은 내부 쿼리에 넣어서 해야함 -> 1. 성능 이슈 2. 값이 이상하게 나옴 -->
 	<!-- 나의 리뷰 목록 -->
-	<select id="myReviewList"
-		resultType="com.library.basic.usr.review.MyReviewVO"
-		parameterType="map">
+	<select id="myReviewList" resultType="MyReviewVO" parameterType="map">
 		SELECT
-		rev_code,
-		usr_id,
-		book_bno,
-		rev_title,
-		rev_content,
-		rev_rate,
-		rev_date,
-		book_name,
-		book_up_folder,
-		book_img
+			rev_code,
+			usr_id,
+			book_bno,
+			rev_title,
+			rev_content,
+			rev_rate,
+			rev_date,
+			book_name,
+			book_up_folder,
+			book_img
 		FROM
 		(
-		SELECT /*+ USE_NL(rev book) INDEX_DESC(rev PK_REV_CODE) INDEX_DESC(book
-		PK_BOOK_BNO) */
-		ROWNUM AS rn,
-		rev.rev_code,
-		rev.usr_id,
-		rev.book_bno,
-		rev.rev_title,
-		rev.rev_content,
-		rev.rev_rate,
-		rev.rev_date,
-		book.book_name,
-		book.book_up_folder,
-		book.book_img
-		FROM
-		review_table rev
-		INNER JOIN book_table book ON rev.book_bno = book.book_bno
-		AND
-		<include refid="criteria"></include>
-            <![CDATA[
-                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
-            ]]>
-		AND usr_id = #{usr_id}
+			SELECT /*+ USE_NL(r b) INDEX_DESC(r PK_REV_CODE) INDEX_DESC(b PK_BOOK_BNO) */
+				ROWNUM AS rn,
+				r.rev_code,
+				r.usr_id,
+				r.book_bno,
+				r.rev_title,
+				r.rev_content,
+				r.rev_rate,
+				r.rev_date,
+				b.book_name,
+				b.book_up_folder,
+				b.book_img
+			FROM
+				review_table r
+			INNER JOIN 
+				book_table b 
+			ON 
+				r.book_bno = b.book_bno
+			AND
+				<include refid="criteria"></include>
+	            <![CDATA[
+	                ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
+	            ]]>
+			AND 
+				usr_id = #{usr_id}
 		)
-
 		WHERE
-		RN > (#{cri.pageNum} - 1) * #{cri.amount}
+			RN > (#{cri.pageNum} - 1) * #{cri.amount}
 	</select>
 
 
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- 나의 리뷰 개수 -->
 	<select id="getTotalCount" resultType="int" parameterType="map">
+	
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		review_table
+			review_table
 		WHERE
-		<include refid="criteria"></include>
-		rev_code > 0
+			<include refid="criteria"></include>
+			rev_code > 0
 		AND
-		usr_id = #{usr_id}
+			usr_id = #{usr_id}
+			
 	</select>
-
-
 
 </mapper>

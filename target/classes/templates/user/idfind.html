@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<html
-  lang="ko"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/baselayout}"
->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
   <th:block layout:fragment="title">
     <title>아이디 찾기</title>
   </th:block>
@@ -74,45 +69,44 @@
         let email = [[${usr_email}]];
 
         if (msg == "idFail") {
-        	alert("이름 또는 이메일을 정확히 입력해주세요.");
-        	document.getElementById("usr_name").focus();
-        	document.getElementById("usr_name").value = name;
-        	document.getElementById("usr_email").value = email;
+          alert("이름 또는 이메일을 정확히 입력해주세요.");
+          document.getElementById("usr_name").focus();
+          document.getElementById("usr_name").value = name;
+          document.getElementById("usr_email").value = email;
         } else if (msg == "failAuth") {
-        	alert("인증코드를 정확히 입력해주세요.");
-        	document.getElementById("u_authcode").focus();
-        	document.getElementById("usr_name").value = name;
-        	document.getElementById("usr_email").value = email;
+          alert("인증코드를 정확히 입력해주세요.");
+          document.getElementById("u_authcode").focus();
+          document.getElementById("usr_name").value = name;
+          document.getElementById("usr_email").value = email;
         }
 
-        $(document).ready(function() {
-        	// 메일 인증 버튼
-        	$("#btnMailAuthCode").on("click", function() {
-        		// 메일 입력 값 확인
-        		if ($("#usr_email").val() == "") {
-        			alert("메일을 입력하세요.");
-        			$("#usr_email").focus();
-        			return;
-        		}
+        $(document).ready(function () {
+          // 메일 인증 버튼
+          $("#btnMailAuthCode").on("click", function () {
+            // 메일 입력 값 확인
+            if ($("#usr_email").val() == "") {
+              alert("메일을 입력하세요.");
+              $("#usr_email").focus();
+              return;
+            }
 
-        		 $.ajax({
-                  url: "/email/authcode",
-                  type: "get",
-                  data: {
-                    receiverMail: $("#usr_email").val(),
-                    type: "emailID",
-                  },
-                  dataType: "text",
-                  success: function (result) {
-                    if (result == "success") {
-                      alert("메일로 인증코드가 발급되었습니다.");
-                    }
-                  },
-                });
-              });
+            $.ajax({
+              url: "/email/authcode",
+              type: "get",
+              data: {
+                receiverMail: $("#usr_email").val(),
+                type: "emailID",
+              },
+              dataType: "text",
+              success: function (result) {
+                if (result == "success") {
+                  alert("메일로 인증코드가 발급되었습니다.");
+                }
+              },
+            });
+          });
 
-
-        	// ready event end
+          // ready event end
         });
       </script>
     </th:block>

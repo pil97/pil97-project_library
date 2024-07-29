@@ -94,7 +94,7 @@ public class KakaoLoginService {
 
 		String responseBody = responseEntity.getBody();
 
-		log.info("사용자정보 응답데이터 : " + responseBody);
+		// log.info("사용자정보 응답데이터 : " + responseBody);
 
 		ObjectMapper objctMapper = new ObjectMapper();
 		JsonNode jsonNode = objctMapper.readTree(responseBody);
@@ -124,14 +124,14 @@ public class KakaoLoginService {
 			
 			// 리턴된 정보 : JSON 포맷 문자열
 			String responseBody = response.getBody();
-			log.info("responseBody : " + responseBody);
+			// log.info("responseBody : " + responseBody);
 		
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode jsonNode = objectMapper.readTree(responseBody);
 			
 			Long id = jsonNode.get("id").asLong();
 			
-			log.info("id : " + id);
+			// log.info("id : " + id);
 			
 		}
 		

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper
-	namespace="com.library.basic.admin.order.AdminOrderMapper">
+<mapper namespace="com.library.basic.admin.order.AdminOrderMapper">
 
 	<!-- 검색종류가 (주문자 또는 주문코드 또는 아이디) 선택. "N" "C" "I" -->
 	<sql id="criteria">
@@ -23,12 +22,13 @@
 			</foreach>
 		</trim>
 	</sql>
-	
+
 	<!-- 날짜검색 -->
 	<!-- 날짜 7/19 선택시 -> 7/19 00:00:00 여기까지만 포함 -> +1 해줘야함 -->
 	<sql id="period">
 
-		<if test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
+		<if
+			test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
 		
 			<![CDATA[  		
 		   		ord_regdate >= to_date(#{startDate}) AND ord_regdate < to_date(#{endDate}) + 1 AND	
@@ -40,50 +40,46 @@
 
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- 주문내역 목록 -->
-	<select id="orderList" resultType="OrderVO"
-		parameterType="Criteria">
+	<select id="orderList" resultType="OrderVO" parameterType="Criteria">
 
 		SELECT
-		ord_code,
-		usr_id,
-		ord_name,
-		ord_addr_zipcode,
-		ord_addr_basic,
-		ord_addr_detail,
-		ord_tel,
-		ord_price,
-		ord_desc,
-		ord_regdate,
-		ord_admin_memo
+			ord_code,
+			usr_id,
+			ord_name,
+			ord_addr_zipcode,
+			ord_addr_basic,
+			ord_addr_detail,
+			ord_tel,
+			ord_price,
+			ord_desc,
+			ord_regdate,
+			ord_admin_memo
 		FROM
 		(
-		SELECT /*+
-		INDEX_DESC(order_table PK_ORD_CODE) */
-		ROWNUM AS
-		RN,
-		ord_code,
-		usr_id,
-		ord_name,
-		ord_addr_zipcode,
-		ord_addr_basic,
-		ord_addr_detail,
-		ord_tel,
-		ord_price,
-		ord_desc,
-		ord_regdate,
-		ord_admin_memo
-		FROM
-		order_table
-		WHERE
-
-		<include refid="criteria"></include>
-		 <include refid="period"></include>
-		 <![CDATA[  		
-		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
-		 ]]>
+			SELECT /*+ INDEX_DESC(order_table PK_ORD_CODE) */
+				ROWNUM AS RN,
+				ord_code,
+				usr_id,
+				ord_name,
+				ord_addr_zipcode,
+				ord_addr_basic,
+				ord_addr_detail,
+				ord_tel,
+				ord_price,
+				ord_desc,
+				ord_regdate,
+				ord_admin_memo
+			FROM
+				order_table
+			WHERE
+				<include refid="criteria"></include>
+				<include refid="period"></include>
+				 <![CDATA[  		
+				   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+				 ]]>
 		)
 		WHERE
-		RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
 
 
 	</select>
@@ -93,95 +89,108 @@
 	<select id="getTotalCount" resultType="int">
 
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		order_table
+			order_table
 		WHERE
-		<include refid="criteria"></include>
-		<include refid="period"></include>
-		ord_code > 0
+			<include refid="criteria"></include>
+			<include refid="period"></include>
+			ord_code > 0
 	</select>
 
 	<!-- 주문자(수령인) 정보 -->
 	<select id="orderInfo" resultType="OrderVO" parameterType="Long">
 		SELECT
-		ord_code,
-		usr_id,
-		ord_name,
-		ord_addr_zipcode,
-		ord_addr_basic,
-		ord_addr_detail,
-		ord_tel,
-		ord_price,
-		ord_desc,
-		ord_regdate,
-		ord_admin_memo
+			ord_code,
+			usr_id,
+			ord_name,
+			ord_addr_zipcode,
+			ord_addr_basic,
+			ord_addr_detail,
+			ord_tel,
+			ord_price,
+			ord_desc,
+			ord_regdate,
+			ord_admin_memo
 		FROM
-		order_table
+			order_table
 		WHERE
-		ord_code = ${ord_code}
+			ord_code = ${ord_code}
 	</select>
 
 	<!-- 주문상세정보 -->
-	<select id="orderDetailInfo" resultType="OrderDetailInfoVO"
-		parameterType="Long">
+	<select id="orderDetailInfo" resultType="OrderDetailInfoVO" parameterType="Long">
 		SELECT
-		od.ord_code,
-		od.book_bno,
-		od.dt_amount,
-		od.dt_price,
-		b.book_name,
-		b.book_deposit,
-		b.book_up_folder,
-		b.book_img
+			od.ord_code,
+			od.book_bno,
+			od.dt_amount,
+			od.dt_price,
+			b.book_name,
+			b.book_deposit,
+			b.book_up_folder,
+			b.book_img
 		FROM
-		order_detail_table od
+			order_detail_table od
 		INNER JOIN
-		book_table b
+			book_table b
 		ON
-		od.book_bno = b.book_bno
+			od.book_bno = b.book_bno
 		WHERE
-		od.ord_code = #{ord_code}
+			od.ord_code = #{ord_code}
+			
 	</select>
 
 	<!-- 주문상품 개별 삭제 - 주문상세테이블 db 삭제 -->
 	<delete id="orderBookDelete" parameterType="map">
 		DELETE FROM
-		order_detail_table
+			order_detail_table
 		WHERE
-		ord_code = #{ord_code}
+			ord_code = #{ord_code}
 		AND
-		book_bno = #{book_bno}
+			book_bno = #{book_bno}
 
 	</delete>
 
 	<!-- 주문상품 개별 삭제 - 2. 주문테이블 금액 변경 -->
 	<update id="orderBookPriceChange" parameterType="Long">
+	
 		UPDATE
-		order_table
+			order_table
 		SET
-		ord_price = (
-		SELECT COALESCE(SUM(dt_amount * dt_price),
-		0) FROM order_detail_table
-		WHERE ord_code = #{ord_code}
+		ord_price = 
+		( 
+			SELECT COALESCE
+				( SUM(dt_amount * dt_price ), 0 ) 
+			FROM 
+				order_detail_table
+			WHERE 
+				ord_code = #{ord_code}
 		)
 		WHERE
-		ord_code =
-		#{ord_code}
+			ord_code = #{ord_code}
+			
 	</update>
 
 
 	<!-- 주문상품 개별 삭제 - 결제테이블 db 수정 -->
 	<update id="paymentPriceChange" parameterType="Long">
+	
 		UPDATE
-		payment_table
+			payment_table
 		SET
-		pay_price = (
-		SELECT COALESCE(SUM(dt_amount * dt_price), 0) FROM order_detail_table
-		WHERE ord_code = #{ord_code}
+		pay_price = 
+		(
+			SELECT COALESCE(
+				SUM(dt_amount * dt_price), 0
+			) 
+			FROM 
+				order_detail_table
+			WHERE 
+				ord_code = #{ord_code}
 		)
 		WHERE
-		ord_code = #{ord_code}
+			ord_code = #{ord_code}
+			
 	</update>
 
 
@@ -189,18 +198,18 @@
 	<update id="orderDetailModify" parameterType="OrderVO">
 
 		UPDATE
-		order_table
+			order_table
 		SET
-		ord_name = #{ord_name},
-		ord_addr_zipcode = #{ord_addr_zipcode},
-		ord_addr_basic = #{ord_addr_basic},
-		ord_addr_detail =
-		#{ord_addr_detail},
-		ord_tel = #{ord_tel},
-		ord_desc = #{ord_desc},
-		ord_admin_memo = #{ord_admin_memo}
+			ord_name = #{ord_name},
+			ord_addr_zipcode = #{ord_addr_zipcode},
+			ord_addr_basic = #{ord_addr_basic},
+			ord_addr_detail =
+			#{ord_addr_detail},
+			ord_tel = #{ord_tel},
+			ord_desc = #{ord_desc},
+			ord_admin_memo = #{ord_admin_memo}
 		WHERE
-		ord_code = #{ord_code}
+			ord_code = #{ord_code}
 
 	</update>
 

@@ -53,7 +53,7 @@ public class UserController {
 	// 회원가입 페이지
 	@GetMapping("sign")
 	public void signPage(HttpSession session, Model model) {
-		log.info("회원가입 페이지");
+		// log.info("회원가입 페이지");
 		
 		UserVO vo = new UserVO();
 		
@@ -89,7 +89,7 @@ public class UserController {
 	@PostMapping("sign")
 	public String signOk(UserVO vo, HttpSession session) throws Exception {
 
-		log.info("회원정보 : " + vo);
+		// log.info("회원정보 : " + vo);
 
 		// 비밀번호 암호화 변경
 		vo.setUsr_password(passwordEncoder.encode(vo.getUsr_password()));
@@ -130,7 +130,7 @@ public class UserController {
 	@GetMapping("idCheck")
 	public ResponseEntity<String> idCheck(String usr_id) throws Exception {
 
-		log.info("아이디: " + usr_id);
+		// log.info("아이디: " + usr_id);
 
 		ResponseEntity<String> entity = null;
 
@@ -151,7 +151,7 @@ public class UserController {
 	// 로그인 페이지
 	@GetMapping("login")
 	public void loginPage() {
-		log.info("로그인 페이지");
+		// log.info("로그인 페이지");
 	}
 
 	// 로그인
@@ -169,6 +169,9 @@ public class UserController {
 			// 사용자가 입력한 비밀번호가 암호화된 형태에 해당하는 것이라면
 			if (passwordEncoder.matches(dto.getUsr_password(), vo.getUsr_password())) {
 
+				// 최근 로그인
+				userService.lastLogin(vo.getUsr_id());
+				
 				// 로그인 여부를 확인 null 아니면 로그인
 				session.setAttribute("loginStatus", vo);
 
@@ -195,7 +198,7 @@ public class UserController {
 	public String logout(HttpSession session) {
 	    String accessToken = (String) session.getAttribute("accessToken");
 
-	    log.info("access : " + accessToken);
+	    // log.info("access : " + accessToken);
 
 	    if (accessToken != null && !"".equals(accessToken)) {
 	        if (session.getAttribute("naverStatus") != null) {
@@ -224,7 +227,7 @@ public class UserController {
 	    // 로그인 세션 삭제
 	    session.invalidate();
 
-	    log.info("로그아웃");
+	    // log.info("로그아웃");
 
 	    return "redirect:/";
 	}
@@ -242,9 +245,9 @@ public class UserController {
 	public String idFindOk(String usr_name, String usr_email, String u_authcode, HttpSession session,
 			RedirectAttributes rttr) throws Exception {
 
-		log.info("이름: " + usr_name);
-		log.info("이메일: " + usr_email);
-		log.info("인증코드: " + u_authcode);
+		// log.info("이름: " + usr_name);
+		// log.info("이메일: " + usr_email);
+		// log.info("인증코드: " + u_authcode);
 
 		String url = "";
 		String msg = "";
@@ -391,7 +394,7 @@ public class UserController {
 
 		// String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 
-		log.info("수정데이터: " + vo);
+		// log.info("수정데이터: " + vo);
 
 		userService.modify(vo);
 
@@ -455,7 +458,7 @@ public class UserController {
 		String msg = "";
 		String url = "";
 
-		log.info("정보: " + vo);
+		// log.info("정보: " + vo);
 
 		if (vo != null) {
 			// 아이디가 존재하는 경우
@@ -481,7 +484,7 @@ public class UserController {
 
 	// 회원 리뷰 목록 페이지
 	@GetMapping("/myreviewlist")
-	public void myReviewList(Criteria cri, HttpSession session, Model model) {
+	public void myReviewList(Criteria cri, HttpSession session, Model model) throws Exception{
 		// 로그인 세션 아이디 확인
 		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 
@@ -502,7 +505,7 @@ public class UserController {
 
 	// 회원 QnA 목록 페이지
 	@GetMapping("/myqnalist")
-	public void myQnaList(Criteria cri, HttpSession session, Model model) {
+	public void myQnaList(Criteria cri, HttpSession session, Model model) throws Exception {
 
 		// 로그인 세션 아이디 확인
 		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
@@ -512,7 +515,7 @@ public class UserController {
 		// 나의 QnA 목록
 		List<MyQnaVO> myQnaList = qnaService.myQnaList(usr_id, cri);
 
-		log.info("목록 " + myQnaList);
+		// log.info("목록 " + myQnaList);
 
 		// 나의 QnA 개수
 		int totalCount = qnaService.getTotalCount(usr_id, cri);
@@ -526,9 +529,9 @@ public class UserController {
 	@GetMapping("/imagedisplay")
 	public ResponseEntity<byte[]> imageDisplay(String dateFolderName, String fileName) throws Exception {
 
-//			log.info("이미지 업로드 경로 : " + uploadPath);
-//			log.info("이미지 업로드 경로 : " + dateFolderName);
-//			log.info("이미지 업로드 경로 : " + fileName );
+		// log.info("이미지 업로드 경로 : " + uploadPath);
+		// log.info("이미지 업로드 경로 : " + dateFolderName);
+		// log.info("이미지 업로드 경로 : " + fileName );
 
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}

@@ -4,8 +4,9 @@
 
 	<!-- 회원가입 -->
 	<insert id="sign" parameterType="UserVO">
-	
-		INSERT INTO usr_table (
+
+		INSERT INTO usr_table 
+		(
 			usr_id,
 			usr_name,
 			usr_email,
@@ -16,8 +17,9 @@
 			usr_phone,
 			usr_receive,
 			usr_sns_type
-		) 
-		VALUES (
+		)
+		VALUES 
+		(
 			#{usr_id},
 			#{usr_name},
 			#{usr_email},
@@ -29,7 +31,7 @@
 			#{usr_receive},
 			#{usr_sns_type}
 		)
-		
+
 	</insert>
 
 
@@ -47,7 +49,7 @@
 
 	<!-- 로그인 -->
 	<select id="login" resultType="UserVO" parameterType="String">
-	
+
 		SELECT
 			usr_id,
 			usr_name,
@@ -69,34 +71,45 @@
 			usr_id = #{usr_id}
 
 	</select>
+	
+	<!-- 최근 로그인 -->
+	<update id="lastLogin" parameterType="String">
+	
+		UPDATE
+			usr_table
+		SET
+			usr_lastlogin = sysdate
+		WHERE
+			usr_id = #{usr_id}
+			
+	</update>		
+	
 
 	<!-- SNS 로그인 -->
-	<select id="snsLogin" resultType="UserVO"
-		parameterType="String">
+	<select id="snsLogin" resultType="UserVO" parameterType="String">
 
 		SELECT
-		usr_id,
-		usr_name,
-		usr_email,
-		usr_password,
-		usr_zipcode,
-		usr_addr,
-		usr_deaddr,
-		usr_phone,
-		usr_nick,
-		usr_receive,
-		usr_point,
-		usr_sns_type,
-		usr_lastlogin,
-		usr_datesub,
-		usr_updatedate
+			usr_id,
+			usr_name,
+			usr_email,
+			usr_password,
+			usr_zipcode,
+			usr_addr,
+			usr_deaddr,
+			usr_phone,
+			usr_nick,
+			usr_receive,
+			usr_point,
+			usr_sns_type,
+			usr_lastlogin,
+			usr_datesub,
+			usr_updatedate
 		FROM
-		usr_table
+			usr_table
 		WHERE
-		usr_email = #{snsEmail}
+			usr_email = #{snsEmail}
 
 	</select>
-
 
 	<!-- 아이디 찾기 -->
 	<select id="idFind" resultType="String">
@@ -118,7 +131,7 @@
 		SELECT
 			usr_email
 		FROM
-		usr_table
+			usr_table
 		WHERE
 			usr_id = #{usr_id}
 		AND
@@ -130,19 +143,19 @@
 
 	<!-- 임시 비밀번호 생성 후 DB 수정 -->
 	<update id="tempPwUpdate" parameterType="map">
-	
+
 		UPDATE
 			usr_table
 		SET
 			usr_password = #{temp_enc_pw}
 		WHERE
 			usr_id = #{usr_id}
-		
+
 	</update>
 
 	<!-- 회원정보 수정 -->
-	<update id="modify" parameterType="UserVO">
-	
+	<update id="userModify" parameterType="UserVO">
+
 		UPDATE
 			usr_table
 		SET
@@ -167,7 +180,7 @@
 			usr_id = #{usr_id}
 
 	</update>
-	
+
 	<!-- 회원 탈퇴 -->
 	<delete id="delete" parameterType="String">
 
@@ -177,47 +190,47 @@
 			usr_id = #{usr_id}
 
 	</delete>
-	
+
 	<!-- SNS 유저 회원가입 확인 -->
 	<select id="existUserInfo" resultType="String">
-	
+
 		SELECT
 			usr_sns_type
 		FROM
 			usr_table
-		WHERE 
+		WHERE
 			usr_email = #{sns_email}
-	
+
 	</select>
-	
-	<!-- SNS 카카오, 네이버 사용자 중복체크 --> 
+
+	<!-- SNS 카카오, 네이버 사용자 중복체크 -->
 	<select id="snsUserCheck" resultType="String">
-	
+
 		SELECT
 			email
 		FROM
 			sns_user_table
 		WHERE
 			email = #{sns_email}
-			
+
 	</select>
-	
+
 	<!-- SNS 유저 정보 DB 저장 -->
 	<insert id="snsUserInsert" parameterType="SNSUserDto">
-	
+
 		INSERT INTO
-			sns_user_table(
-				id, 
-				email, 
-				sns_type
-			)
-		VALUES (
-			#{id}, 
-			#{email}, 
+			sns_user_table
+		(
+			id,
+			email,
+			sns_type
+		)
+		VALUES 
+		(
+			#{id},
+			#{email},
 			#{sns_type}
-		)	
+		)
 	</insert>
-
-
 
 </mapper>

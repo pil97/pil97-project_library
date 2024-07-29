@@ -34,11 +34,10 @@ public class BookController {
 
 	// 도서 리스트
 	@GetMapping("/booklist")
-	public void bookList(@ModelAttribute("c_code") int c_code, @ModelAttribute("c_name") String c_name, Criteria cri,
-			Model model) throws Exception {
-		log.info("책 리스트");
-		log.info("2차 카테고리 코드 : " + c_code);
-		log.info("2차 카테고리 이름 : " + c_name);
+	public void bookList(@ModelAttribute("c_code") int c_code, @ModelAttribute("c_name") String c_name, Criteria cri, Model model) throws Exception {
+		// log.info("책 리스트");
+		// log.info("2차 카테고리 코드 : " + c_code);
+		// log.info("2차 카테고리 이름 : " + c_name);
 
 		cri.setAmount(9);
 
@@ -54,9 +53,9 @@ public class BookController {
 	@GetMapping("/imagedisplay")
 	public ResponseEntity<byte[]> imageDisplay(String dateFolderName, String fileName) throws Exception {
 
-//			log.info("이미지 업로드 경로 : " + uploadPath);
-//			log.info("이미지 업로드 경로 : " + dateFolderName);
-//			log.info("이미지 업로드 경로 : " + fileName );
+		// log.info("이미지 업로드 경로 : " + uploadPath);
+		// log.info("이미지 업로드 경로 : " + dateFolderName);
+		// log.info("이미지 업로드 경로 : " + fileName );
 
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}
@@ -68,7 +67,7 @@ public class BookController {
 		// db 연동
 		BookVO vo = bookService.bookInfo(book_bno);
 
-		model.addAttribute("bookVO", vo);
+		model.addAttribute("BookVO", vo);
 	}
 
 	// 도서 상세페이지
@@ -79,7 +78,7 @@ public class BookController {
 		BookVO vo = bookService.bookInfo(book_bno);
 		
 
-		model.addAttribute("bookVO", vo);
+		model.addAttribute("BookVO", vo);
 
 	}
 

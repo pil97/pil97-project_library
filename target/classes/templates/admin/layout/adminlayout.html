@@ -3,25 +3,19 @@
   <head th:insert="~{admin/layout/comm/plugin1}"></head>
 
   <!-- 각 페이지의 title -->
-  <th:block layout:fragment="title">
-  
-  </th:block>
-  
+  <th:block layout:fragment="title"> </th:block>
+
   <!-- 각 페이지의 css -->
-  <th:block layout:fragment="css">
-  
-  </th:block>
+  <th:block layout:fragment="css"> </th:block>
 
   <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
       <header th:replace="~{admin/layout/comm/header}"></header>
       <aside th:replace="~{admin/layout/comm/nav}"></aside>
-      
-        <!-- 각각의 페이지에서 구현하고자 하는 컨텐츠를 작성 -->
-      <th:block layout:fragment="content">
-      
-      </th:block>
-      
+
+      <!-- 각각의 페이지에서 구현하고자 하는 컨텐츠를 작성 -->
+      <th:block layout:fragment="content"> </th:block>
+
       <footer th:replace="~{admin/layout/comm/footer}"></footer>
       <aside th:replace="~{admin/layout/comm/aside}"></aside>
     </div>
@@ -29,8 +23,6 @@
     <th:block th:replace="~{admin/layout/comm/plugin2}"></th:block>
 
     <!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
-    <th:block layout:fragment="script"> 
-    
-    </th:block>
+    <th:block layout:fragment="script"> </th:block>
   </body>
 </html>

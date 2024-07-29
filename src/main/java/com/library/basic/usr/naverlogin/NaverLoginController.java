@@ -40,7 +40,7 @@ public class NaverLoginController {
 	public String callback(NaverCallback callback, HttpSession session) throws JsonMappingException, Exception {
 
 		if (callback.getError() != null) {
-			log.info(callback.getError_description());
+			// log.info(callback.getError_description());
 		}
 
 		// JSON 포맷의 응답데이터
@@ -49,13 +49,13 @@ public class NaverLoginController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		NaverToken naverToken = objectMapper.readValue(responseToken, NaverToken.class);
 
-		log.info("토큰정보 : " + naverToken.toString());
+		// log.info("토큰정보 : " + naverToken.toString());
 
 		// 엑세스 토큰을 이용한 사용자 정보 받아오기
 		String responseUser = naverLoginService.getNaverUserByToken(naverToken);
 		NaverResponse naverResponse = objectMapper.readValue(responseUser, NaverResponse.class);
 
-		log.info("사용자 정보 : " + naverResponse.toString());
+		// log.info("사용자 정보 : " + naverResponse.toString());
 
 		String sns_email = naverResponse.getResponse().getEmail();
 
@@ -90,7 +90,7 @@ public class NaverLoginController {
 
 		String accessToken = (String) session.getAttribute("accessToken");
 
-		log.info("access : " + accessToken);
+		// log.info("access : " + accessToken);
 
 		if (accessToken != null && !"".equals(accessToken)) {
 			try {

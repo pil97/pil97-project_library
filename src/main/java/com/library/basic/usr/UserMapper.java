@@ -12,6 +12,9 @@ public interface UserMapper {
 
 	// 로그인
 	UserVO login(String usr_id);
+		
+	// 최근 로그인
+	void lastLogin(String usr_id);
 	
 	// 네이버 로그인
 	UserVO snsLogin(String snsEmail);

@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<html
-  lang="ko"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/baselayout}"
->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
   <th:block layout:fragment="title">
     <title>비밀번호 찾기</title>
   </th:block>
@@ -76,54 +71,54 @@
     <th:block layout:fragment="script">
       <script th:inline="javascript">
         let msg = [[${msg}]];
-              let id = [[${usr_id}]];
-              let name = [[${usr_name}]];
-              let email = [[${usr_email}]];
+        let id = [[${usr_id}]];
+        let name = [[${usr_name}]];
+        let email = [[${usr_email}]];
 
         /* 임시비밀번호 페이지로 먼저 설정한 경우 -> 로그인 페이지 이동 */
-              /* location.href = "/user/login" */
-             	if (msg == "failInput") {
-                  alert("입력정보를 확인 해주세요.");
-                  document.getElementById("usr_id").focus();
-                  document.getElementById("usr_id").value = id;
-                  document.getElementById("usr_name").value = name;
-                  document.getElementById("usr_email").value = email;
-                } else if (msg == "failAuth") {
-                  alert("인증코드를 확인 해주세요.");
-                  document.getElementById("u_authcode").focus();
-                  document.getElementById("usr_id").value = id;
-                  document.getElementById("usr_name").value = name;
-                  document.getElementById("usr_email").value = email;
+        /* location.href = "/user/login" */
+        if (msg == "failInput") {
+          alert("입력정보를 확인 해주세요.");
+          document.getElementById("usr_id").focus();
+          document.getElementById("usr_id").value = id;
+          document.getElementById("usr_name").value = name;
+          document.getElementById("usr_email").value = email;
+        } else if (msg == "failAuth") {
+          alert("인증코드를 확인 해주세요.");
+          document.getElementById("u_authcode").focus();
+          document.getElementById("usr_id").value = id;
+          document.getElementById("usr_name").value = name;
+          document.getElementById("usr_email").value = email;
+        }
+
+        $(document).ready(function () {
+          // 메일 인증 버튼
+          $("#btnMailAuthCode").on("click", function () {
+            // 메일 입력 값 확인
+            if ($("#usr_email").val() == "") {
+              alert("메일을 입력하세요.");
+              $("#usr_email").focus();
+              return;
+            }
+
+            $.ajax({
+              url: "/email/authcode",
+              type: "get",
+              data: {
+                receiverMail: $("#usr_email").val(),
+                type: "emailPw", // 타임리프 파일명
+              },
+              dataType: "text",
+              success: function (result) {
+                if (result == "success") {
+                  alert("메일로 인증코드가 발급되었습니다.");
                 }
+              },
+            });
+          });
 
-                $(document).ready(function () {
-                  // 메일 인증 버튼
-                  $("#btnMailAuthCode").on("click", function () {
-                    // 메일 입력 값 확인
-                    if ($("#usr_email").val() == "") {
-                      alert("메일을 입력하세요.");
-                      $("#usr_email").focus();
-                      return;
-                    }
-
-                    $.ajax({
-                      url: "/email/authcode",
-                      type: "get",
-                      data: {
-                        receiverMail: $("#usr_email").val(),
-                        type: "emailPw", // 타임리프 파일명
-                      },
-                      dataType: "text",
-                      success: function (result) {
-                        if (result == "success") {
-                          alert("메일로 인증코드가 발급되었습니다.");
-                        }
-                      },
-                    });
-                  });
-
-                  // ready event end
-                });
+          // ready event end
+        });
       </script>
     </th:block>
   </body>

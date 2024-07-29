@@ -40,124 +40,119 @@
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- inner join 사용시 조건절은 내부 쿼리에 넣어서 해야함 -> 1. 성능 이슈 2. 값이 이상하게 나옴 -->
 	<!-- 관리자 - QnA 목록 -->
-	<select id="adminQnaList" resultType="MyQnaVO"
-		parameterType="map">
+	<select id="adminQnaList" resultType="MyQnaVO" parameterType="map">
 		SELECT
-		qna_code,
-		usr_id,
-		book_bno,
-		qna_type,
-		qna_password,
-		qna_title,
-		qna_content,
-		qna_check,
-		qna_answer,
-		qna_update,
-		qna_date,
-		qna_answer_date,
-		book_name,
-		book_up_folder,
-		book_img
+			qna_code,
+			usr_id,
+			book_bno,
+			qna_type,
+			qna_password,
+			qna_title,
+			qna_content,
+			qna_check,
+			qna_answer,
+			qna_update,
+			qna_date,
+			qna_answer_date,
+			book_name,
+			book_up_folder,
+			book_img
 		FROM
 		(
-		SELECT /*+ USE_NL(qna book)
-		INDEX_DESC(qna PK_QNA_CODE) INDEX_DESC(book PK_BOOK_BNO) */
-		ROWNUM rn,
-		qna.qna_code,
-		qna.usr_id,
-		qna.book_bno,
-		qna.qna_type,
-		qna.qna_password,
-		qna.qna_title,
-		qna.qna_content,
-		qna.qna_check,
-		qna.qna_answer,
-		qna.qna_update,
-		qna.qna_date,
-		qna.qna_answer_date,
-		book.book_name,
-		book.book_up_folder,
-		book.book_img
+		SELECT /*+ USE_NL(q b) INDEX_DESC(q PK_QNA_CODE) INDEX_DESC(b PK_BOOK_BNO) */
+			ROWNUM rn,
+			q.qna_code,
+			q.usr_id,
+			q.book_bno,
+			q.qna_type,
+			q.qna_password,
+			q.qna_title,
+			q.qna_content,
+			q.qna_check,
+			q.qna_answer,
+			q.qna_update,
+			q.qna_date,
+			q.qna_answer_date,
+			b.book_name,
+			b.book_up_folder,
+			b.book_img
 		FROM
-		qna_table qna
+			qna_table q
 		INNER JOIN
-		book_table book ON qna.book_bno = book.book_bno
+			book_table b 
+		ON 
+			q.book_bno = b.book_bno
 		AND
-		<include refid="criteria"></include>
-		<include refid="period"></include>
+			<include refid="criteria"></include>
+			<include refid="period"></include>
             <![CDATA[
                 ROWNUM <= (#{cri.pageNum} * #{cri.amount}) -- 페이지번호 * 페이지별 출력건수
             ]]>
-
 		)
-
 		WHERE
-		RN > (#{cri.pageNum} - 1) * #{cri.amount}
+			RN > (#{cri.pageNum} - 1) * #{cri.amount}
+			
 	</select>
-
 
 	<!-- 공통사항 : 검색조건추가 -->
 	<!-- 관리자 - QnA 개수 -->
 	<select id="getTotalCount" resultType="int" parameterType="map">
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		qna_table
+			qna_table
 		WHERE
-		<include refid="criteria"></include>
-		<include refid="period"></include>
-		qna_code > 0
+			<include refid="criteria"></include>
+			<include refid="period"></include>
+			qna_code > 0
 	</select>
 
 	<!-- 관리자 - QnA 상세 정보 -->
-	<select id="adminQnaDetailInfo" resultType="MyQnaVO"
-		parameterType="Long">
+	<select id="adminQnaDetailInfo" resultType="MyQnaVO" parameterType="Long">
+	
 		SELECT
-		q.qna_code,
-		q.usr_id,
-		q.book_bno,
-		q.qna_type,
-		q.qna_password,
-		q.qna_title,
-		q.qna_content,
-		q.qna_check,
-		q.qna_answer,
-		q.qna_update,
-		q.qna_date,
-		q.qna_answer_date,
-		b.book_name,
-		b.book_up_folder,
-		b.book_img
+			q.qna_code,
+			q.usr_id,
+			q.book_bno,
+			q.qna_type,
+			q.qna_password,
+			q.qna_title,
+			q.qna_content,
+			q.qna_check,
+			q.qna_answer,
+			q.qna_update,
+			q.qna_date,
+			q.qna_answer_date,
+			b.book_name,
+			b.book_up_folder,
+			b.book_img
 		FROM
-		qna_table q
+			qna_table q
 		INNER JOIN
-		book_table b ON
-		q.book_bno = b.book_bno
+			book_table b ON
+			q.book_bno = b.book_bno
 		WHERE
-		q.qna_code = #{qna_code}
+			q.qna_code = #{qna_code}
 	</select>
 
 	<!-- 도서 QnA 답변 등록 -->
 	<update id="qnaAnswerSave" parameterType="map">
 		UPDATE
-		qna_table
+			qna_table
 		SET
-		qna_check = 'Y',
-		qna_answer = #{qna_answer}
+			qna_check = 'Y',
+			qna_answer = #{qna_answer}
 		WHERE
-		qna_code = #{qna_code}
+			qna_code = #{qna_code}
 
 	</update>
 
 	<!-- 도서 QnA 삭제 -->
 	<delete id="qnaDelete" parameterType="String">
-	DELETE FROM
-	qna_table
-	WHERE
-	qna_code = #{qna_code}
+		DELETE FROM
+			qna_table
+		WHERE
+			qna_code = #{qna_code}
 	</delete>
-
-
-
 
 </mapper>

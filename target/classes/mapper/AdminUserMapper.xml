@@ -1,3 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.library.basic.admin.user.AdminUserMapper"></mapper>
+<mapper namespace="com.library.basic.admin.user.AdminUserMapper">
+
+	    <!-- 검색종류가 (아이디 또는 이름 또는 주소) 선택. "I" "N" "A" -->
+    <sql id="criteria">
+        <trim prefix="(" suffix=")" prefixOverrides="OR">
+            <foreach collection="cri.typeArr" item="type">
+                <trim prefix="OR">
+                    <choose>
+                        <when test="type == 'I'.toString()">
+                            u.usr_id LIKE '%' || #{cri.keyword} || '%'
+                        </when>
+                        <when test="type == 'N'.toString()">
+                            u.usr_name LIKE '%' || #{cri.keyword} || '%'
+                        </when>
+                        <when test="type == 'A'.toString()">
+                            u.usr_addr LIKE '%' || #{cri.keyword} || '%'
+                        </when>
+                    </choose>
+                </trim>
+            </foreach>
+        </trim>
+    </sql>
+
+    <!-- 날짜검색 -->
+    <sql id="period">
+        <if test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
+            <![CDATA[
+                AND u.usr_datesub >= to_date(#{startDate}, 'YYYY-MM-DD')
+                AND u.usr_datesub < to_date(#{endDate}, 'YYYY-MM-DD') + 1
+            ]]>
+        </if>
+    </sql>
+
+    <!-- 공통사항 : 검색조건추가 -->
+    <!-- 관리자 - 회원 목록 -->
+    <select id="adminUserList" resultType="hashmap" parameterType="map">
+        SELECT
+            u.usr_id,
+            u.usr_name,
+            u.usr_email,
+            u.usr_password,
+            u.usr_zipcode,
+            u.usr_addr,
+            u.usr_deaddr,
+            u.usr_phone,
+            u.usr_receive,
+            u.usr_sns_type,
+            u.usr_lastlogin,
+            u.usr_datesub,
+            u.usr_updatedate,
+            COALESCE(SUM(o.ord_price), 0) AS total_order_price
+        FROM
+            usr_table u
+        LEFT JOIN
+            order_table o
+        ON
+            u.usr_id = o.usr_id
+        <where>
+            <trim prefixOverrides="AND | OR">
+                <include refid="criteria"/>
+                <include refid="period"/>
+            </trim>
+  
+        </where>
+        GROUP BY
+            u.usr_id, u.usr_name, u.usr_email, u.usr_password, u.usr_zipcode,
+            u.usr_addr, u.usr_deaddr, u.usr_phone, u.usr_receive,
+            u.usr_sns_type, u.usr_lastlogin, u.usr_datesub, u.usr_updatedate
+        ORDER BY
+            u.usr_id
+    </select>
+
+    <!-- 공통사항 : 검색조건추가 -->
+    <!-- 관리자 - 회원 목록 개수 -->
+      <select id="adminUserListgetTotalCount" resultType="int" parameterType="map">
+        SELECT
+            COUNT(*)
+        FROM
+            usr_table u
+        <where>
+            <trim prefixOverrides="AND | OR">
+                <include refid="criteria"/>
+                <include refid="period"/>
+            </trim>
+        </where>
+    </select>
+    
+    	<!-- 관리자 - 회원 상세 정보 -->
+	<select id="adminUserDetailInfo" resultType="UserVO" parameterType="String">
+	
+		SELECT
+		  	usr_id,
+            usr_name,
+            usr_email,
+            usr_password,
+            usr_zipcode,
+            usr_addr,
+            usr_deaddr,
+            usr_phone,
+            usr_receive,
+            usr_sns_type,
+            usr_lastlogin,
+            usr_datesub,
+            usr_updatedate
+		FROM
+			usr_table
+		WHERE
+			usr_id = #{usr_id}
+			
+	</select>
+	
+		<!-- 관리자 - 회원 상세 정보 수정 -->
+	<update id="userModify" parameterType="UserVO">
+	
+	    UPDATE 
+	    usr_table
+    	SET 
+    	usr_name = #{usr_name},
+        usr_email = #{usr_email},
+        usr_phone = #{usr_phone},
+        usr_zipcode = #{usr_zipcode},
+        usr_addr = #{usr_addr},
+        usr_deaddr = #{usr_deaddr},
+        usr_updatedate = sysdate
+    	WHERE 
+    	usr_id = #{usr_id}
+
+	</update>
+
+	<!-- 관리자 - 회원 아이디 삭제 -->
+	<delete id="userDelete" parameterType="String">
+	
+		DELETE FROM
+			usr_table
+		WHERE
+			usr_id = #{usr_id}
+			
+	</delete>
+
+</mapper>
