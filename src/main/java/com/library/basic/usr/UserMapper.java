@@ -1,6 +1,11 @@
 package com.library.basic.usr;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
+
+import com.library.basic.common.dto.Criteria;
+import com.library.basic.usr.order.OrderVO;
 
 public interface UserMapper {
 
@@ -39,12 +44,12 @@ public interface UserMapper {
 	void delete(String usr_id);
 
 	// SNS 유저 회원가입 확인
-	String existUserInfo(String sns_email);
+	String existUserInfo(String sns_email);	 
 
 	// SNS 유저 중복 체크
-	String snsUserCheck(String sns_email);
+	// String snsUserCheck(String sns_email);
 
 	// SNS 유저 정보 DB 저장
-	void snsUserInsert(SNSUserDto dto);
+	// void snsUserInsert(SNSUserDto dto);
 
 }

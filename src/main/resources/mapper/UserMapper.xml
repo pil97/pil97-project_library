@@ -97,7 +97,6 @@
 			usr_addr,
 			usr_deaddr,
 			usr_phone,
-			usr_nick,
 			usr_receive,
 			usr_point,
 			usr_sns_type,
@@ -204,7 +203,7 @@
 	</select>
 
 	<!-- SNS 카카오, 네이버 사용자 중복체크 -->
-	<select id="snsUserCheck" resultType="String">
+<!-- 	<select id="snsUserCheck" resultType="String">
 
 		SELECT
 			email
@@ -213,10 +212,10 @@
 		WHERE
 			email = #{sns_email}
 
-	</select>
+	</select> -->
 
 	<!-- SNS 유저 정보 DB 저장 -->
-	<insert id="snsUserInsert" parameterType="SNSUserDto">
+<!-- 	<insert id="snsUserInsert" parameterType="SNSUserDto">
 
 		INSERT INTO
 			sns_user_table
@@ -231,6 +230,6 @@
 			#{email},
 			#{sns_type}
 		)
-	</insert>
+	</insert> -->
 
 </mapper>

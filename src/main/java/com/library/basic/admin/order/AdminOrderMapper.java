@@ -32,5 +32,14 @@ public interface AdminOrderMapper {
 	
 	// 주문상세 내역 주문자 정보 수정
 	void orderDetailModify(OrderVO vo);
+	
+	// 해당 주문상품 삭제 - 1. 주문상세테이블 db 삭제
+	void orderDetailInfoDelete(Long ord_code);
+
+	// 해당 주문상품 삭제 - 2. 주문테이블 db 삭제
+	void orderInfoDelete(Long ord_code);
+	
+	// 해당 주문상품 삭제 - 3. 결제테이블 db 삭제
+	void paymentInfoDelete(Long ord_code);
 
 }

@@ -90,8 +90,8 @@ public class AdminOrderController {
 	@GetMapping("/orderbookdelete")
 	public ResponseEntity<String> orderBookDelete(Long ord_code, int book_bno) throws Exception {
 
-		log.info("주문번호: " + ord_code);
-		log.info("책번호: " + book_bno);
+		// log.info("주문번호: " + ord_code);
+		// log.info("책번호: " + book_bno);
 		
 		
 		ResponseEntity<String> entity = null;
@@ -108,12 +108,29 @@ public class AdminOrderController {
 	@PostMapping("/orderdetailmodify")
 	public ResponseEntity<String> orderDetailModify(OrderVO vo) throws Exception {
 
-		log.info("수정정보 : " + vo);
+		// log.info("수정정보 : " + vo);
 		
 		ResponseEntity<String> entity = null;
 
 		// db연동		
 		adminOrderService.orderDetailModify(vo);
+
+		entity = new ResponseEntity<String>("success", HttpStatus.OK);
+
+		return entity;
+	}
+	
+	// 해당 주문내역 삭제
+	@GetMapping("/orderbookalldelete")
+	public ResponseEntity<String> orderBookAllDelete(Long ord_code) throws Exception {
+
+		// log.info("주문번호: " + ord_code);		
+		
+		
+		ResponseEntity<String> entity = null;
+
+		// db연동
+		 adminOrderService.orderBookAllDeleteProcess(ord_code);
 
 		entity = new ResponseEntity<String>("success", HttpStatus.OK);
 

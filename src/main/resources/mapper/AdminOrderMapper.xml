@@ -212,5 +212,32 @@
 			ord_code = #{ord_code}
 
 	</update>
+	
+		<!-- 해당 주문상품 삭제 - 1. 주문상세테이블 db 삭제 -->
+	<delete id="orderDetailInfoDelete" parameterType="Long">
+		DELETE FROM
+			order_detail_table
+		WHERE
+			ord_code = #{ord_code}
+
+	</delete>
+	
+		<!-- 해당 주문상품 삭제 - 2. 주문테이블 db 삭제 -->
+	<delete id="orderInfoDelete" parameterType="Long">
+		DELETE FROM
+			order_table
+		WHERE
+			ord_code = #{ord_code}
+
+	</delete>
+	
+		<!-- 해당 주문상품 삭제 - 3. 결제테이블 db 삭제 -->
+	<delete id="paymentInfoDelete" parameterType="Long">
+		DELETE FROM
+			payment_table
+		WHERE
+			ord_code = #{ord_code}
+
+	</delete>
 
 </mapper>

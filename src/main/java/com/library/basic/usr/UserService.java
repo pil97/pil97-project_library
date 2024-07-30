@@ -82,12 +82,12 @@ public class UserService {
 	}
 	
 	// SNS 유저 중복 체크
-	public String snsUserCheck(String sns_email) {
-		return userMapper.snsUserCheck(sns_email);
-	};
+//	public String snsUserCheck(String sns_email) {
+//		return userMapper.snsUserCheck(sns_email);
+//	};
 	
 	// SNS 유저 정보 DB 저장
-	public void snsUserInsert(SNSUserDto dto) {
-		userMapper.snsUserInsert(dto);
-	};
+//	public void snsUserInsert(SNSUserDto dto) {
+//		userMapper.snsUserInsert(dto);
+//	};
 }

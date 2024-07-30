@@ -91,10 +91,10 @@ public class KakaoLoginController {
 
 		    // SNS 회원가입 중복 체크
 		    boolean isUserExist = userService.existUserInfo(sns_email) != null;
-		    boolean isSNSUserExist = userService.snsUserCheck(sns_email) != null;
+		    // boolean isSNSUserExist = userService.snsUserCheck(sns_email) != null;
 		    
 			// SNS 회원가입 중복 체크
-		    if (!isUserExist && !isSNSUserExist) {
+		    if (!isUserExist) {
 		        // 회원가입 페이지로 리디렉션
 		        return "redirect:/user/sign";
 		    } else {

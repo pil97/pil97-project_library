@@ -97,27 +97,21 @@
                     </form>
                   </div>
 
-                  <table class="table table-bordered">
+                  <table class="table table-bordered" id="orderListTable">
                     <tbody>
                       <tr>
-                        <th><input type="checkbox" id="checkAll" /></th>
                         <th>주문코드</th>
                         <th>주문자명/아이디</th>
                         <th>가격</th>
                         <th>등록일</th>
-                        <th>수정</th>
                         <th>삭제</th>
                         <th>주문내역</th>
                       </tr>
                       <tr th:each="OrderVO : ${orderList}">
-                        <td><input type="checkbox" name="check" th:value="${OrderVO.ord_code}" /></td>
                         <td th:text="${OrderVO.ord_code}"></td>
                         <td><span>[[${OrderVO.ord_name}]]/[[${OrderVO.usr_id}]]</span></td>
                         <td><span th:text="${#numbers.formatInteger(OrderVO.ord_price, 3, 'COMMA') + '원'}"></span></td>
                         <td th:text="${#dates.format(OrderVO.ord_regdate, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                        <td>
-                          <button type="button" class="btn btn-primary" name="btnOrderEdit" th:data-ord_code="${OrderVO.ord_code}">수정</button>
-                        </td>
                         <td>
                           <button type="button" class="btn btn-danger" name="btnOrderDelete" th:data-ord_code="${OrderVO.ord_code}">삭제</button>
                         </td>
@@ -348,7 +342,7 @@
               data: { ord_code: ord_code },
               dataType: "json",
               success: (result) => {
-                console.log(result);
+                // console.log(result);
 
                 // 주문상품정보
                 printOrderBookInfo(result.orderDetailList, $("#orderBookInfo"), $("#order-book-template"));
@@ -444,6 +438,30 @@
                 }
               },
             });
+          });
+          
+          // 해당 주문내역 삭제
+          $("table#orderListTable").on("click", "button[name='btnOrderDelete']", function () {
+            if (confirm("삭제하겠습니까?")) {
+            	ord_code = $(this).data("ord_code");
+              
+              	// console.log("주문코드", ord_code);
+
+              	// return;
+              $.ajax({
+                url: "/admin/order/orderbookalldelete",
+                type: "get",
+                data: { ord_code: ord_code },
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    alert("주문도서가 삭제되었습니다.");
+                    // 화면 새로 고침
+                    location.reload();
+                  }
+                },
+              });
+            }
           });
 
           // Handlebar UI작업 : Handlebars 템플릿 이용

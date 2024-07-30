@@ -1,8 +1,12 @@
 package com.library.basic.usr.order;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.library.basic.common.dto.Criteria;
 import com.library.basic.usr.cart.CartMapper;
 import com.library.basic.usr.payment.PaymentMapper;
 import com.library.basic.usr.payment.PaymentVO;
@@ -50,6 +54,16 @@ public class OrderService {
 
 		// 4. 해당 아이디 장바구니 테이블 삭제
 		cartMapper.cartEmpty(usr_id);
+	}
+	
+	// 나의 주문내역 목록
+	public List<OrderVO> myOrderList(Criteria cri, String startDate, String endDate, String usr_id) {
+		return orderMapper.myOrderList(cri, startDate, endDate, usr_id);
+	};
+
+	// 나의 주문내역 개수
+	public int myOrderListGetTotalCount(Criteria cri, String startDate, String endDate, String usr_id) {
+		return orderMapper.myOrderListGetTotalCount(cri, startDate, endDate, usr_id);				
 	}
 
 }

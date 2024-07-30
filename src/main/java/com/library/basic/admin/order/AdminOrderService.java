@@ -55,5 +55,20 @@ public class AdminOrderService {
 	public void orderDetailModify(OrderVO vo) {
 		adminOrderMapper.orderDetailModify(vo);
 	};
+	
+	// 해당 주문내역 상제
+	@Transactional
+	public void orderBookAllDeleteProcess(Long ord_code) {
+		
+		// 1. 주문상세테이블 db 삭제
+		adminOrderMapper.orderDetailInfoDelete(ord_code);
+		
+		// 2. 주문테이블 db 삭제
+		adminOrderMapper.orderInfoDelete(ord_code);
+				
+		// 3. 결제테이블 db 삭제
+		adminOrderMapper.paymentInfoDelete(ord_code);
+		
+	}
 
 }

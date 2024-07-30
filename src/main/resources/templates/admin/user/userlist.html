@@ -74,7 +74,7 @@
 						<td th:text="${adUserList['USR_SNS_TYPE']}"></td>
                          <td th:text="${#dates.format(adUserList['USR_LASTLOGIN'], 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td th:text="${#dates.format(adUserList['USR_DATESUB'], 'yyyy-MM-dd HH:mm:ss')}"></td>
-                        <td><span th:text="${#numbers.formatInteger(adUserList['TOTAL_ORDER_PRICE'], 3, 'COMMA') + '원'}"></span></td>
+                        <td><span th:text="${#numbers.formatInteger(adUserList['TOTAL_PRICE'], 3, 'COMMA') + '원'}"></span></td>
                         <td>                                                
                           <button type="button" class="btn btn-danger" name="btnUserDetail" th:data-usr_id="${adUserList['USR_ID']}">상세보기</button>
                         </td>

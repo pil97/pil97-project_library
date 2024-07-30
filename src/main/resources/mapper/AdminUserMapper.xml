@@ -4,18 +4,18 @@
 
 	    <!-- 검색종류가 (아이디 또는 이름 또는 주소) 선택. "I" "N" "A" -->
     <sql id="criteria">
-        <trim prefix="(" suffix=")" prefixOverrides="OR">
+        <trim prefix="(" suffix=") AND" prefixOverrides="OR">
             <foreach collection="cri.typeArr" item="type">
                 <trim prefix="OR">
                     <choose>
                         <when test="type == 'I'.toString()">
-                            u.usr_id LIKE '%' || #{cri.keyword} || '%'
+                            usr_id LIKE '%' || #{cri.keyword} || '%'
                         </when>
                         <when test="type == 'N'.toString()">
-                            u.usr_name LIKE '%' || #{cri.keyword} || '%'
+                            usr_name LIKE '%' || #{cri.keyword} || '%'
                         </when>
                         <when test="type == 'A'.toString()">
-                            u.usr_addr LIKE '%' || #{cri.keyword} || '%'
+                            usr_addr LIKE '%' || #{cri.keyword} || '%'
                         </when>
                     </choose>
                 </trim>
@@ -27,50 +27,43 @@
     <sql id="period">
         <if test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
             <![CDATA[
-                AND u.usr_datesub >= to_date(#{startDate}, 'YYYY-MM-DD')
-                AND u.usr_datesub < to_date(#{endDate}, 'YYYY-MM-DD') + 1
+                usr_datesub >= to_date(#{startDate}, 'YYYY-MM-DD')
+                usr_datesub < to_date(#{endDate}, 'YYYY-MM-DD') + 1
             ]]>
         </if>
     </sql>
 
     <!-- 공통사항 : 검색조건추가 -->
     <!-- 관리자 - 회원 목록 -->
-    <select id="adminUserList" resultType="hashmap" parameterType="map">
-        SELECT
-            u.usr_id,
-            u.usr_name,
-            u.usr_email,
-            u.usr_password,
-            u.usr_zipcode,
-            u.usr_addr,
-            u.usr_deaddr,
-            u.usr_phone,
-            u.usr_receive,
-            u.usr_sns_type,
-            u.usr_lastlogin,
-            u.usr_datesub,
-            u.usr_updatedate,
-            COALESCE(SUM(o.ord_price), 0) AS total_order_price
-        FROM
-            usr_table u
-        LEFT JOIN
-            order_table o
-        ON
-            u.usr_id = o.usr_id
-        <where>
-            <trim prefixOverrides="AND | OR">
-                <include refid="criteria"/>
-                <include refid="period"/>
-            </trim>
+<select id="adminUserList" resultType="hashmap" parameterType="map">
   
-        </where>
-        GROUP BY
-            u.usr_id, u.usr_name, u.usr_email, u.usr_password, u.usr_zipcode,
-            u.usr_addr, u.usr_deaddr, u.usr_phone, u.usr_receive,
-            u.usr_sns_type, u.usr_lastlogin, u.usr_datesub, u.usr_updatedate
-        ORDER BY
-            u.usr_id
-    </select>
+  SELECT
+        usr_id,
+        usr_name,
+        usr_email,
+        usr_password,
+        usr_zipcode,
+        usr_addr,
+        usr_deaddr,
+        usr_phone,
+        usr_receive,
+        usr_sns_type,
+        usr_lastlogin,
+        usr_datesub,
+        usr_updatedate,
+        (
+            select sum (ord_price) 
+            from order_table
+            WHERE usr_id = usr_table.usr_id
+        ) as total_price
+FROM
+    usr_table
+    WHERE
+			ROWNUM > (#{cri.pageNum} - 1) * #{cri.amount}
+</select>
+
+ 
+    
 
     <!-- 공통사항 : 검색조건추가 -->
     <!-- 관리자 - 회원 목록 개수 -->

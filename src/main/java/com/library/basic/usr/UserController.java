@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -23,6 +24,8 @@ import com.library.basic.usr.kakaologin.KakaoLoginService;
 import com.library.basic.usr.kakaologin.KakaoUserInfo;
 import com.library.basic.usr.naverlogin.NaverLoginService;
 import com.library.basic.usr.naverlogin.NaverResponse;
+import com.library.basic.usr.order.OrderService;
+import com.library.basic.usr.order.OrderVO;
 import com.library.basic.usr.qna.MyQnaVO;
 import com.library.basic.usr.qna.QnaService;
 import com.library.basic.usr.review.MyReviewVO;
@@ -43,6 +46,7 @@ public class UserController {
 	private final KakaoLoginService kakaoLoginService;
 	private final ReviewService reviewService;
 	private final QnaService qnaService;
+	private final OrderService orderService;
 	private final PasswordEncoder passwordEncoder;
 	private final EmailService emailService;
 
@@ -98,23 +102,27 @@ public class UserController {
 		if (session.getAttribute("kakaoStatus") != null) {
 			vo.setUsr_sns_type("kakao");
 			// sns_table db 작업
+			/*
 			SNSUserDto dto = new SNSUserDto();
 			dto.setId(vo.getUsr_id());
 			dto.setEmail(vo.getUsr_email());
 			dto.setSns_type(vo.getUsr_sns_type());
+			*/
 			
-			userService.snsUserInsert(dto);
+			// userService.snsUserInsert(dto);
 			
 		} else if (session.getAttribute("naverStatus") != null) {
 			vo.setUsr_sns_type("naver");
 			
 			// sns_table db 작업
+			/*
 			SNSUserDto dto = new SNSUserDto();
 			dto.setId(vo.getUsr_id());
 			dto.setEmail(vo.getUsr_email());
 			dto.setSns_type(vo.getUsr_sns_type());
+			*/
 			
-			userService.snsUserInsert(dto);
+			// userService.snsUserInsert(dto);
 			
 		} else {
 			vo.setUsr_sns_type("x");
@@ -524,6 +532,26 @@ public class UserController {
 		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
 
 	}
+	
+	// 나의 주문내역
+	@GetMapping("/myorderlist")
+	public void myOrderList(Criteria cri, @ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate, Model model, HttpSession session) throws Exception {
+
+		// 로그인 세션 아이디 확인
+		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
+		
+		// 페이지당 주문내역 2개 출력
+		cri.setAmount(2);
+
+		// 주문내역 목록
+		List<OrderVO> myOrderList = orderService.myOrderList(cri, startDate, endDate, usr_id);
+
+		// 주문내역 개수
+		int totalCount = orderService.myOrderListGetTotalCount(cri, startDate, endDate, usr_id);
+
+		model.addAttribute("myOrderList", myOrderList);
+		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
+	}
 
 	// 도서 QnA 및 리뷰 목록 - 이미지 보여주기 <img src="메핑주소">
 	@GetMapping("/imagedisplay")
@@ -535,5 +563,5 @@ public class UserController {
 
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}
-
+	
 }

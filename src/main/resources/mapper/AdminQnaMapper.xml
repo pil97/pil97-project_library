@@ -90,7 +90,7 @@
             ]]>
 		)
 		WHERE
-			RN > (#{cri.pageNum} - 1) * #{cri.amount}
+			rn > (#{cri.pageNum} - 1) * #{cri.amount}
 			
 	</select>
 

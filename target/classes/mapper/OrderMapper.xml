@@ -63,5 +63,81 @@
 			c.usr_id = #{usr_id}
 
 	</insert>
+	
+		<!-- 날짜검색 -->
+	<!-- 날짜 7/19 선택시 -> 7/19 00:00:00 여기까지만 포함 -> +1 해줘야함 -->
+	<sql id="period">
+
+		<if
+			test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
+		
+			<![CDATA[  		
+		   		ord_regdate >= to_date(#{startDate}) AND ord_regdate < to_date(#{endDate}) + 1 AND	
+		 	]]>
+
+		</if>
+
+	</sql>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 주문내역 목록 -->
+	<select id="myOrderList" resultType="OrderVO" parameterType="Criteria">
+
+		SELECT
+			ord_code,
+			usr_id,
+			ord_name,
+			ord_addr_zipcode,
+			ord_addr_basic,
+			ord_addr_detail,
+			ord_tel,
+			ord_price,
+			ord_desc,
+			ord_regdate,
+			ord_admin_memo
+		FROM
+		(
+			SELECT /*+ INDEX_DESC(order_table PK_ORD_CODE) */
+				ROWNUM AS RN,
+				ord_code,
+				usr_id,
+				ord_name,
+				ord_addr_zipcode,
+				ord_addr_basic,
+				ord_addr_detail,
+				ord_tel,
+				ord_price,
+				ord_desc,
+				ord_regdate,
+				ord_admin_memo
+			FROM
+				order_table
+			WHERE
+				<include refid="period"></include>
+				 <![CDATA[  		
+				   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+				 ]]>
+				 AND usr_id = #{usr_id}
+		)
+		WHERE
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+
+
+	</select>
+
+	<!-- 공통사항 : 검색조건추가 -->
+	<!-- 주문내역 개수 -->
+	<select id="myOrderListGetTotalCount" resultType="int">
+
+		SELECT
+			COUNT(*)
+		FROM
+			order_table
+		WHERE
+			<include refid="period"></include>
+			ord_code > 0
+		AND 
+			usr_id = #{usr_id}			
+	</select>
 
 </mapper>
