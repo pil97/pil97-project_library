@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
+  <th:block layout:fragment="title">
+    <title>Mypage</title>
+  </th:block>
+
   <th:block layout:fragment="css">
+    <link href="/css/user/sign.css" rel="stylesheet" />
     <style>
       /* 별점 기본선택지 */
       p#star_rev_rate a.rev_rate {
@@ -13,109 +18,125 @@
       p#star_rev_rate a.rev_rate.on {
         color: red;
       }
-    </style>
+    </style>    
   </th:block>
-  <body>
+
+  <body class="text-center">
     <th:block layout:fragment="content">
-      <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-        <h1 class="display-8">나의 리뷰</h1>
-      </div>
+      <!-- Begin page content -->
+      <main role="main" class="flex-shrink-0">
+        <div class="container">
+          <h1 class="mt-3 mb-4 text-center">나의 리뷰</h1>
+          <div class="row">
+            <div class="col-4">
+              <section th:replace="~{user/comm/mypage_menu}"></section>
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <!--  -->
+                <div>
+                  <form th:action="@{/user/myreviewlist}" th:method="get">
+                    <select name="type" th:value="${pageMaker.cri.type}">
+                      <option value="" th:text="검색종류" th:if="${pageMaker.cri.type == null}"></option>
+                      <option value="T" th:text="제목" th:selected="${pageMaker.cri.type == 'T'}"></option>
+                    </select>
+                    <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
+                    <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                    <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+                    <button type="submit" class="btn btn-primary" th:text="검색"></button>
+                  </form>
+                </div>
 
-      <div>
-        <form th:action="@{/user/myreviewlist}" th:method="get">
-          <select name="type" th:value="${pageMaker.cri.type}">
-            <option value="" th:text="검색종류" th:if="${pageMaker.cri.type == null}"></option>
-            <option value="T" th:text="제목" th:selected="${pageMaker.cri.type == 'T'}"></option>
-          </select>
-          <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
-          <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
-          <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
-          <button type="submit" class="btn btn-primary" th:text="검색"></button>
-        </form>
-      </div>
+                <table class="table table-bordered" id="myReviewList">
+                  <tbody>
+                    <tr>
+                      <th>번호</th>
+                      <th>도서명</th>
+                      <th>제목</th>
+                      <th>등록일</th>
+                      <th>별점</th>
+                      <th>상세보기</th>
+                    </tr>
+                    <tr th:each="myReviewList : ${myReviewList}">
+                      <td th:text="${myReviewList.rev_code}"></td>
+                      <td>
+                        <a href="#">
+                          <img
+                            th:src="@{'/user/imagedisplay?dateFolderName=' + ${myReviewList.book_up_folder} + '&fileName=s_' + ${myReviewList.book_img}}"
+                            style="width: 100px; height: 100px; object-fit: contain"
+                          />
+                        </a>
+                        <div th:text="${myReviewList.book_name}"></div>
+                      </td>
+                      <td><span th:text="${myReviewList.rev_title}"></span></td>
+                      <td th:text="${#dates.format(myReviewList.rev_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                      <td>
+                        <p id="star_rev_rate" class="star-rating" th:data-rate="${myReviewList.rev_rate}">
+                          <a class="rev_rate" href="#">☆</a>
+                          <a class="rev_rate" href="#">☆</a>
+                          <a class="rev_rate" href="#">☆</a>
+                          <a class="rev_rate" href="#">☆</a>
+                          <a class="rev_rate" href="#">☆</a>
+                        </p>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-danger" name="btnReviewDetail" th:data-rev_code="${myReviewList.rev_code}">
+                          상세보기
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="box-footer clearfix">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <!--1)페이지번호 클릭할 때 사용  [이전]  1	2	3	4	5 [다음]  -->
+                      <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
+                      <form id="actionForm" action="" method="get">
+                        <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                        <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
+                        <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+                        <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                      </form>
+                    </div>
+                    <div class="col-md-6 text-center">
+                      <nav aria-label="...">
+                        <ul class="pagination">
+                          <!-- 이전 표시여부 -->
+                          <th:block th:if="${pageMaker.prev}">
+                            <li class="page-item"><a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a></li>
+                          </th:block>
+                          <!-- 페이지번호 출력 -->
+                          <!-- 1 2 3 4 5 6 7 8 9 10 [다음] -->
+                          <!-- [이전] 11 12 13 14 15 16 17 18 19 20 -->
+                          <th:block th:with="pageMaker = ${pageMaker}">
+                            <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+                              <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
+                                <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
+                              </li>
+                            </th:block>
+                          </th:block>
+                          <!-- 다음 표시여부 -->
+                          <th:block th:if="${pageMaker.next}">
+                            <li class="page-item"><a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a></li>
+                          </th:block>
+                        </ul>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col text-center">
+                    <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
+                  </div>
+                </div>
 
-      <table class="table table-bordered" id="myReviewList">
-        <tbody>
-          <tr>
-            <th>번호</th>
-            <th>도서명</th>
-            <th>제목</th>
-            <th>등록일</th>
-            <th>별점</th>
-            <th>상세보기</th>
-          </tr>
-          <tr th:each="myReviewList : ${myReviewList}">
-            <td th:text="${myReviewList.rev_code}"></td>
-            <td>
-              <a href="#">
-                <img
-                  th:src="@{'/user/imagedisplay?dateFolderName=' + ${myReviewList.book_up_folder} + '&fileName=s_' + ${myReviewList.book_img}}"
-                  style="width: 100px; height: 100px; object-fit: contain"
-                />
-              </a>
-              <div th:text="${myReviewList.book_name}"></div>
-            </td>
-            <td><span th:text="${myReviewList.rev_title}"></span></td>
-            <td th:text="${#dates.format(myReviewList.rev_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td>
-              <p id="star_rev_rate" class="star-rating" th:data-rate="${myReviewList.rev_rate}">
-                <a class="rev_rate" href="#">☆</a>
-                <a class="rev_rate" href="#">☆</a>
-                <a class="rev_rate" href="#">☆</a>
-                <a class="rev_rate" href="#">☆</a>
-                <a class="rev_rate" href="#">☆</a>
-              </p>
-            </td>
-            <td>
-              <button type="button" class="btn btn-danger" name="btnReviewDetail" th:data-rev_code="${myReviewList.rev_code}">상세보기</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="box-footer clearfix">
-        <div class="row">
-          <div class="col-md-4">
-            <!--1)페이지번호 클릭할 때 사용  [이전]  1	2	3	4	5 [다음]  -->
-            <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
-            <form id="actionForm" action="" method="get">
-              <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
-              <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
-              <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
-              <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
-            </form>
-          </div>
-          <div class="col-md-6 text-center">
-            <nav aria-label="...">
-              <ul class="pagination">
-                <!-- 이전 표시여부 -->
-                <th:block th:if="${pageMaker.prev}">
-                  <li class="page-item"><a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a></li>
-                </th:block>
-                <!-- 페이지번호 출력 -->
-                <!-- 1 2 3 4 5 6 7 8 9 10 [다음] -->
-                <!-- [이전] 11 12 13 14 15 16 17 18 19 20 -->
-                <th:block th:with="pageMaker = ${pageMaker}">
-                  <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
-                    <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
-                      <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
-                    </li>
-                  </th:block>
-                </th:block>
-                <!-- 다음 표시여부 -->
-                <th:block th:if="${pageMaker.next}">
-                  <li class="page-item"><a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a></li>
-                </th:block>
-              </ul>
-            </nav>
+                <!--  -->
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row mb-5">
-        <div class="col text-center">
-          <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
-        </div>
-      </div>
+      </main>
 
       <!-- 도서리뷰 Modal -->
       <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

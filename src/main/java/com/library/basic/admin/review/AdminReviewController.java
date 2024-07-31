@@ -49,7 +49,6 @@ public class AdminReviewController {
 
 		model.addAttribute("adReviewList", adReviewList);
 		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
-
 	}
 
 	// 도서 리뷰 목록 - 이미지 보여주기 <img src="메핑주소">

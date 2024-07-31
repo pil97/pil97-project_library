@@ -496,7 +496,7 @@ public class UserController {
 		// 로그인 세션 아이디 확인
 		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 
-		// cri.setAmount(2);
+		 cri.setAmount(2);
 
 		// 나의 QnA 목록
 		List<MyReviewVO> myReviewList = reviewService.myReviewList(usr_id, cri);
@@ -564,4 +564,18 @@ public class UserController {
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}
 	
+	// 사용자 로그인 확인
+	@GetMapping("/checklogin")
+	public ResponseEntity<String> checkLogin(HttpSession session) throws Exception {
+		
+	    UserVO userVO = (UserVO) session.getAttribute("loginStatus");
+						
+		ResponseEntity<String> entity = null;
+		
+	    if (userVO != null && userVO.getUsr_id() != null) {
+	    	entity = new ResponseEntity<String>("success", HttpStatus.OK);			
+		} 
+					
+		return entity;
+	}
 }

@@ -368,16 +368,56 @@
                   if (confirm("장바구니로 이동하시겠습니까?")) {
                     location.href = "/user/cart/cartlist";
                   }
-                }
+                }                                
+              },
+              beforeSend : function(xhr) {
+            	  xhr.setRequestHeader("AJAX", "true");
+              },
+              error : function(xhr, status, error) {
+            	  // console.log(xhr);
+        		alert("로그인이 필요합니다.");
+        		if (confirm("로그인 페이지로 이동하시겠습니까?")) {
+          			location.href = "/user/login";
+        		}
               },
             });
+          });
+          
+          // 바로구매 -> 주문내역 페이지 이동
+          $("button#btnDirectOrder").on("click", function () {
+            let book_bno = $(this).data("book_bno");
+            let cart_amount = $("#btnCartAmount").val();
+            
+            $.ajax({
+                url: "/user/checklogin",
+                type: "get",
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    let url = `/user/order/orderlist?book_bno=${book_bno}&cart_amount=${cart_amount}`;
+                 	// console.log(url);
+                    location.href = url;
+                  } 
+                },
+                beforeSend : function(xhr) {
+              	  xhr.setRequestHeader("AJAX", "true");
+                },
+                error : function(xhr, status, error) {
+              	  // console.log(xhr);
+                  alert("로그인이 필요합니다.");
+                  if (confirm("로그인 페이지로 이동하시겠습니까?")) {
+                    location.href = "/user/login";
+                  	}
+              	},
+             	 
+              });                        
           });
 
           // 도서 리뷰 및 페이징 정보 호출하는 작업
           let reviewPage = 1;
           let url = "/user/review/reviewlist/" + [[${BookVO.book_bno}]] +"/" + reviewPage;
 
-          console.log("상품후기주소 : ", url);
+          // console.log("도서후기주소 : ", url);
 
           // ajax 문법을 통한 주소요청 작업
           const getReviewList = (url) => {
@@ -709,16 +749,6 @@
                 }
               },
             });
-          });
-
-          // 바로구매 -> 주문내역 페이지 이동
-          $("button#btnDirectOrder").on("click", function () {
-            let book_bno = $(this).data("book_bno");
-            let cart_amount = $("#btnCartAmount").val();
-
-            let url = `/user/order/orderlist?book_bno=${book_bno}&cart_amount=${cart_amount}`;
-            // console.log(url);
-            location.href = url;
           });
 
           /* 도서 QnA */

@@ -59,8 +59,16 @@ $(document).ready(function () {
           } else {
             $("#orderProcessPopUp").modal("hide");
           }
-        } else if ((result = "fail")) {
-          alert("로그인을 해주세요.");
+        }
+      },
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("AJAX", "true");
+      },
+      error: function (xhr, status, error) {
+        // console.log(xhr);
+        alert("로그인이 필요합니다.");
+        if (confirm("로그인 페이지로 이동하시겠습니까?")) {
+          location.href = "/user/login";
         }
       },
     });
@@ -71,7 +79,27 @@ $(document).ready(function () {
     let book_bno = $(this).data("book_bno");
     let cart_amount = $("#btnCartAmount").val();
 
-    let url = `/user/order/orderlist?book_bno=${book_bno}&cart_amount=${cart_amount}`;
-    location.href = url;
+    $.ajax({
+      url: "/user/checklogin",
+      type: "get",
+      dataType: "text",
+      success: function (result) {
+        if (result == "success") {
+          let url = `/user/order/orderlist?book_bno=${book_bno}&cart_amount=${cart_amount}`;
+          // console.log(url);
+          location.href = url;
+        }
+      },
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("AJAX", "true");
+      },
+      error: function (xhr, status, error) {
+        // console.log(xhr);
+        alert("로그인이 필요합니다.");
+        if (confirm("로그인 페이지로 이동하시겠습니까?")) {
+          location.href = "/user/login";
+        }
+      },
+    });
   });
 }); // read event end

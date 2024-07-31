@@ -1,9 +1,47 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Kakaopay Sample</title>    
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
+
+<th:block layout:fragment="css">
+	<style>
+	
+		h2 {
+			font-size: 24px;
+			margin-top: 100px;
+			margin-bottom: 20px;
+		}
+		.orderBtn.btn {
+			display: inline-block;
+			padding: 10px 20px;
+			margin: 10px 5px;
+			font-size: 16px;
+			border-radius: 5px;
+			text-decoration: none;
+			color: #fff;
+		}
+		.orderBtn.btn-secondary {
+			background-color: #6c757d;
+		}
+		.orderBtn.btn-secondary:hover {
+			background-color: #5a6268;
+		}
+		.orderBtn.custom-btn {
+			background-color: #007bff;
+		}
+		.orderBtn.custom-btn:hover {
+			background-color: #0056b3;
+		}
+	</style>
+</th:block>
+
 <body>
-<h1>최종결과</h1>
+	<th:block layout:fragment="content">
+		<div class="container text-center">
+			<h2>주문이 완료되었습니다.</h2>
+			<a class="btn btn-secondary custom-btn orderBtn" th:href="@{/}">메인화면</a>
+			<a class="btn btn-secondary custom-btn orderBtn" th:href="@{/user/myorderlist}">주문내역</a>
+		</div>
+	</th:block>
 </body>
 </html>

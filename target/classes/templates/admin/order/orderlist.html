@@ -133,6 +133,8 @@
                         <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
                         <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
                         <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                        <input type="hidden" name="startDate" th:value="${startDate}" />
+                        <input type="hidden" name="endDate" th:value="${endDate}" />                        
                       </form>
                     </div>
                     <div class="col-md-6 text-center">
@@ -158,9 +160,6 @@
                           </th:block>
                         </ul>
                       </nav>
-                    </div>
-                    <div class="col-md-2 text-right">
-                      <a type="button" class="btn btn-primary" id="btn_book_insert" th:href="@{/admin/book/bookregister}">도서등록</a>
                     </div>
                   </div>
                 </div>

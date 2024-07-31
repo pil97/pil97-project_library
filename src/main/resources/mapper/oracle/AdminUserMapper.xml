@@ -6,7 +6,7 @@
     <sql id="criteria">
         <trim prefix="(" suffix=") AND" prefixOverrides="OR">
             <foreach collection="cri.typeArr" item="type">
-                <trim prefix="OR">
+            	<trim prefix="OR">
                     <choose>
                         <when test="type == 'I'.toString()">
                             usr_id LIKE '%' || #{cri.keyword} || '%'
@@ -18,7 +18,7 @@
                             usr_addr LIKE '%' || #{cri.keyword} || '%'
                         </when>
                     </choose>
-                </trim>
+               </trim>
             </foreach>
         </trim>
     </sql>
@@ -27,8 +27,8 @@
     <sql id="period">
         <if test="startDate != null and !startDate.equals('') and endDate != null and !endDate.equals('')">
             <![CDATA[
-                usr_datesub >= to_date(#{startDate}, 'YYYY-MM-DD')
-                usr_datesub < to_date(#{endDate}, 'YYYY-MM-DD') + 1
+                 usr_datesub >= to_date(#{startDate}, 'YYYY-MM-DD') AND
+                usr_datesub < to_date(#{endDate}, 'YYYY-MM-DD') + 1 AND
             ]]>
         </if>
     </sql>
@@ -37,7 +37,29 @@
     <!-- 관리자 - 회원 목록 -->
 <select id="adminUserList" resultType="hashmap" parameterType="map">
   
-  SELECT
+SELECT
+    u.usr_id,
+    u.usr_name,
+    u.usr_email,
+    u.usr_password,
+    u.usr_zipcode,
+    u.usr_addr,
+    u.usr_deaddr,
+    u.usr_phone,
+    u.usr_receive,
+    u.usr_sns_type,
+    u.usr_lastlogin,
+    u.usr_datesub,
+    u.usr_updatedate,
+    (
+        SELECT SUM(o.ord_price) 
+        FROM order_table o
+        WHERE o.usr_id = u.usr_id
+    ) AS total_price
+FROM
+    (
+    SELECT /*+ INDEX_DESC(usr_table PK_USR_ID) */
+        ROWNUM AS RN,
         usr_id,
         usr_name,
         usr_email,
@@ -50,16 +72,21 @@
         usr_sns_type,
         usr_lastlogin,
         usr_datesub,
-        usr_updatedate,
-        (
-            select sum (ord_price) 
-            from order_table
-            WHERE usr_id = usr_table.usr_id
-        ) as total_price
-FROM
-    usr_table
+        usr_updatedate
+    FROM
+        usr_table
     WHERE
-			ROWNUM > (#{cri.pageNum} - 1) * #{cri.amount}
+		<include refid="criteria"/>			
+	<include refid="period"/>   
+
+		<![CDATA[  		
+			ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		]]>
+     
+	 ) u
+	WHERE 
+    	u.RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+    
 </select>
 
  
@@ -72,12 +99,12 @@ FROM
             COUNT(*)
         FROM
             usr_table u
-        <where>
-            <trim prefixOverrides="AND | OR">
+        WHERE
+
                 <include refid="criteria"/>
                 <include refid="period"/>
-            </trim>
-        </where>
+                1=1
+
     </select>
     
     	<!-- 관리자 - 회원 상세 정보 -->

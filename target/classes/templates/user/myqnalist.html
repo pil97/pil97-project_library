@@ -1,99 +1,111 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/baselayout}">
-  <body>
+  <th:block layout:fragment="title">
+    <title>Mypage</title>
+  </th:block>
+
+  <th:block layout:fragment="css">
+    <link href="/css/user/sign.css" rel="stylesheet" />
+  </th:block>
+
+  <body class="text-center">
     <th:block layout:fragment="content">
+      <!-- Begin page content -->
       <main role="main" class="flex-shrink-0">
         <div class="container">
-          <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-            <h1 class="display-8">나의 QnA</h1>
-          </div>
+          <h1 class="mt-3 mb-4 text-center">나의 QnA</h1>
           <div class="row">
             <div class="col-4">
               <section th:replace="~{user/comm/mypage_menu}"></section>
             </div>
             <div class="col-8">
-              <form th:action="@{/user/myqnalist}" th:method="get">
-                <select name="type" th:value="${pageMaker.cri.type}">
-                  <option value="" th:text="검색종류" th:if="${pageMaker.cri.type == null}"></option>
-                  <option value="T" th:text="문의종류" th:selected="${pageMaker.cri.type == 'T'}"></option>
-                  <option value="N" th:text="제목" th:selected="${pageMaker.cri.type == 'C'}"></option>
-                </select>
-                <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
-                <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
-                <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
-                <button type="submit" class="btn btn-primary" th:text="검색"></button>
-              </form>
-              <table class="table table-bordered" id="myQnaList">
-                <tbody>
-                  <tr>
-                    <th>번호</th>
-                    <th>문의종류</th>
-                    <th>도서명</th>
-                    <th>제목</th>
-                    <th>등록일</th>
-                    <th>답변여부</th>
-                    <th>상세보기</th>
-                  </tr>
-                  <tr th:each="myQnaList : ${myQnaList}">
-                    <td th:text="${myQnaList.qna_code}"></td>
-                    <td><span th:text="${myQnaList.qna_type}"></span></td>
-                    <td>
-                      <a href="#">
-                        <img
-                          th:src="@{'/user/imagedisplay?dateFolderName=' + ${myQnaList.book_up_folder} + '&fileName=s_' + ${myQnaList.book_img}}"
-                          style="width: 100px; height: 100px; object-fit: contain"
-                        />
-                      </a>
-                      <div th:text="${myQnaList.book_name}"></div>
-                    </td>
-                    <td><span th:text="${myQnaList.qna_title}"></span></td>
-                    <td th:text="${#dates.format(myQnaList.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                    <td><span th:text="${myQnaList.qna_check}"></span></td>
-                    <td>
-                      <button type="button" class="btn btn-danger" name="btnQnaDetail" th:data-qna_code="${myQnaList.qna_code}">상세보기</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="box-footer clearfix">
-                <div class="row">
-                  <div class="col-md-4">
-                    <form id="actionForm" action="" method="get">
-                      <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
-                      <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
-                      <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
-                      <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
-                    </form>
-                  </div>
-                  <div class="col-md-6 text-center">
-                    <nav aria-label="...">
-                      <ul class="pagination">
-                        <th:block th:if="${pageMaker.prev}">
-                          <li class="page-item"><a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a></li>
-                        </th:block>
-                        <th:block th:with="pageMaker = ${pageMaker}">
-                          <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
-                            <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
-                              <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
-                            </li>
+              <div class="card-body">
+                <!--  -->
+                <form th:action="@{/user/myqnalist}" th:method="get">
+                  <select name="type" th:value="${pageMaker.cri.type}">
+                    <option value="" th:text="검색종류" th:if="${pageMaker.cri.type == null}"></option>
+                    <option value="T" th:text="문의종류" th:selected="${pageMaker.cri.type == 'T'}"></option>
+                    <option value="N" th:text="제목" th:selected="${pageMaker.cri.type == 'C'}"></option>
+                  </select>
+                  <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
+                  <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                  <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+                  <button type="submit" class="btn btn-primary" th:text="검색"></button>
+                </form>
+                <table class="table table-bordered" id="myQnaList">
+                  <tbody>
+                    <tr>
+                      <th>번호</th>
+                      <th>문의종류</th>
+                      <th>도서명</th>
+                      <th>제목</th>
+                      <th>등록일</th>
+                      <th>답변여부</th>
+                      <th>상세보기</th>
+                    </tr>
+                    <tr th:each="myQnaList : ${myQnaList}">
+                      <td th:text="${myQnaList.qna_code}"></td>
+                      <td><span th:text="${myQnaList.qna_type}"></span></td>
+                      <td>
+                        <a href="#">
+                          <img
+                            th:src="@{'/user/imagedisplay?dateFolderName=' + ${myQnaList.book_up_folder} + '&fileName=s_' + ${myQnaList.book_img}}"
+                            style="width: 100px; height: 100px; object-fit: contain"
+                          />
+                        </a>
+                        <div th:text="${myQnaList.book_name}"></div>
+                      </td>
+                      <td><span th:text="${myQnaList.qna_title}"></span></td>
+                      <td th:text="${#dates.format(myQnaList.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                      <td><span th:text="${myQnaList.qna_check}"></span></td>
+                      <td>
+                        <button type="button" class="btn btn-danger" name="btnQnaDetail" th:data-qna_code="${myQnaList.qna_code}">상세보기</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="box-footer clearfix">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <form id="actionForm" action="" method="get">
+                        <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                        <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
+                        <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+                        <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                      </form>
+                    </div>
+                    <div class="col-md-6 text-center">
+                      <nav aria-label="...">
+                        <ul class="pagination">
+                          <th:block th:if="${pageMaker.prev}">
+                            <li class="page-item"><a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a></li>
                           </th:block>
-                        </th:block>
-                        <th:block th:if="${pageMaker.next}">
-                          <li class="page-item"><a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a></li>
-                        </th:block>
-                      </ul>
-                    </nav>
-                  </div>
-                  <div class="row mb-5">
-                    <div class="col text-center">
-                      <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
+                          <th:block th:with="pageMaker = ${pageMaker}">
+                            <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+                              <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
+                                <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
+                              </li>
+                            </th:block>
+                          </th:block>
+                          <th:block th:if="${pageMaker.next}">
+                            <li class="page-item"><a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a></li>
+                          </th:block>
+                        </ul>
+                      </nav>
+                    </div>
+                    <div class="row mb-5">
+                      <div class="col text-center">
+                        <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                <!--  -->
               </div>
             </div>
           </div>
-          <!-- End of .row -->
         </div>
       </main>
 
@@ -268,6 +280,6 @@
           });
         }); // read event end
       </script>
-    </th:block>
+   </th:block>
   </body>
 </html>
