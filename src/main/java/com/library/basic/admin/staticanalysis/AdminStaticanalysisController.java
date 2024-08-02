@@ -56,6 +56,40 @@ public class AdminStaticanalysisController {
 
 	}
 	
+	// 현재 날짜 및 연도, 월 정보
+	@GetMapping("/orderstatus2")
+	public void getOrderStatus2(Model model) {
+				
+		// 현재 날짜 
+		LocalDate now = LocalDate.now();
+		
+		log.info("현재 날짜 : " + now);
+		
+		// 현재 연도
+		int year = now.getYear();
+		
+		// 현재 월
+		int month = now.getMonthValue();
+
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+
+	}
+	
+	// 2차 카테고리 월별 매출현황
+	@GetMapping("/monthlysalesstatusbysubcategory")
+	@ResponseBody
+	public List<Map<String, Object>> getMonthlySalesStatusBySubCategory(int year, int month) {
+
+		String ord_date = String.format("%s/%s", year, (month < 10 ? "0" + String.valueOf(month) : month));
+
+		List<Map<String, Object>> listObjMap = adminStaticanalysisService.monthlySalesStatusBySubCategory(ord_date);
+		
+		log.info("값: " + listObjMap); 
+
+		return listObjMap;
+
+	}
 	
 
 }

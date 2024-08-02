@@ -38,4 +38,40 @@
         c.c_name
 </select>
 
+	<!-- 2차 카테고리 월별 매출현황 -->
+	<select id="monthlySalesStatusBySubCategory" resultType="hashmap" parameterType="String">
+    select 
+        c.c_name primary_cd, 
+        sum(d.dt_amount * d.dt_price) sales_p
+    from 
+        book_table b 
+    inner join 
+        order_detail_table d
+    on 
+        b.book_bno = d.book_bno
+    inner join 
+        (
+            select 
+                c2.c_name, c1.c_code 
+            from 
+                category_table c1 
+            inner join 
+                category_table c2 
+            on 
+                c1.c_pcode = c2.c_pcode 
+        ) c
+    on 
+        b.c_code = c.c_code
+    inner join 
+        order_table o
+    on 
+        o.ord_code = d.ord_code
+    where 
+        TO_CHAR(o.ord_regdate, 'YYYY/MM') = #{ord_date}
+    group by 
+        c.c_name, TO_CHAR(o.ord_regdate, 'YYYY/MM')
+    order by 
+        c.c_name
+</select>
+
 </mapper>
