@@ -19,7 +19,9 @@ public class AdminMvcConfig implements WebMvcConfigurer{
 	private static final String[] EXCULDE_PATHS = {
 			"/admin/",
 			"/admin/adminok",
-			"/admin/category/secondcategory/*"
+			"/admin/category/secondcategory/*",
+			"/admin/order/orderdetailinfo",
+			"/admin/order/imagedisplay"
 			
 	};
 	

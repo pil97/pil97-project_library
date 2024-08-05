@@ -17,4 +17,7 @@ public interface BookMapper {
 	
 	// 도서정보 - 모달창 및 도서 상세페이지
 	BookVO bookInfo(int book_bno);
+	
+	// 도서 테이블 수량 감소
+	void bookQuantityDecrease(@Param("book_bno") int book_bno, @Param("book_amount")int book_amount);
 }

@@ -103,6 +103,11 @@
         </div>
 
         <form class="form-horizontal" id="orderForm" action="/user/order/ordernobank" method="post">
+          <div th:each="cartList : ${cartList}">
+            <input type="hidden" name="book_bno" th:value="${cartList.book_bno}" />
+            <input type="hidden" name="book_amount" th:value="${cartList.cart_amount}" />
+          </div>
+
           <div class="card-body">
             <div class="form-group form-check">
               <input type="checkbox" class="form-check-input" id="orderSame" />
@@ -258,70 +263,84 @@
           // 주문결제 btnOrderPayment
           $("button#btnOrderPayment").on("click", function () {
             let payMethod = $("input[name='payMethod']:checked").val();
+            let bookBnoArray = [];
+            let bookAmountArray = [];            
             // 유효성 검사
-			let ord_name = $("#ord_name").val();
-			let ord_tel = $("#ord_tel").val();
-			let sample2_postcode = $("#sample2_postcode").val();
-			let sample2_address = $("#sample2_address").val();
-			let sample2_detailAddress = $("#sample2_detailAddress").val();
-			
-		    if (ord_name === "") {
-		        alert("이름을 입력해 주세요.");
-		        $("#ord_name").focus();
-		        return;
-		      }
-		      
-		      if (ord_tel === "") {
-		        alert("휴대폰번호를 입력해 주세요.");
-		        $("#ord_tel").focus();
-		        return;
-		      }
-		      
-		      if (sample2_postcode === "") {
-		        alert("우편번호를 입력해 주세요.");
-		        $("#sample2_postcode").focus();
-		        return;
-		      }
-		      
-		      if (sample2_address === "") {
-		        alert("주소를 입력해 주세요.");
-		        $("#sample2_address").focus();
-		        return;
-		      }
-		      
-		      if (sample2_detailAddress === "") {
-		        alert("상세주소를 입력해 주세요.");
-		        $("#sample2_detailAddress").focus();
-		        return;
-		      }
+            let ord_name = $("#ord_name").val();
+            let ord_tel = $("#ord_tel").val();
+            let sample2_postcode = $("#sample2_postcode").val();
+            let sample2_address = $("#sample2_address").val();
+            let sample2_detailAddress = $("#sample2_detailAddress").val();
             
-		      if (!payMethod) {
-			        alert("결제 방법을 선택해 주세요.");
-			        $("input[name='payMethod']").first().focus(); 
-			        return;
-			      }
+            $("input[name='book_bno']").each(function() {
+                bookBnoArray.push($(this).val());
+            });
+
+            $("input[name='book_amount']").each(function() {
+                bookAmountArray.push($(this).val());
+            });
             
+            // console.log("bookBnoArray", bookBnoArray);
+            // console.log("bookAmountArray", bookAmountArray);
+            
+            // return;
+
+            if (ord_name === "") {
+              alert("이름을 입력해 주세요.");
+              $("#ord_name").focus();
+              return;
+            }
+
+            if (ord_tel === "") {
+              alert("휴대폰번호를 입력해 주세요.");
+              $("#ord_tel").focus();
+              return;
+            }
+
+            if (sample2_postcode === "") {
+              alert("우편번호를 입력해 주세요.");
+              $("#sample2_postcode").focus();
+              return;
+            }
+
+            if (sample2_address === "") {
+              alert("주소를 입력해 주세요.");
+              $("#sample2_address").focus();
+              return;
+            }
+
+            if (sample2_detailAddress === "") {
+              alert("상세주소를 입력해 주세요.");
+              $("#sample2_detailAddress").focus();
+              return;
+            }
+
+            if (!payMethod) {
+              alert("결제 방법을 선택해 주세요.");
+              $("input[name='payMethod']").first().focus();
+              return;
+            }
 
             // 무통장 입금 또는 카카오페이 결제
             if (payMethod == "nobank") {
               let orderForm = $("#orderForm");
               if ($("#pay_bankinfo").val() === "") {
-                  alert("입금은행을 선택해 주세요.");
-                  $("#pay_bankinfo").focus();
-                  return;
-                }
-                
-                if ($("#pay_account").val() === "") {
-                  alert("계좌번호를 입력해 주세요.");
-                  $("#pay_account").focus();
-                  return;
-                }
-                
-                if ($("#pay_name").val() === "") {
-                  alert("예금주를 입력해 주세요.");
-                  $("#pay_name").focus();
-                  return;
-                }                                        
+                alert("입금은행을 선택해 주세요.");
+                $("#pay_bankinfo").focus();
+                return;
+              }
+
+              if ($("#pay_account").val() === "") {
+                alert("계좌번호를 입력해 주세요.");
+                $("#pay_account").focus();
+                return;
+              }
+
+              if ($("#pay_name").val() === "") {
+                alert("예금주를 입력해 주세요.");
+                $("#pay_name").focus();
+                return;
+              }
               orderForm.submit();
             } else if (payMethod == "kakaopay") {
               $.ajax({
@@ -335,6 +354,8 @@
                   ord_tel: ord_tel,
                   ord_price: $("#ord_price").val(),
                   ord_desc: $("#ord_desc").val(),
+                  book_bno: bookBnoArray,
+                  book_amount: bookAmountArray
                 },
                 dataType: "json",
                 success: function (response) {

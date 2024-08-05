@@ -88,5 +88,18 @@
 			book_bno = #{book_bno}
 
 	</select>
+	
+	<!-- 도서 테이블 수량 감소 -->
+	<update id="bookQuantityDecrease" parameterType="map">
+	
+		UPDATE
+			book_table
+		SET
+			book_amount = book_amount - #{book_amount}
+		WHERE
+			book_bno = #{book_bno} 
+	
+	
+	</update>
 
 </mapper>

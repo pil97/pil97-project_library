@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.library.basic.usr.UserVO;
@@ -29,7 +30,9 @@ public class KakaoPayController {
 	private final OrderService orderService;
 	
 	private OrderVO vo;	
-	private String usr_id;
+	private String usr_id;	
+	private List<Integer> book_bno;
+	private List<Integer> book_amount;
 	
 	@GetMapping("/kakaopayrequest")
 	public void kakaoPayRequest() {
@@ -38,7 +41,10 @@ public class KakaoPayController {
 	
 	@ResponseBody
 	@GetMapping(value = "/kakaopay")
-	public ReadyResponse kakaoPay(OrderVO vo, HttpSession session) {
+	public ReadyResponse kakaoPay(OrderVO vo,
+								@RequestParam("book_bno") List<Integer> book_bno,
+								@RequestParam("book_amount") List<Integer> book_amount, 
+								HttpSession session) {
 		
 		// log.info("주문자 정보 : " + vo);
 
@@ -69,14 +75,22 @@ public class KakaoPayController {
 		// log.info("응답데이터" + readyResponse);
 		
 		this.vo = vo;
+	    this.book_bno = book_bno;
+	    this.book_amount = book_amount;
+
+        session.setAttribute("book_bno", book_bno);
+        session.setAttribute("book_amount", book_amount);
+
 
 		return readyResponse;
 
 	}
 	
 	// 성공
+	@SuppressWarnings("unchecked")
 	@GetMapping("/approval")
-	public void approval(String pg_token) {
+	public void approval(String pg_token, HttpSession session) {
+		
 		// log.info("pg_token : " + pg_token);
 		
 		// 2. 결제승인 요청
@@ -90,9 +104,12 @@ public class KakaoPayController {
 		// 트랜잭션으로 처리 : 주문테이블, 주문상세테이블, 결제테이블, 장바구니 비우기
 		if(approvalResponse.contains("aid")) {
 			
+            List<Integer> book_bno = (List<Integer>) session.getAttribute("book_bno");
+            List<Integer> book_amount = (List<Integer>) session.getAttribute("book_amount");
+			
 			// log.info("주문자 정보2 : " + vo);
 			String payName = vo.getOrd_name();			
-			orderService.orderProcess(vo, usr_id, "카카오페이", "카카오페이", "카카오페이", payName, "완납");
+			orderService.orderProcess(vo, usr_id, "카카오페이", "카카오페이", "카카오페이", payName, "완납", book_bno, book_amount);
 					
 		}
 		

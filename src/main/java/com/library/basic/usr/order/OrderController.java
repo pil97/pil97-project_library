@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.library.basic.admin.book.BookVO;
 import com.library.basic.usr.UserService;
 import com.library.basic.usr.UserVO;
 import com.library.basic.usr.cart.CartProductVO;
@@ -76,12 +75,19 @@ public class OrderController {
 
 	// 무통장 입금
 	@PostMapping("/ordernobank")
-	public String orderNoBank(OrderVO vo, String pay_bankinfo, String pay_account, String pay_name, HttpSession session) throws Exception {
+	public String orderNoBank(OrderVO vo, 
+							  @RequestParam("pay_bankinfo") String pay_bankinfo,
+							  @RequestParam("pay_account") String pay_account,
+							  @RequestParam("pay_name") String pay_name, 
+							  @RequestParam("book_bno") List<Integer> book_bno, 
+							  @RequestParam("book_amount") List<Integer> book_amount, 
+							  HttpSession session) throws Exception {
+		
 		String usr_id = ((UserVO) session.getAttribute("loginStatus")).getUsr_id();
 		
 		vo.setUsr_id(usr_id);
 				
-		orderService.orderProcess(vo, usr_id, "무통장입금", pay_bankinfo, pay_account, pay_name, "미납");		
+		orderService.orderProcess(vo, usr_id, "무통장입금", pay_bankinfo, pay_account, pay_name, "미납", book_bno, book_amount);		
 						
 		return "redirect:/user/order/ordercomplete";
 	}
