@@ -45,6 +45,7 @@
 			b.book_img,
 			b.book_deposit,
 			b.book_name,
+			b.book_amount,
 			c.cart_code,
 			c.book_bno,
 			c.cart_amount

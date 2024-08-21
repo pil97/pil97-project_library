@@ -45,7 +45,16 @@
         </div>
         <div class="form-group">
           <label for="exampleFormControlSelect1" class="modalFontStyle1">수량</label>
-          <input type="number" class="form-control modalFontStyle2" id="btnCartAmount" value="1" min="1" max="99" />
+          <small class="text-muted">(남은수량 : <span th:text="${bookQuantity}"></span> )</small>
+          <input
+            type="number"
+            class="form-control modalFontStyle2"
+            id="btnCartAmount"
+            value="1"
+            min="1"
+            max="99"
+            th:data-max_quantity="${bookQuantity}"
+          />
         </div>
         <div class="form-group">
           <div class="row">
@@ -61,7 +70,26 @@
     </div>
   </div>
   <script>
-    // 수량 제한
+    $(document).ready(function () {
+      // 수량 제한
+      $("#btnCartAmount").on("input", function () {
+        const $inputElement = $(this);
+        const value = parseInt($inputElement.val());
+        const maxQuantity = parseInt($inputElement.data("max_quantity"));
+
+        // console.log(maxQuantity);
+
+        if (value > maxQuantity) {
+          $inputElement.val(maxQuantity);
+          alert(`최대수량은 ${maxQuantity}개입니다.`);
+        } else if (value < 1) {
+          $inputElement.val(1);
+          alert("최소수량은 1개입니다.");
+        }        
+      });
+    });
+
+    /*     // 수량 제한
     document.getElementById("btnCartAmount").addEventListener("input", function (e) {
       var value = parseInt(e.target.value);
       if (value > 99) {
@@ -72,6 +100,6 @@
         e.target.value = 1;
         alert("최소수량은 1개입니다.");
       }
-    });
+    }); */
   </script>
 </html>

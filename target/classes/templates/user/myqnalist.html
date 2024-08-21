@@ -35,14 +35,17 @@
                 <table class="table table-bordered" id="myQnaList">
                   <tbody>
                     <tr>
-                      <th>번호</th>
-                      <th>문의종류</th>
-                      <th>도서명</th>
-                      <th>제목</th>
-                      <th>등록일</th>
-                      <th>답변여부</th>
-                      <th>상세보기</th>
+                      <th width="10%">번호</th>
+                      <th width="10%">문의종류</th>
+                      <th width="15%">도서명</th>
+                      <th width="15%">제목</th>
+                      <th width="20%">등록일</th>
+                      <th width="10%">답변여부</th>
+                      <th width="20%">상세보기</th>
                     </tr>
+                    <tr th:if="${#lists.isEmpty(myQnaList)}">
+            			<td colspan="7" class="text-center">등록된 QnA가 없습니다.</td>
+        			</tr>
                     <tr th:each="myQnaList : ${myQnaList}">
                       <td th:text="${myQnaList.qna_code}"></td>
                       <td><span th:text="${myQnaList.qna_type}"></span></td>
@@ -56,7 +59,7 @@
                         <div th:text="${myQnaList.book_name}"></div>
                       </td>
                       <td><span th:text="${myQnaList.qna_title}"></span></td>
-                      <td th:text="${#dates.format(myQnaList.qna_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                      <td th:text="${#dates.format(myQnaList.qna_date, 'yyyy-MM-dd')}"></td>
                       <td><span th:text="${myQnaList.qna_check}"></span></td>
                       <td>
                         <button type="button" class="btn btn-danger" name="btnQnaDetail" th:data-qna_code="${myQnaList.qna_code}">상세보기</button>
@@ -65,7 +68,7 @@
                   </tbody>
                 </table>
 
-                <div class="box-footer clearfix">
+                <div class="box-footer clearfix" th:if="${pageMaker.total > 0}">
                   <div class="row">
                     <div class="col-md-4">
                       <form id="actionForm" action="" method="get">
@@ -93,11 +96,6 @@
                           </th:block>
                         </ul>
                       </nav>
-                    </div>
-                    <div class="row mb-5">
-                      <div class="col text-center">
-                        <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
-                      </div>
                     </div>
                   </div>
                 </div>

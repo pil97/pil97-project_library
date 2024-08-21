@@ -16,5 +16,6 @@ public class CartProductVO {
 	private int book_deposit;
 	private String book_up_folder;
 	private String book_img;
+	private int book_amount;
 	
 }

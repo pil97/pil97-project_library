@@ -16,6 +16,7 @@ import com.library.basic.common.dto.Criteria;
 import com.library.basic.common.dto.PageDTO;
 import com.library.basic.common.util.FileManagerUtils;
 import com.library.basic.usr.qna.QnaService;
+import com.library.basic.usr.review.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BookController {
 
 	private final BookService bookService;
+	private final ReviewService reviewService;
 
 	// 도서 이미지 업로드 경로
 	@Value("${file.product.image.dir}")
@@ -41,7 +43,14 @@ public class BookController {
 
 		cri.setAmount(9);
 
-		List<BookVO> userBookList = bookService.bookList(c_code, cri);
+		List<ReviewBookVO> userBookList = bookService.bookList(c_code, cri);
+		
+		// 리뷰 개수
+	    userBookList.forEach(book -> {
+	        int reviewCount = reviewService.reviewCount(book.getBook_bno());
+	        book.setReviewCount(reviewCount); // Assuming you add a reviewCount field in your BookVO class
+	    });
+		
 
 		int totalCount = bookService.getCountBookByCategory(c_code);
 
@@ -66,8 +75,10 @@ public class BookController {
 
 		// db 연동
 		BookVO vo = bookService.bookInfo(book_bno);
+		int bookQuantity = bookService.checkBookQuantity(book_bno);
 
 		model.addAttribute("BookVO", vo);
+		model.addAttribute("bookQuantity", bookQuantity);
 	}
 
 	// 도서 상세페이지
@@ -76,9 +87,11 @@ public class BookController {
 
 		// db 연동
 		BookVO vo = bookService.bookInfo(book_bno);
+		int bookQuantity = bookService.checkBookQuantity(book_bno);
 		
 
 		model.addAttribute("BookVO", vo);
+		model.addAttribute("bookQuantity", bookQuantity);
 
 	}
 

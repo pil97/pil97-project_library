@@ -32,5 +32,8 @@ public interface ReviewMapper {
 
 	// 나의 리뷰 목록 개수
 	int getTotalCount(@Param("usr_id") String usr_id, @Param("cri") Criteria cri);
+	
+	// 도서리스트 - 리뷰 개수
+	int reviewCount(int book_bno);
 
 }

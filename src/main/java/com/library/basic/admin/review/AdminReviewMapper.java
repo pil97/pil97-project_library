@@ -19,6 +19,8 @@ public interface AdminReviewMapper {
 	MyReviewVO adminReviewDetailInfo(Long rev_code);
 	
 	// 괸리자 - 도서 리뷰 삭제
-	void reviewDelete(String rev_code); 
+	void reviewDelete(String rev_code);
+	
+	
 
 }

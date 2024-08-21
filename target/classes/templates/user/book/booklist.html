@@ -37,14 +37,14 @@
                 </p>
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnDirectOrder" th:data-book_bno="${userBookList.book_bno}">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnDirectOrder" th:data-book_bno="${userBookList.book_bno}" th:disabled="${userBookList.book_loan == 'N'}">
                       바로구매
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnCartAdd" th:data-book_bno="${userBookList.book_bno}">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" name="btnCartAdd" th:data-book_bno="${userBookList.book_bno}" th:disabled="${userBookList.book_loan == 'N'}">
                       장바구니
                     </button>
                   </div>
-                  <small class="text-muted">(review : 0)</small>
+                   <small class="text-muted">(review : <span th:text="${userBookList.reviewCount}"></span>)</small>
                 </div>
               </div>
             </div>

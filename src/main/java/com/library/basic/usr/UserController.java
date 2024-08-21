@@ -212,19 +212,19 @@ public class UserController {
 	        if (session.getAttribute("naverStatus") != null) {
 	            // 네이버 로그아웃 처리
 	            try {
-	                log.info("네이버 로그아웃");
+	                // log.info("네이버 로그아웃");
 	                naverLoginService.getNaverTokenDelete(accessToken);
 	            } catch (Exception e) {
-	                log.error("네이버 로그아웃 중 오류 발생", e);
+	                // log.error("네이버 로그아웃 중 오류 발생", e);
 	            }
 	            session.removeAttribute("naverStatus");
 	        } else if (session.getAttribute("kakaoStatus") != null) {
 	            // 카카오 로그아웃 처리
 	            try {
-	                log.info("카카오 로그아웃");
+	                // log.info("카카오 로그아웃");
 	                kakaoLoginService.kakaoLogout(accessToken);
 	            } catch (JsonProcessingException e) {
-	                log.error("카카오 로그아웃 중 오류 발생", e);
+	                // log.error("카카오 로그아웃 중 오류 발생", e);
 	            }
 	            session.removeAttribute("kakaoStatus");
 	        }

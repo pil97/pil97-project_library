@@ -3,7 +3,7 @@
 <mapper namespace="com.library.basic.usr.book.BookMapper">
 
 	<!-- 도서 리스트 -->
-	<select id="bookList" resultType="BookVO" parameterType="map">
+	<select id="bookList" resultType="ReviewBookVO" parameterType="map">
 
 		SELECT
 			book_bno,
@@ -92,14 +92,38 @@
 	<!-- 도서 테이블 수량 감소 -->
 	<update id="bookQuantityDecrease" parameterType="map">
 	
-		UPDATE
+		UPDATE 
 			book_table
-		SET
-			book_amount = book_amount - #{book_amount}
+		SET 
+			book_amount = book_amount - #{book_amount},
+    		book_loan = 
+    			CASE 
+    			<![CDATA[  		
+    				WHEN book_amount - #{book_amount} <= 0 
+    			]]>
+    			THEN 
+    				'N' 
+    			ELSE 
+    				book_loan 
+    			END
+		WHERE 
+			book_bno = #{book_bno} 
+		AND 
+			book_amount >= #{book_amount}
+			
+	</update>
+
+	<!-- 도서 수량 확인 -->
+	<select id="checkBookQuantity" resultType="int" parameterType="int">
+	
+		SELECT
+			book_amount
+		FROM
+			book_table
 		WHERE
 			book_bno = #{book_bno} 
-	
-	
-	</update>
+		
+	</select>
+		
 
 </mapper>

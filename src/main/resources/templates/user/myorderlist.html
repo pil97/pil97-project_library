@@ -7,13 +7,17 @@
   <th:block layout:fragment="css">
     <link href="/css/user/sign.css" rel="stylesheet" />
     <link href="/css/admin/order/orderlist.css" rel="stylesheet" />
-       <style>
-  /* Custom CSS for modal */
+    <style>
+      /* Custom CSS for modal */
+      .modal-dialog {
+ 	   max-width: 40%; /* 모달의 최대 너비를 조정합니다. */
+	  }
+      
       .modal-lg {
-        width: 1000px;
         max-width: 80%;
       }
-      .modal-header, .modal-footer {
+      .modal-header,
+      .modal-footer {
         border: none;
         padding: 1rem 1.5rem;
       }
@@ -23,7 +27,8 @@
       .modal-body {
         padding: 1.5rem;
       }
-      .table th, .table td {
+      .table th,
+      .table td {
         vertical-align: middle;
       }
       .close {
@@ -34,7 +39,7 @@
         opacity: 1;
       }
     </style>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
     <script id="order-book-template" type="text/x-handlebars-template">
@@ -83,91 +88,92 @@
             <div class="col-4">
               <section th:replace="~{user/comm/mypage_menu}"></section>
             </div>
-            <div class="col-8">              
-                <div class="card-body">
-                  <!--  -->
-					 <div>
-                    <form th:action="@{/user/myorderlist}" th:method="get">
-                      <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
-                      <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
-                      날짜검색 : <input type="date" name="startDate" th:value="${startDate}" /> ~
-                      <input type="date" name="endDate" th:value="${endDate}" />
-                      <button type="submit" class="btn btn-primary" th:text="검색"></button>
-                    </form>
-                  </div>
-                  
-                  <table class="table table-bordered" id="orderListTable">
-                    <tbody>
-                      <tr>
-                        <th>주문코드</th>
-                        <th>가격</th>
-                        <th>구매일</th>
-                        <th>주문내역</th>
-                      </tr>
-                      <tr th:each="myOrderList : ${myOrderList}">
-                        <td th:text="${myOrderList.ord_code}"></td>
-                        <td><span th:text="${#numbers.formatInteger(myOrderList.ord_price, 3, 'COMMA') + '원'}"></span></td>
-                        <td th:text="${#dates.format(myOrderList.ord_regdate, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                        <td>
-                          <button type="button" class="btn btn-danger" name="btnOrderDetail" th:data-ord_code="${myOrderList.ord_code}">상세보기</button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                
-
-                  
-                  <!--  -->
+            <div class="col-8">
+              <div class="card-body">
+                <!--  -->
+                <div>
+                  <form th:action="@{/user/myorderlist}" th:method="get">
+                    <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                    <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+                    날짜검색 : <input type="date" name="startDate" th:value="${startDate}" /> ~
+                    <input type="date" name="endDate" th:value="${endDate}" />
+                    <button type="submit" class="btn btn-primary" th:text="검색"></button>
+                  </form>
                 </div>
 
-                <div class="card-footer">
-					<div class="box-footer clearfix">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <!--1)페이지번호 클릭할 때 사용  [이전]  1	2	3	4	5 [다음]  -->
-                      <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
-                      <form id="actionForm" action="" method="get">
-                        <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
-                        <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
-                        <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
-                        <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
-                        <input type="hidden" name="startDate" th:value="${startDate}" />
-                        <input type="hidden" name="endDate" th:value="${endDate}" />                                                
-                      </form>
-                    </div>
-                    <div class="col-md-6 text-center">
-                      <nav aria-label="...">
-                        <ul class="pagination">
-                          <!-- 이전 표시여부 -->
-                          <th:block th:if="${pageMaker.prev}">
-                            <li class="page-item"><a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a></li>
-                          </th:block>
-                          <!-- 페이지번호 출력 -->
-                          <!-- 1 2 3 4 5 6 7 8 9 10 [다음] -->
-                          <!-- [이전] 11 12 13 14 15 16 17 18 19 20 -->
-                          <th:block th:with="pageMaker = ${pageMaker}">
-                            <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
-                              <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
-                                <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
-                              </li>
+                <table class="table table-bordered" id="orderListTable">
+                  <tbody>
+                    <tr>
+                      <th>주문코드</th>
+                      <th>가격</th>
+                      <th>구매일</th>
+                      <th>주문내역</th>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(myOrderList)}">
+            			<td colspan="6" class="text-center">주문내역이 없습니다.</td>
+        			</tr>                    
+                    <tr th:each="myOrderList : ${myOrderList}">
+                      <td th:text="${myOrderList.ord_code}"></td>
+                      <td><span th:text="${#numbers.formatInteger(myOrderList.ord_price, 3, 'COMMA') + '원'}"></span></td>
+                      <td th:text="${#dates.format(myOrderList.ord_regdate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                      <td>
+                        <button type="button" class="btn btn-danger" name="btnOrderDetail" th:data-ord_code="${myOrderList.ord_code}">
+                          상세보기
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!--  -->
+                <div class="box-footer clearfix" th:if="${pageMaker.total > 0}">
+                  <div class="box-footer clearfix">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <!--1)페이지번호 클릭할 때 사용  [이전]  1	2	3	4	5 [다음]  -->
+                        <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
+                        <form id="actionForm" action="" method="get">
+                          <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                          <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
+                          <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+                          <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                          <input type="hidden" name="startDate" th:value="${startDate}" />
+                          <input type="hidden" name="endDate" th:value="${endDate}" />
+                        </form>
+                      </div>
+                      <div class="col-md-6 text-center">
+                        <nav aria-label="...">
+                          <ul class="pagination">
+                            <!-- 이전 표시여부 -->
+                            <th:block th:if="${pageMaker.prev}">
+                              <li class="page-item"><a th:href="@{${pageMaker.startPage - 1}}" class="page-link movepage">Previous</a></li>
                             </th:block>
-                          </th:block>
-                          <!-- 다음 표시여부 -->
-                          <th:block th:if="${pageMaker.next}">
-                            <li class="page-item"><a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a></li>
-                          </th:block>
-                        </ul>
-                      </nav>
+                            <!-- 페이지번호 출력 -->
+                            <!-- 1 2 3 4 5 6 7 8 9 10 [다음] -->
+                            <!-- [이전] 11 12 13 14 15 16 17 18 19 20 -->
+                            <th:block th:with="pageMaker = ${pageMaker}">
+                              <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+                                <li th:classappend="${pageMaker.cri.pageNum == num ? 'active' : ''}" class="page-item" aria-current="page">
+                                  <a class="page-link movepage" th:href="@{${num}}" th:text="${num}"></a>
+                                </li>
+                              </th:block>
+                            </th:block>
+                            <!-- 다음 표시여부 -->
+                            <th:block th:if="${pageMaker.next}">
+                              <li class="page-item"><a th:href="@{${pageMaker.endPage + 1}}" class="page-link movepage">Next</a></li>
+                            </th:block>
+                          </ul>
+                        </nav>
+                      </div>
                     </div>
                   </div>
-                </div>                
-                </div>              
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
-      
-       <!-- Modal -->
+
+      <!-- Modal -->
       <div
         class="modal fade"
         id="orderDetailInfoPopup"
@@ -231,12 +237,12 @@
                   <tr>
                     <th scope="col">수령인</th>
                     <td scope="col">
-                      <input type="text" id="ord_name" name="ord_name" readonly/>
+                      <input type="text" id="ord_name" name="ord_name" readonly />
                       <input type="hidden" id="usr_id" name="usr_id" />
                     </td>
                     <th scope="col">전화번호</th>
                     <td scope="col">
-                      <input type="text" id="ord_tel" name="ord_tel" readonly/>
+                      <input type="text" id="ord_tel" name="ord_tel" readonly />
                     </td>
                   </tr>
                 </thead>
@@ -244,12 +250,26 @@
                   <tr>
                     <th scope="row">주소</th>
                     <td colspan="3">
-                      <input type="text" class="form-control" id="sample2_postcode" name="ord_addr_zipcode" placeholder="우편번호 입력하세요" readonly />
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="sample2_postcode"
+                        name="ord_addr_zipcode"
+                        placeholder="우편번호 입력하세요"
+                        readonly
+                      />
 
                       <input type="text" class="form-control" id="sample2_address" name="ord_addr_basic" placeholder="기본주소 입력하세요" readonly />
 
-                      <input type="text" class="form-control" id="sample2_detailAddress" name="ord_addr_detail" placeholder="상세주소 입력하세요" readonly/>
-                      <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" readonly/>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="sample2_detailAddress"
+                        name="ord_addr_detail"
+                        placeholder="상세주소 입력하세요"
+                        readonly
+                      />
+                      <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" readonly />
                     </td>
                   </tr>
                   <tr>
@@ -258,7 +278,6 @@
                   </tr>
                 </tbody>
               </table>
-
             </div>
           </div>
         </div>
@@ -268,97 +287,96 @@
     <th:block layout:fragment="script">
       <!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
       <script th:inline="javascript">
-      let actionForm = $("#actionForm");
+        let actionForm = $("#actionForm");
 
         $(document).ready(function () {
-        	// 페이지 번호 클릭시, (이전 1 2 3 4 5 다음) -> actionForm을 사용한다.
-            $(".movepage").on("click", function (e) {
-              e.preventDefault(); // a 태그의 href 기능을 제거
+          // 페이지 번호 클릭시, (이전 1 2 3 4 5 다음) -> actionForm을 사용한다.
+          $(".movepage").on("click", function (e) {
+            e.preventDefault(); // a 태그의 href 기능을 제거
 
-              // 주소변경
-              actionForm.attr("action", "/user/myorderlist");
+            // 주소변경
+            actionForm.attr("action", "/user/myorderlist");
 
-              // 클릭한 페이지 번호 작업
-              actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+            // 클릭한 페이지 번호 작업
+            actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 
-              // 변경된 pageNum 값을 서버로 전송 (Criteria 클래스)
-              actionForm.submit();
+            // 변경된 pageNum 값을 서버로 전송 (Criteria 클래스)
+            actionForm.submit();
+          });
+
+          // 숫자 전환
+          const formatCurrency = (value) => {
+            const formatted = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return `${formatted} 원`; // Append "원" (or "₩" if you prefer)
+          };
+
+          // 주문상세정보.  id="order_detail_info_popup"
+          const orderDetailInfo = () => {
+            $("#orderDetailInfoPopup").modal("show");
+            $.ajax({
+              url: "/admin/order/orderdetailinfo",
+              type: "get",
+              data: { ord_code: ord_code },
+              dataType: "json",
+              success: (result) => {
+                console.log(result);
+
+                // 주문상품정보
+                printOrderBookInfo(result.orderDetailList, $("#orderBookInfo"), $("#order-book-template"));
+
+                // 결제정보
+                $("#paymethod").html(result.PaymentVO.paymethod);
+                $("#pay_price").html(formatCurrency(result.PaymentVO.pay_price));
+                $("#pay_name").html(result.PaymentVO.pay_name);
+                $("#pay_bankinfo").html(result.PaymentVO.pay_bankinfo);
+                $("#pay_account").html(result.PaymentVO.pay_account);
+                $("#pay_status").html(result.PaymentVO.pay_status);
+
+                // 주문자(수령인)
+                $("#ord_name").val(result.OrderVO.ord_name);
+                $("#usr_id").val(result.OrderVO.usr_id);
+                $("#ord_tel").val(result.OrderVO.ord_tel);
+                $("#sample2_postcode").val(result.OrderVO.ord_addr_zipcode);
+                $("#sample2_address").val(result.OrderVO.ord_addr_basic);
+                $("#sample2_detailAddress").val(result.OrderVO.ord_addr_detail);
+                $("#ord_desc").val(result.OrderVO.ord_desc);
+                $("#ord_admin_memo").val(result.OrderVO.ord_admin_memo);
+              },
             });
-        	
-            // 숫자 전환
-            const formatCurrency = (value) => {
-              const formatted = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-              return `${formatted} 원`; // Append "원" (or "₩" if you prefer)
-            };
-        	
+          };
+
+          // 상세보기 name="btn_order_info"
+          $("button[name='btnOrderDetail']").on("click", function () {
+            ord_code = $(this).data("ord_code");
+
             // 주문상세정보.  id="order_detail_info_popup"
-            const orderDetailInfo = () => {
-              $("#orderDetailInfoPopup").modal("show");
-              $.ajax({
-                url: "/admin/order/orderdetailinfo",
-                type: "get",
-                data: { ord_code: ord_code },
-                dataType: "json",
-                success: (result) => {
-                  console.log(result);
+            orderDetailInfo();
+          });
 
-                  // 주문상품정보
-                  printOrderBookInfo(result.orderDetailList, $("#orderBookInfo"), $("#order-book-template"));
+          // Handlebar UI작업 : Handlebars 템플릿 이용
+          let printOrderBookInfo = function (orderBookData, target, template) {
+            console.log(orderBookData);
+            let templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
+            let orderBookHtml = templateObj(orderBookData);
+            target.children().remove();
+            target.append(orderBookHtml);
+          };
 
-                  // 결제정보
-              	  $("#paymethod").html(result.PaymentVO.paymethod);
-                  $("#pay_price").html(formatCurrency(result.PaymentVO.pay_price));
-                  $("#pay_name").html(result.PaymentVO.pay_name);
-                  $("#pay_bankinfo").html(result.PaymentVO.pay_bankinfo);
-                  $("#pay_account").html(result.PaymentVO.pay_account);
-                  $("#pay_status").html(result.PaymentVO.pay_status); 
+          // 인덱스 넘버
+          Handlebars.registerHelper("inc", function (value) {
+            return parseInt(value) + 1;
+          });
 
-                  // 주문자(수령인)
-                  $("#ord_name").val(result.OrderVO.ord_name);
-                  $("#usr_id").val(result.OrderVO.usr_id);
-                  $("#ord_tel").val(result.OrderVO.ord_tel);
-                  $("#sample2_postcode").val(result.OrderVO.ord_addr_zipcode);
-                  $("#sample2_address").val(result.OrderVO.ord_addr_basic);
-                  $("#sample2_detailAddress").val(result.OrderVO.ord_addr_detail);
-                  $("#ord_desc").val(result.OrderVO.ord_desc);
-                  $("#ord_admin_memo").val(result.OrderVO.ord_admin_memo);
-                },
-              });
-            };
-            
-            // 상세보기 name="btn_order_info"
-            $("button[name='btnOrderDetail']").on("click", function () {
-              ord_code = $(this).data("ord_code");
+          // 주문금액(가격 * 수량)
+          Handlebars.registerHelper("unitOrderTotalPrice", function (book_deposit, dt_amount) {
+            return book_deposit * dt_amount;
+          });
 
-              // 주문상세정보.  id="order_detail_info_popup"
-              orderDetailInfo();
-            });
-            
-            // Handlebar UI작업 : Handlebars 템플릿 이용
-            let printOrderBookInfo = function (orderBookData, target, template) {
-              console.log(orderBookData);
-              let templateObj = Handlebars.compile(template.html()); // 템플릿 문법검사 및 참조
-              let orderBookHtml = templateObj(orderBookData);
-              target.children().remove();
-              target.append(orderBookHtml);
-            };
-
-            // 인덱스 넘버
-            Handlebars.registerHelper("inc", function (value) {
-              return parseInt(value) + 1;
-            });
-
-            // 주문금액(가격 * 수량)
-            Handlebars.registerHelper("unitOrderTotalPrice", function (book_deposit, dt_amount) {
-              return book_deposit * dt_amount;
-            });
-
-            // 숫자 변환
-            Handlebars.registerHelper("formatCurrency", function (value) {
-              // 숫자를 3자리마다 쉼표를 추가하고 "원"을 붙임
-              return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
-            });
-          
+          // 숫자 변환
+          Handlebars.registerHelper("formatCurrency", function (value) {
+            // 숫자를 3자리마다 쉼표를 추가하고 "원"을 붙임
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
+          });
         }); // ready event end
       </script>
     </th:block>

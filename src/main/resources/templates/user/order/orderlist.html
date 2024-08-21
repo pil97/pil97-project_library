@@ -218,6 +218,13 @@
     <th:block layout:fragment="script">
       <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
       <script src="/js/comm/addr.js"></script>
+      <script th:inline="javascript">
+        let msg = [[${msg}]];
+      
+        if (msg == "fail") {
+          alert(`주문 수량이 초과되었습니다.`);          
+        }
+      </script>
       <script>
         $(document).ready(function () {
           // 결제방법선택

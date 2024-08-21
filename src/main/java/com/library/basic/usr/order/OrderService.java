@@ -54,11 +54,15 @@ public class OrderService {
 
 		// 4. 해당 아이디 장바구니 테이블 삭제
 		cartMapper.cartEmpty(usr_id);
-		
-		// 5. 도서 테이블 수량 감소
-	    for (int i = 0; i < book_bno.size(); i++) {
-	        bookMapper.bookQuantityDecrease(book_bno.get(i), book_amount.get(i));
-	    }	
+							
+		// 5. 도서 테이블 수량 감소	  
+		for (int i = 0; i < book_bno.size(); i++) { 
+			
+			bookMapper.bookQuantityDecrease(book_bno.get(i), book_amount.get(i));
+	    
+		}
+	    	  		    	    		     
+	    	
 	}
 	
 	// 나의 주문내역 목록
@@ -69,6 +73,5 @@ public class OrderService {
 	// 나의 주문내역 개수
 	public int myOrderListGetTotalCount(Criteria cri, String startDate, String endDate, String usr_id) {
 		return orderMapper.myOrderListGetTotalCount(cri, startDate, endDate, usr_id);				
-	}
-
+	}	
 }

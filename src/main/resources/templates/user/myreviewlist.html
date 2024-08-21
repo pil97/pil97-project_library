@@ -50,13 +50,16 @@
                 <table class="table table-bordered" id="myReviewList">
                   <tbody>
                     <tr>
-                      <th>번호</th>
-                      <th>도서명</th>
-                      <th>제목</th>
-                      <th>등록일</th>
-                      <th>별점</th>
-                      <th>상세보기</th>
+                      <th width="10%">번호</th>
+                      <th width="15%">도서명</th>
+                      <th width="20%">제목</th>
+                      <th width="20%">등록일</th>
+                      <th width="15%">별점</th>
+                      <th width="20%">상세보기</th>
                     </tr>
+                    <tr th:if="${#lists.isEmpty(myReviewList)}">
+            			<td colspan="6" class="text-center">등록된 리뷰가 없습니다.</td>
+        			</tr>
                     <tr th:each="myReviewList : ${myReviewList}">
                       <td th:text="${myReviewList.rev_code}"></td>
                       <td>
@@ -69,7 +72,7 @@
                         <div th:text="${myReviewList.book_name}"></div>
                       </td>
                       <td><span th:text="${myReviewList.rev_title}"></span></td>
-                      <td th:text="${#dates.format(myReviewList.rev_date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                      <td th:text="${#dates.format(myReviewList.rev_date, 'yyyy-MM-dd')}"></td>
                       <td>
                         <p id="star_rev_rate" class="star-rating" th:data-rate="${myReviewList.rev_rate}">
                           <a class="rev_rate" href="#">☆</a>
@@ -87,7 +90,7 @@
                     </tr>
                   </tbody>
                 </table>
-                <div class="box-footer clearfix">
+                <div class="box-footer clearfix" th:if="${pageMaker.total > 0}">
                   <div class="row">
                     <div class="col-md-4">
                       <!--1)페이지번호 클릭할 때 사용  [이전]  1	2	3	4	5 [다음]  -->
@@ -125,12 +128,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="row mb-5">
-                  <div class="col text-center">
-                    <button type="button" class="btn btn-secondary" id="btnAllDelete">전체삭제</button>
-                  </div>
-                </div>
-
                 <!--  -->
               </div>
             </div>

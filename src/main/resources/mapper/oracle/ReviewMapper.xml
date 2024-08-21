@@ -196,5 +196,17 @@
 			usr_id = #{usr_id}
 			
 	</select>
+	
+	<!-- 도서리스트 - 리뷰 개수 -->
+	<select id="reviewCount" parameterType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			review_table
+		WHERE
+			book_bno = #{book_bno}
+	
+	</select>
 
 </mapper>

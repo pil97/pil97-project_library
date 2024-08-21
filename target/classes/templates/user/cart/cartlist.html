@@ -90,7 +90,7 @@
             </a>
           </div>
           <div class="col-md-2">
-            <input class="w-50" type="number" th:value="${cartList.cart_amount}" name="cart_amount" />
+            <input class="w-50" type="number" th:value="${cartList.cart_amount}" name="cart_amount" min="1" max="99" th:data-max_quantity="${cartList.book_amount}"/>
             <button type="button" class="btn btn-secondary" th:data-cart_code="${cartList.cart_code}" name="btnCartAmountChange">수량변경</button>
           </div>
           <div class="col-md-1">0</div>
@@ -116,6 +116,24 @@
     <th:block layout:fragment="script">
       <script>
         $(document).ready(function () {
+        	
+            // 수량 제한
+            $("input[name='cart_amount']").on("input", function () {
+              const $inputElement = $(this);
+              const value = parseInt($inputElement.val());
+              const maxQuantity = parseInt($inputElement.data("max_quantity"));
+
+              // console.log(maxQuantity);
+
+              if (value > maxQuantity) {
+                $inputElement.val(maxQuantity);
+                alert(`최대수량은 ${maxQuantity}개입니다.`);
+              } else if (value < 1) {
+                $inputElement.val(1);
+                alert("최소수량은 1개입니다.");
+              }        
+            });        	
+        	        	                	
           // 장바구니 삭제 name="btnCartDelete"
           $("button[name='btnCartDelete']").on("click", function () {
             if (confirm("삭제하시겠습니까?")) {

@@ -54,10 +54,10 @@ public class EmailConfig {
 	@Value("${spring.mail.default-encoding}")
 	private String encoding;
 
-	// 스프링이 시작되면서 자동으로 메서드 호출 - 리턴값 반환 
-	@Bean // javaMailSender 스프링에서 매일 발송하는 객체
+	// 스프링이 시작되면서 자동으로 메서드 호출 - 리턴값 반환 	
 	// javaMailSender bean 생성 및 스프링 컨테이너에 등록 
 	// bean 목적? 의존성 주입(DI) 목적 
+	@Bean // javaMailSender 스프링에서 매일 발송하는 객체
 	public JavaMailSender javaMailSender() {
 
 		// JavaMailSenderImpl 클래스가 어떤 메일 서버를 이용하여 메일 발송할지 서버에 대한 정보를 구성하는 작업 

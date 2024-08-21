@@ -154,6 +154,7 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleFormControlSelect1" class="modalFontStyle1">수량</label>
+                  <small class="text-muted">(남은수량 : <span id="remainingQuantity" th:text="${bookQuantity}"></span> )</small>
                   <input
                     type="number"
                     style="width: 50%"
@@ -162,6 +163,7 @@
                     value="1"
                     min="1"
                     max="99"
+                    th:data-max_quantity="${bookQuantity}"
                     oninput="updateTotalPrice()"
                   />
                 </div>
@@ -222,9 +224,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Launch demo modal</button>
 
         <!-- 도서리뷰 Modal -->
         <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -319,12 +318,15 @@
       <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
       <script th:inline="javascript">
         // 수량 제한
-        document.getElementById("btnCartAmount").addEventListener("input", (e) => {
+  /*       document.getElementById("btnCartAmount").addEventListener("input", (e) => {
           const value = parseInt(e.target.value);
+          const maxQuantity = parseInt(inputElement.getAttribute("data-max-quantity"));
 
-          if (value > 99) {
-            e.target.value = 99;
-            alert("최대수량은 99개입니다.");
+		  console.log(maxQuantity);
+          
+          if (value > maxQuantity) {
+            e.target.value = maxQuantity;
+            alert(`최대수량은 ${maxQuantity}개입니다.`);
           } else if (value < 1) {
             e.target.value = 1;
             alert("최소수량은 1개입니다.");
@@ -344,13 +346,48 @@
           const formattedTotalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
           document.getElementById("total_book_deposit").textContent = formattedTotalPrice + "원";
-        };
+        }; */
 
         let actionForm = $("#actionForm");
+        
+        // 총 보증금
+		const updateTotalPrice = () => {
+				const $priceText = $("#info_book_deposit").text();
+				const price = parseInt($priceText.replace(/,/g, "").replace("원", ""), 10);
+
+				const quantity = parseInt($("#btnCartAmount").val()); // 문자열을 정수로 변환
+
+				const totalPrice = price * quantity;
+				const formattedTotalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+				$("#total_book_deposit").text(formattedTotalPrice + "원");
+		};                   
 
         $(document).ready(function () {
+        	                
+           // 수량 제한
+           $('#btnCartAmount').on('input', function() {
+                const $inputElement = $(this);
+                const value = parseInt($inputElement.val());
+                const maxQuantity = parseInt($inputElement.data('max_quantity'));
+
+                // console.log(maxQuantity);
+
+                if (value > maxQuantity) {
+                    $inputElement.val(maxQuantity);
+                    alert(`최대수량은 ${maxQuantity}개입니다.`);
+                } else if (value < 1) {
+                    $inputElement.val(1);
+                    alert("최소수량은 1개입니다.");
+                }
+
+                updateTotalPrice(); // 수량 변경 시 총 보증금 업데이트
+            });	
+           
+
+                          	
           // tab 기능
-          $("#bookInfo").tabs();
+          $("#bookInfo").tabs();          
 
           // 장바구니 추가
           $("button#btnCartAdd").on("click", function () {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.library.basic.common.util.FileManagerUtils;
 import com.library.basic.usr.UserVO;
+import com.library.basic.usr.book.BookService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CartController {
 
 	private final CartService cartService;
+	private final BookService bookService;
 
 	// 도서 이미지 업로드 경로
 	@Value("${file.product.image.dir}")
@@ -67,6 +69,9 @@ public class CartController {
 
 		// db연동
 		List<CartProductVO> cartList = cartService.cartList(usr_id);
+		
+		log.info("장바구니 목록" + cartList);
+		
 		// mac은 사용안함, but window는 아래 코드 사용해야함
 		// cartList.forEach(vo ->
 		// vo.setBook_up_folder(vo.getBook_up_folder().replace("\\", "/")));

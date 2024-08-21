@@ -17,7 +17,7 @@ public class BookService {
 	private final BookMapper bookMapper;
 	
 	// 책 리스트
-	public List<BookVO> bookList(int c_code, Criteria cri) {
+	public List<ReviewBookVO> bookList(int c_code, Criteria cri) {
 		return bookMapper.bookList(c_code, cri);
 	};
 
@@ -30,5 +30,10 @@ public class BookService {
 	public BookVO bookInfo(int book_bno) {
 		return bookMapper.bookInfo(book_bno);				
 	};
+	
+	// 도서 수량 확인
+	public int checkBookQuantity(int book_bno) {
+		return bookMapper.checkBookQuantity(book_bno);
+	}; 
 	
 }

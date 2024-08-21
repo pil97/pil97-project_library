@@ -55,4 +55,8 @@ public class ReviewService {
 		return reviewMapper.getTotalCount(usr_id, cri);
 	}
 	
+	// 도서리스트 - 리뷰 개수
+	public int reviewCount(int book_bno) {
+		return reviewMapper.reviewCount(book_bno);
+	};
 }
